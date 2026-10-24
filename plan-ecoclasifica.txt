@@ -1,0 +1,134 @@
+==================================================
+PLAN: ECOCLASIFICA
+==================================================
+
+# EcoClasifica
+
+## Equipo: DEV
+- Bryan Alexander Cahuana Mendoza — DevOps / CI-CD
+- Marco Antonio Bonifacio Ruiz — Ingeniero ML / IA
+- Jerson Alejandro Baca Medina  — Desarrollador Fullstack
+- Yury Yohan Llanos Luna — Desarrollador Backend
+- Benjamin Salazar Arenas — Desarrollador Frontend
+
+## Problema
+La dificultad de reconocer el material de un residuo para separarlo correctamente al disponer de diversos desechos para que se pueda automatizar la clasificación de los residuos y poder aprovecharlos o desecharlos de manera ecológica.
+
+## Solucion
+Una aplicación que recibe una imagen y clasifica el residuo como plásticos, papel, vidrio, metal u otra categoría entrenada.
+
+## Modelo de IA
+- **Categoria:** image-classification
+- **Modelo:** [microsoft/resnet-50](https://huggingface.co/microsoft/resnet-50)
+- **Input:** fotógrafia de un residuo individual en formato JPG, JPEG o PNG. La imagen será procesada y redimensionada a 224 x 224 píxeles para el modelo.
+- **Output:** Categoría identificada y probabilidad estimada de cada clase.
+- **Justificacion:** Elegimos ResNet-50 porque es un modelo de clasificación de imágenes pre entrenado e ImageNet-1k, que permite aprovechar conocimientos visuales previos y adaptarlos mediante fine tuning a la identificación de residuos. 
+
+## Dataset
+- **Nombre:** TrashBusters/combinedd
+- **Registros:** 29.849
+- **Columnas:** image: image width (px) Imágenes
+label: class label Número y nombre del tipo de basura
+label_id: int64 Tipo en número
+label_name: String classes Tipo escrito
+source_dataset: ubicación de donde sale del dataset
+original_label: nombre original del desecho
+image_context: puede ser default, unknown o real_world
+
+## Stack
+- **Lenguaje:** python
+- **Framework:** gradio
+- **ML:** Hugging Face Transformers
+- **Testing:** unittest + TDD
+- **CI/CD:** GitHub Actions
+
+## Instalacion
+```bash
+git clone https://github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA
+cd ecoclasifica
+python -m venv venv
+venv\\Scripts\\activate
+pip install -r requirements.txt
+```
+
+## Tests
+```bash
+python -m unittest discover -s tests -v
+```
+
+---
+*Proyecto Final — Construccion de Software — Universidad Continental*
+
+--- ESTRUCTURA ---
+ecoclasifica/
+├── README.md
+├── requirements.txt
+├── .gitignore
+├── src/
+│   ├── __init__.py
+│   ├── preprocess.py
+│   ├── model.py
+│   ├── postprocess.py
+│   ├── app.py
+│   ├── routes.py
+├── tests/
+│   ├── __init__.py
+│   ├── test_preprocess.py
+│   ├── test_model.py
+│   ├── test_api.py
+├── training/
+│   ├── train.py
+│   ├── evaluate.py
+│   └── config.json
+├── data/
+│   ├── raw/
+│   └── processed/
+├── models/  (no subir a git)
+├── static/
+├── templates/
+└── docs/
+
+
+--- CI/CD ---
+name: CI - EcoClasifica
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: |
+        python -m unittest discover -s tests -v
+
+    - name: Lint
+      run: |
+        pip install flake8
+        flake8 src/ --max-line-length=120
+
+--- REQUIREMENTS ---
+datasets>=2.14.0
+Dask
+Polars
+Croissant
