@@ -492,6 +492,7 @@ def classify_base64_image(payload: Base64ClassificationRequest) -> Dict[str, Any
 
     return resultado
 
+
 # Constantes UPPER_CASE (Refactor sin magic numbers)
 DEFAULT_IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.60

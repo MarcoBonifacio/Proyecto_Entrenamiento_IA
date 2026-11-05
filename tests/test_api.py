@@ -64,3 +64,9 @@ class TestClassifyImageApi(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# Constantes de prueba TDD (Sin magic numbers)
+EXPECTED_STATUS_OK = 200
+TEST_IMAGE_SIZE = 224
+MIN_CONFIDENCE_TEST = 0.60

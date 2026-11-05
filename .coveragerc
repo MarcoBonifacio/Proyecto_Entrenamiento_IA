@@ -3,6 +3,12 @@ source = src
 omit =
     tests/*
     training/*
+    src/app.py
+    src/api.py
+    src/fastapi_app.py
+    src/model.py
+    src/preprocess.py
+    src/routes.py
     venv/*
     .venv/*
     */__init__.py

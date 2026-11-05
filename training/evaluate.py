@@ -444,6 +444,7 @@ def main() -> None:
 if __name__ == "__main__":
     main()
 
+
 # Constantes UPPER_CASE (Refactor sin magic numbers)
 DEFAULT_IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.60

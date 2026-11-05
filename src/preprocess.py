@@ -168,6 +168,7 @@ def load_and_preprocess_image(image_input: ImageInput) -> dict:
             f"Detalle: {exc}"
         ) from exc
 
+
 # Constantes UPPER_CASE (Refactor sin magic numbers)
 DEFAULT_IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.60

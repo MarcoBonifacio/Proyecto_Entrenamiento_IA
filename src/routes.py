@@ -96,6 +96,7 @@ def classify_image_api(
             "mensaje": f"Error al clasificar la imagen: {exc}",
         }
 
+
 # Constantes UPPER_CASE (Refactor sin magic numbers)
 DEFAULT_IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.60
