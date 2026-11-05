@@ -6,7 +6,13 @@ para el usuario, incluyendo recomendaciones de disposición ecológica.
 
 from __future__ import annotations
 
-# Emojis asociados a cada categoría (Mantenidos como cadenas vacías para conservar la firma)
+# Constantes de formateo de salida (UPPER_CASE / Sin Magic Numbers)
+DEFAULT_CONFIDENCE: float = 0.0
+BAR_LENGTH: int = 20
+LABEL_PADDING: int = 18
+PERCENTAGE_MULTIPLIER: float = 100.0
+
+# Emojis asociados a cada categoría (cadenas vacías)
 CATEGORY_EMOJIS: dict[str, str] = {
     "Cartón": "",
     "Vidrio": "",
@@ -16,7 +22,7 @@ CATEGORY_EMOJIS: dict[str, str] = {
     "Basura general": "",
 }
 
-# Recomendaciones de disposición ecológica por categoría (sin emojis)
+# Recomendaciones de disposición ecológica por categoría
 DISPOSAL_RECOMMENDATIONS: dict[str, str] = {
     "Cartón": (
         "RECICLABLE — Aplana las cajas y retira cintas adhesivas. "
@@ -54,7 +60,7 @@ DISPOSAL_RECOMMENDATIONS: dict[str, str] = {
 def format_prediction(prediction_dict: dict) -> str:
     """Formatea una predicción en una cadena legible para el usuario."""
     categoria = prediction_dict.get("categoria", "Desconocido")
-    confianza = prediction_dict.get("confianza", 0.0)
+    confianza = prediction_dict.get("confianza", DEFAULT_CONFIDENCE)
 
     header = f"Categoría detectada: {categoria}"
     conf_line = f"   Confianza: {confianza:.1%}"
@@ -74,9 +80,9 @@ def format_prediction(prediction_dict: dict) -> str:
             label, prob = item[0], item[1]
         else:
             continue
-        bar_len = int(prob * 20)
-        bar = "█" * bar_len + "░" * (20 - bar_len)
-        lines.append(f"   {label:18s} [{bar}] {prob:.1%}")
+        bar_len = int(prob * BAR_LENGTH)
+        bar = "█" * bar_len + "░" * (BAR_LENGTH - bar_len)
+        lines.append(f"   {label:{LABEL_PADDING}s} [{bar}] {prob:.1%}")
 
     return "\n".join(lines)
 
@@ -99,5 +105,5 @@ def create_results_summary(prediction_dict: dict) -> dict:
         "recomendacion": get_disposal_recommendation(categoria),
         "emoji": CATEGORY_EMOJIS.get(categoria, ""),
         "categoria": categoria,
-        "confianza": prediction_dict.get("confianza", 0.0),
+        "confianza": prediction_dict.get("confianza", DEFAULT_CONFIDENCE),
     }
