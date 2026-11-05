@@ -1,0 +1,16 @@
+[run]
+source = src
+omit =
+    tests/*
+    training/*
+    venv/*
+    .venv/*
+    */__init__.py
+
+[report]
+fail_under = 60
+show_missing = True
+skip_covered = False
+
+[html]
+directory = htmlcov
