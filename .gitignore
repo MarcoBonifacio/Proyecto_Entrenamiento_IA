@@ -1,6 +1,50 @@
+# Python
 __pycache__/
-.pytest_cache/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
 .venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
 .coverage
 htmlcov/
-*.pyc
+.tox/
+
+# Models (too large for git)
+models/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Data
+data/raw/
+data/processed/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+wandb/
+runs/
+
+# Misc
+*.bak
+*.tmp

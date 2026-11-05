@@ -1,0 +1,23 @@
+{
+  "model_name": "microsoft/resnet-50",
+  "dataset_name": "TrashBusters/combinedd",
+  "num_labels": 6,
+  "label_names": ["cardboard", "glass", "metal", "paper", "plastic", "trash"],
+  "label_names_es": ["Cartón", "Vidrio", "Metal", "Papel", "Plástico", "Basura general"],
+  "output_dir": "./models/ecoclasifica-resnet50",
+  "num_epochs": 5,
+  "batch_size": 16,
+  "learning_rate": 5e-5,
+  "weight_decay": 0.01,
+  "warmup_ratio": 0.1,
+  "image_size": 224,
+  "train_split_ratio": 0.8,
+  "eval_split_ratio": 0.1,
+  "test_split_ratio": 0.1,
+  "seed": 42,
+  "save_steps": 500,
+  "eval_steps": 250,
+  "logging_steps": 50,
+  "fp16": false,
+  "dataloader_num_workers": 0
+}
