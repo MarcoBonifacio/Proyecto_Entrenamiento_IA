@@ -6,14 +6,12 @@ para el usuario, incluyendo recomendaciones de disposición ecológica.
 
 from __future__ import annotations
 
-# Constantes de formateo de salida (UPPER_CASE / Sin Magic Numbers)
-DEFAULT_CONFIDENCE: float = 0.0
-BAR_LENGTH: int = 20
-LABEL_PADDING: int = 18
-PERCENTAGE_MULTIPLIER: float = 100.0
+DEFAULT_CONFIDENCE = 0.0
+BAR_LENGTH = 20
+LABEL_PADDING = 18
+PERCENTAGE_MULTIPLIER = 100.0
 
-# Emojis asociados a cada categoría (cadenas vacías)
-CATEGORY_EMOJIS: dict[str, str] = {
+CATEGORY_EMOJIS = {
     "Cartón": "",
     "Vidrio": "",
     "Metal": "",
@@ -22,8 +20,7 @@ CATEGORY_EMOJIS: dict[str, str] = {
     "Basura general": "",
 }
 
-# Recomendaciones de disposición ecológica por categoría
-DISPOSAL_RECOMMENDATIONS: dict[str, str] = {
+DISPOSAL_RECOMMENDATIONS = {
     "Cartón": (
         "RECICLABLE — Aplana las cajas y retira cintas adhesivas. "
         "Deposita en el contenedor azul de papel y cartón. "
