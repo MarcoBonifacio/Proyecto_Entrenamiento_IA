@@ -6,46 +6,45 @@ para el usuario, incluyendo recomendaciones de disposición ecológica.
 
 from __future__ import annotations
 
-
-# Emojis asociados a cada categoría
+# Emojis asociados a cada categoría (Mantenidos como cadenas vacías para conservar la firma)
 CATEGORY_EMOJIS: dict[str, str] = {
-    "Cartón": "📦",
-    "Vidrio": "🫙",
-    "Metal": "🥫",
-    "Papel": "📄",
-    "Plástico": "♻️",
-    "Basura general": "🗑️",
+    "Cartón": "",
+    "Vidrio": "",
+    "Metal": "",
+    "Papel": "",
+    "Plástico": "",
+    "Basura general": "",
 }
 
-# Recomendaciones de disposición ecológica por categoría
+# Recomendaciones de disposición ecológica por categoría (sin emojis)
 DISPOSAL_RECOMMENDATIONS: dict[str, str] = {
     "Cartón": (
-        "♻️ RECICLABLE — Aplana las cajas y retira cintas adhesivas. "
+        "RECICLABLE — Aplana las cajas y retira cintas adhesivas. "
         "Deposita en el contenedor azul de papel y cartón. "
         "Evita mojar el cartón; si está sucio con comida, va a orgánicos."
     ),
     "Vidrio": (
-        "♻️ RECICLABLE — Enjuaga el envase y retira tapas metálicas. "
+        "RECICLABLE — Enjuaga el envase y retira tapas metálicas. "
         "Deposita en el contenedor verde de vidrio. "
         "¡El vidrio se recicla infinitamente sin perder calidad!"
     ),
     "Metal": (
-        "♻️ RECICLABLE — Enjuaga latas y enlatados antes de reciclar. "
+        "RECICLABLE — Enjuaga latas y enlatados antes de reciclar. "
         "Deposita en el contenedor amarillo. "
         "El aluminio reciclado ahorra 95% de energía frente a producir nuevo."
     ),
     "Papel": (
-        "♻️ RECICLABLE — Asegúrate de que esté limpio y seco. "
+        "RECICLABLE — Asegúrate de que esté limpio y seco. "
         "Deposita en el contenedor azul. "
         "No mezcles papel con servilletas o pañuelos usados."
     ),
     "Plástico": (
-        "♻️ RECICLABLE (según tipo) — Revisa el número de reciclaje (1-7). "
+        "RECICLABLE (según tipo) — Revisa el número de reciclaje (1-7). "
         "Enjuaga el envase y deposita en el contenedor amarillo. "
         "Reduce el uso de plásticos de un solo uso siempre que sea posible."
     ),
     "Basura general": (
-        "🗑️ NO RECICLABLE — Este residuo no corresponde a las categorías "
+        "NO RECICLABLE — Este residuo no corresponde a las categorías "
         "reciclables principales. Deposita en el contenedor gris o de basura "
         "general. Considera si puede reutilizarse antes de desecharlo."
     ),
@@ -53,27 +52,14 @@ DISPOSAL_RECOMMENDATIONS: dict[str, str] = {
 
 
 def format_prediction(prediction_dict: dict) -> str:
-    """Formatea una predicción en una cadena legible para el usuario.
-
-    Parameters
-    ----------
-    prediction_dict : dict
-        Resultado de ``EcoClasificaModel.predict()`` con las claves
-        ``"categoria"``, ``"confianza"`` y ``"todas_las_predicciones"``.
-
-    Returns
-    -------
-    str
-        Texto formateado con la categoría, confianza y desglose.
-    """
+    """Formatea una predicción en una cadena legible para el usuario."""
     categoria = prediction_dict.get("categoria", "Desconocido")
     confianza = prediction_dict.get("confianza", 0.0)
-    emoji = CATEGORY_EMOJIS.get(categoria, "❓")
 
-    header = f"{emoji} Categoría detectada: {categoria}"
+    header = f"Categoría detectada: {categoria}"
     conf_line = f"   Confianza: {confianza:.1%}"
 
-    lines = [header, conf_line, "", "📊 Distribución de probabilidades:"]
+    lines = [header, conf_line, "", "Distribución de probabilidades:"]
 
     todas = prediction_dict.get("todas_las_predicciones", [])
     if isinstance(todas, dict):
@@ -90,57 +76,28 @@ def format_prediction(prediction_dict: dict) -> str:
             continue
         bar_len = int(prob * 20)
         bar = "█" * bar_len + "░" * (20 - bar_len)
-        cat_emoji = CATEGORY_EMOJIS.get(label, "")
-        lines.append(f"   {cat_emoji} {label:18s} [{bar}] {prob:.1%}")
+        lines.append(f"   {label:18s} [{bar}] {prob:.1%}")
 
     return "\n".join(lines)
 
 
 def get_disposal_recommendation(category: str) -> str:
-    """Devuelve una recomendación de disposición ecológica.
-
-    Parameters
-    ----------
-    category : str
-        Nombre de la categoría en español (e.g. ``"Plástico"``).
-
-    Returns
-    -------
-    str
-        Recomendación de disposición ecológica para la categoría.
-    """
+    """Devuelve una recomendación de disposición ecológica."""
     return DISPOSAL_RECOMMENDATIONS.get(
         category,
-        "ℹ️ No se encontró una recomendación específica para esta categoría. "
+        "No se encontró una recomendación específica para esta categoría. "
         "Consulta con tu municipio sobre la disposición adecuada de este residuo.",
     )
 
 
 def create_results_summary(prediction_dict: dict) -> dict:
-    """Crea un resumen completo de la predicción con recomendación.
-
-    Parameters
-    ----------
-    prediction_dict : dict
-        Resultado de ``EcoClasificaModel.predict()``.
-
-    Returns
-    -------
-    dict
-        Diccionario con las claves:
-
-        * ``"prediccion"`` — texto formateado de la predicción.
-        * ``"recomendacion"`` — consejo de disposición ecológica.
-        * ``"emoji"`` — emoji representativo de la categoría.
-        * ``"categoria"`` — nombre de la categoría detectada.
-        * ``"confianza"`` — valor de confianza (0–1).
-    """
+    """Crea un resumen completo de la predicción con recomendación."""
     categoria = prediction_dict.get("categoria", "Desconocido")
 
     return {
         "prediccion": format_prediction(prediction_dict),
         "recomendacion": get_disposal_recommendation(categoria),
-        "emoji": CATEGORY_EMOJIS.get(categoria, "❓"),
+        "emoji": CATEGORY_EMOJIS.get(categoria, ""),
         "categoria": categoria,
         "confianza": prediction_dict.get("confianza", 0.0),
     }
