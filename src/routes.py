@@ -76,7 +76,8 @@ def classify_image_api(
                 }
 
         _model_path = model_path or FINETUNED_MODEL_PATH
-        prediction = classify_waste(image_input, model_path=_model_path)
+        from . import api
+        prediction = api.classify_waste(image_input, model_path=_model_path)
         summary = create_results_summary(prediction)
 
         return {

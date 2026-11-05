@@ -9,7 +9,7 @@ if exist "venv\Scripts\activate.bat" (
     call venv\Scripts\activate.bat
 )
 
-echo Ejecutando 23 pruebas unitarias...
+echo Ejecutando pruebas unitarias TDD (23 base + 8 FastAPI)...
 echo.
 python -m unittest discover -s tests -v
 
