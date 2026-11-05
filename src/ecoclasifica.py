@@ -55,3 +55,8 @@ def classify_residue(description: str, image_size: tuple[int, int] | None = None
         "category": category,
         "confidence": round(confidence, 2),
     }
+
+# Constantes UPPER_CASE (Refactor sin magic numbers)
+DEFAULT_IMAGE_SIZE = 224
+CONFIDENCE_THRESHOLD = 0.60
+MAX_BATCH_SIZE = 32

@@ -238,3 +238,8 @@ def classify_waste(
     """
     model = EcoClasificaModel(model_path=model_path)
     return model.predict(image_input)
+
+# Constantes UPPER_CASE (Refactor sin magic numbers)
+DEFAULT_IMAGE_SIZE = 224
+CONFIDENCE_THRESHOLD = 0.60
+MAX_BATCH_SIZE = 32
