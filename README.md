@@ -147,6 +147,31 @@ coverage report -m
 
 ---
 
+## 🌐 Servidor REST API (FastAPI) y Swagger
+
+Además de la interfaz web en Gradio, el proyecto cuenta con una API REST desarrollada con **FastAPI** para integración con clientes externos (aplicaciones móviles, frontend independiente, IoT, etc.):
+
+### Iniciar la API REST:
+```bash
+# Opción 1: En 1 clic (Windows)
+run_backend.bat
+
+# Opción 2: Mediante Uvicorn
+python -m uvicorn src.fastapi_app:app --host 0.0.0.0 --port 8000 --reload
+```
+
+* **Documentación Interactiva Swagger UI:** `http://localhost:8000/docs`
+* **Documentación ReDoc:** `http://localhost:8000/redoc`
+
+### Endpoints Principales:
+* `GET /`: Bienvenida e información del servicio.
+* `GET /health`: Health-check y disponibilidad del modelo.
+* `GET /classes`: Listado de las 6 categorías de residuos y consejos de disposición.
+* `POST /classify` (o `/predict`): Sube una imagen (`multipart/form-data`) y obtiene predicción, porcentaje de confianza y recomendación.
+* `POST /classify/base64`: Clasifica enviando la imagen en una cadena base64 dentro de un JSON.
+
+---
+
 ## 🖥️ Ejecución de la Interfaz Web (Gradio)
 
 Para iniciar la aplicación gráfica localmente:

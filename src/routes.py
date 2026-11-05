@@ -11,7 +11,6 @@ import time
 from pathlib import Path
 from typing import Optional, Any
 
-from .model import EcoClasificaModel, classify_waste
 from .postprocess import create_results_summary
 
 logger = logging.getLogger(__name__)
@@ -76,7 +75,8 @@ def classify_image_api(
                 }
 
         _model_path = model_path or FINETUNED_MODEL_PATH
-        prediction = classify_waste(image_input, model_path=_model_path)
+        from . import api
+        prediction = api.classify_waste(image_input, model_path=_model_path)
         summary = create_results_summary(prediction)
 
         return {
