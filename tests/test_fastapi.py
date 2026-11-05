@@ -18,9 +18,6 @@ from PIL import Image
 from src.fastapi_app import (
     app,
     TAMANO_MAXIMO_BYTES,
-    DIMENSION_MINIMA,
-    MIME_TYPES_PERMITIDOS,
-    EXTENSIONES_PERMITIDAS,
 )
 
 

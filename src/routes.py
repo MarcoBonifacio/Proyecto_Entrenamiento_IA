@@ -11,7 +11,6 @@ import time
 from pathlib import Path
 from typing import Optional, Any
 
-from .model import EcoClasificaModel, classify_waste
 from .postprocess import create_results_summary
 
 logger = logging.getLogger(__name__)

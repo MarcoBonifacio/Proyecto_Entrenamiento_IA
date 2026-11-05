@@ -6,8 +6,6 @@ para el usuario, incluyendo recomendaciones de disposición ecológica.
 
 from __future__ import annotations
 
-from typing import Optional
-
 
 # Emojis asociados a cada categoría
 CATEGORY_EMOJIS: dict[str, str] = {

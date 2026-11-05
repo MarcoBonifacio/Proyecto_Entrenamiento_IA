@@ -18,7 +18,6 @@ from pydantic import BaseModel, Field
 from PIL import Image
 
 from .routes import classify_image_api, health_check
-from .model import EcoClasificaModel, classify_waste
 
 logger = logging.getLogger(__name__)
 
@@ -358,12 +357,42 @@ def get_health() -> Dict[str, Any]:
 def get_classes() -> Dict[str, Any]:
     """Retorna el listado de las 6 categorías soportadas por el modelo EcoClasifica con sus emojis."""
     detalles_clases = [
-        {"id": 0, "categoria": "Cartón", "emoji": "📦", "consejo": "Dobla y aplana las cajas; deposítalas en el contenedor azul sin restos de grasa."},
-        {"id": 1, "categoria": "Vidrio", "emoji": "🫙", "consejo": "Retira tapas o corchos; deposítalo en el contenedor verde sin romperlo."},
-        {"id": 2, "categoria": "Metal", "emoji": "🥫", "consejo": "Enjuaga y escurre latas o envases metálicos antes de depositarlos en el contenedor correspondiente."},
-        {"id": 3, "categoria": "Papel", "emoji": "📄", "consejo": "Evita arrugarlo excesivamente y mantenlo seco; recíclalo en el contenedor azul."},
-        {"id": 4, "categoria": "Plástico", "emoji": "♻️", "consejo": "Enjuaga, aplana para reducir volumen y coloca la tapa en el contenedor amarillo."},
-        {"id": 5, "categoria": "Basura general", "emoji": "🗑️", "consejo": "Residuos no reciclables o contaminados; deposítalos en el contenedor de desechos generales."},
+        {
+            "id": 0,
+            "categoria": "Cartón",
+            "emoji": "📦",
+            "consejo": "Dobla y aplana las cajas; deposítalas en el contenedor azul sin restos de grasa.",
+        },
+        {
+            "id": 1,
+            "categoria": "Vidrio",
+            "emoji": "🫙",
+            "consejo": "Retira tapas o corchos; deposítalo en el contenedor verde sin romperlo.",
+        },
+        {
+            "id": 2,
+            "categoria": "Metal",
+            "emoji": "🥫",
+            "consejo": "Enjuaga y escurre latas o envases metálicos antes de depositarlos en su contenedor.",
+        },
+        {
+            "id": 3,
+            "categoria": "Papel",
+            "emoji": "📄",
+            "consejo": "Evita arrugarlo excesivamente y mantenlo seco; recíclalo en el contenedor azul.",
+        },
+        {
+            "id": 4,
+            "categoria": "Plástico",
+            "emoji": "♻️",
+            "consejo": "Enjuaga, aplana para reducir volumen y coloca la tapa en el contenedor amarillo.",
+        },
+        {
+            "id": 5,
+            "categoria": "Basura general",
+            "emoji": "🗑️",
+            "consejo": "Residuos no reciclables o contaminados; deposítalos en el contenedor de desechos generales.",
+        },
     ]
     return {
         "total_clases": len(detalles_clases),

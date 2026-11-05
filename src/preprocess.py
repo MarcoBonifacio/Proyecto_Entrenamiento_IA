@@ -113,7 +113,7 @@ def validate_image(image_input: ImageInput) -> bool:
         return width >= 1 and height >= 1
     except (TypeError, FileNotFoundError, ValueError):
         return False
-    except Exception as exc:  # pragma: no cover — errores inesperados
+    except Exception:  # pragma: no cover — errores inesperados
         logger.exception("Error inesperado durante la validación de la imagen.")
         return False
 

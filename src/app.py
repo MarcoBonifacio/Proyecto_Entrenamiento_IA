@@ -18,11 +18,9 @@ from PIL import Image
 # Agregar raíz del proyecto al path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.model import EcoClasificaModel
-from src.postprocess import (
+from src.model import EcoClasificaModel  # noqa: E402
+from src.postprocess import (  # noqa: E402
     create_results_summary,
-    format_prediction,
-    get_disposal_recommendation,
     CATEGORY_EMOJIS,
 )
 
