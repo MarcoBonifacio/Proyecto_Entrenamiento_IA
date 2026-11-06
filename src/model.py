@@ -22,9 +22,14 @@ from .preprocess import ImageInput, load_and_preprocess_image
 
 logger = logging.getLogger(__name__)
 
+# Constantes del modelo de clasificación (sin magic numbers)
 BASE_MODEL_NAME: str = "microsoft/resnet-50"
 DEFAULT_FINETUNED_PATH: str = "./models/ecoclasifica-resnet50"
 NUM_CLASSES: int = 6
+ROUND_DECIMALS: int = 4
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
 
 
 class EcoClasificaModel:
@@ -188,7 +193,7 @@ class EcoClasificaModel:
             all_predictions: list[tuple[str, float]] = []
             for idx in range(len(probs_np)):
                 label = self.LABELS.get(idx, f"Clase {idx}")
-                all_predictions.append((label, round(float(probs_np[idx]), 4)))
+                all_predictions.append((label, round(float(probs_np[idx]), ROUND_DECIMALS)))
 
             all_predictions.sort(key=lambda x: x[1], reverse=True)
 
@@ -196,7 +201,7 @@ class EcoClasificaModel:
 
             return {
                 "categoria": top_label,
-                "confianza": round(top_confidence, 4),
+                "confianza": round(top_confidence, ROUND_DECIMALS),
                 "todas_las_predicciones": all_predictions,
             }
 
@@ -238,9 +243,3 @@ def classify_waste(
     """
     model = EcoClasificaModel(model_path=model_path)
     return model.predict(image_input)
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

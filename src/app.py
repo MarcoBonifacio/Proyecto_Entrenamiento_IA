@@ -26,12 +26,20 @@ from src.postprocess import (  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
-# Ruta al modelo afinado
-FINETUNED_MODEL_PATH = os.path.join(
+# Constantes de configuración de servidor e interfaz (sin magic numbers)
+FINETUNED_MODEL_PATH: str = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     "models",
     "ecoclasifica-resnet50",
 )
+DEFAULT_SERVER_PORT: int = 7860
+DEFAULT_SERVER_NAME: str = "0.0.0.0"
+IMAGE_INPUT_HEIGHT: int = 350
+NUM_TOP_CLASSES: int = 6
+COLUMN_SCALE: int = 1
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
 
 # Variable global para el modelo (se carga una sola vez)
 _model: EcoClasificaModel | None = None
@@ -129,11 +137,11 @@ def create_interface() -> gr.Blocks:
         )
 
         with gr.Row():
-            with gr.Column(scale=1):
+            with gr.Column(scale=COLUMN_SCALE):
                 image_input = gr.Image(
                     label="📷 Sube o captura una imagen del residuo",
                     type="pil",
-                    height=350,
+                    height=IMAGE_INPUT_HEIGHT,
                     sources=["upload", "webcam"],
                 )
                 classify_btn = gr.Button(
@@ -142,10 +150,10 @@ def create_interface() -> gr.Blocks:
                     size="lg",
                 )
 
-            with gr.Column(scale=1):
+            with gr.Column(scale=COLUMN_SCALE):
                 label_output = gr.Label(
                     label="📊 Resultados de la clasificación",
-                    num_top_classes=6,
+                    num_top_classes=NUM_TOP_CLASSES,
                 )
                 recommendation_output = gr.Markdown(
                     label="♻️ Recomendación",
@@ -196,16 +204,10 @@ def main() -> None:
     app = create_interface()
     app.launch(
         share=False,
-        server_name="0.0.0.0",
-        server_port=7860,
+        server_name=DEFAULT_SERVER_NAME,
+        server_port=DEFAULT_SERVER_PORT,
     )
 
 
 if __name__ == "__main__":
     main()
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

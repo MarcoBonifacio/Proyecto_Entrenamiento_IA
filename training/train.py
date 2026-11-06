@@ -48,6 +48,13 @@ logging.basicConfig(
 logger = logging.getLogger("ecoclasifica.train")
 
 # ---------------------------------------------------------------------------
+# Constantes de configuración de entrenamiento (sin magic numbers)
+# ---------------------------------------------------------------------------
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
+
+# ---------------------------------------------------------------------------
 # Rutas
 # ---------------------------------------------------------------------------
 _SCRIPT_DIR = Path(__file__).resolve().parent
@@ -353,9 +360,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

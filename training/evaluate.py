@@ -53,6 +53,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ecoclasifica.evaluate")
 
+# Constantes de evaluacion (sin magic numbers)
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
+
 # ---------------------------------------------------------------------------
 # Rutas
 # ---------------------------------------------------------------------------
@@ -443,9 +448,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

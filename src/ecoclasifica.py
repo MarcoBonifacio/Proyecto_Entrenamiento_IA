@@ -2,42 +2,72 @@
 
 from __future__ import annotations
 
-CATEGORY_CONFIDENCE = {
-    "plastic": 0.92,
-    "paper": 0.88,
-    "glass": 0.9,
-    "metal": 0.91,
-    "other": 0.5,
+# Constantes de configuración general y categorías
+DEFAULT_CATEGORY: str = "other"
+CATEGORY_GLASS: str = "glass"
+CATEGORY_METAL: str = "metal"
+CATEGORY_PAPER: str = "paper"
+CATEGORY_PLASTIC: str = "plastic"
+CATEGORY_OTHER: str = DEFAULT_CATEGORY
+
+# Constantes numéricas de confianza por categoría (sin magic numbers)
+CONFIDENCE_PLASTIC: float = 0.92
+CONFIDENCE_PAPER: float = 0.88
+CONFIDENCE_GLASS: float = 0.90
+CONFIDENCE_METAL: float = 0.91
+CONFIDENCE_OTHER: float = 0.50
+
+# Constantes de resolución y ajuste de confianza
+LOW_RESOLUTION_THRESHOLD: int = 128
+CONFIDENCE_ADJUSTMENT: float = 0.8
+ROUND_DECIMALS: int = 2
+
+# Parámetros estándar de procesamiento de imágenes
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
+
+# Mapeo de niveles de confianza según categoría
+CATEGORY_CONFIDENCE: dict[str, float] = {
+    CATEGORY_PLASTIC: CONFIDENCE_PLASTIC,
+    CATEGORY_PAPER: CONFIDENCE_PAPER,
+    CATEGORY_GLASS: CONFIDENCE_GLASS,
+    CATEGORY_METAL: CONFIDENCE_METAL,
+    CATEGORY_OTHER: CONFIDENCE_OTHER,
 }
 
-ALIASES = {
-    "glass": {"vidrio", "botella de vidrio", "cristal", "glass"},
-    "metal": {"metal", "lata", "aluminio", "hierro", "metalico"},
-    "paper": {"papel", "carton", "cartón", "caja", "paper"},
-    "plastic": {"plastico", "plástico", "botella", "envase", "plastic"},
+# Diccionario de alias por categoría
+ALIASES: dict[str, set[str]] = {
+    CATEGORY_GLASS: {"vidrio", "botella de vidrio", "cristal", "glass"},
+    CATEGORY_METAL: {"metal", "lata", "aluminio", "hierro", "metalico"},
+    CATEGORY_PAPER: {"papel", "carton", "cartón", "caja", "paper"},
+    CATEGORY_PLASTIC: {"plastico", "plástico", "botella", "envase", "plastic"},
 }
 
-LOW_RESOLUTION_THRESHOLD = 128
-CONFIDENCE_ADJUSTMENT = 0.8
-CATEGORY_PRIORITY = ("glass", "metal", "paper", "plastic")
+CATEGORY_PRIORITY: tuple[str, ...] = (
+    CATEGORY_GLASS,
+    CATEGORY_METAL,
+    CATEGORY_PAPER,
+    CATEGORY_PLASTIC,
+)
 
 
-def normalize_material_name(description: str) -> str:
+def normalize_material_name(description: str | None) -> str:
     """Normaliza una descripción a una categoría reconocida."""
     if description is None:
-        return "other"
+        return DEFAULT_CATEGORY
 
     cleaned = description.lower().strip()
     for category in CATEGORY_PRIORITY:
         for alias in sorted(ALIASES[category], key=len, reverse=True):
             if cleaned == alias or alias in cleaned:
                 return category
-    return "other"
+    return DEFAULT_CATEGORY
 
 
 def calculate_confidence(category: str) -> float:
     """Devuelve la confianza base asociada a una categoría."""
-    return CATEGORY_CONFIDENCE.get(category, CATEGORY_CONFIDENCE["other"])
+    return CATEGORY_CONFIDENCE.get(category, CATEGORY_CONFIDENCE[DEFAULT_CATEGORY])
 
 
 def classify_residue(description: str, image_size: tuple[int, int] | None = None) -> dict:
@@ -53,11 +83,5 @@ def classify_residue(description: str, image_size: tuple[int, int] | None = None
 
     return {
         "category": category,
-        "confidence": round(confidence, 2),
+        "confidence": round(confidence, ROUND_DECIMALS),
     }
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

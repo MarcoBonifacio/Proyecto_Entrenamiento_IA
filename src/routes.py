@@ -15,7 +15,18 @@ from .postprocess import create_results_summary
 
 logger = logging.getLogger(__name__)
 
-FINETUNED_MODEL_PATH = "./models/ecoclasifica-resnet50"
+# Constantes de configuración de servicio y rutas (sin magic numbers)
+FINETUNED_MODEL_PATH: str = "./models/ecoclasifica-resnet50"
+SERVICE_NAME: str = "EcoClasifica API"
+API_VERSION: str = "1.0.0"
+STATUS_OK: str = "ok"
+UPTIME_ROUND_DECIMALS: int = 2
+
+# Parámetros estándar de operación
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
+
 _APP_START_TIME = time.time()
 
 
@@ -28,12 +39,12 @@ def health_check() -> dict:
         Estado del servicio con información del modelo.
     """
     model_available = Path(FINETUNED_MODEL_PATH).exists()
-    uptime_seconds = round(time.time() - _APP_START_TIME, 2)
+    uptime_seconds = round(time.time() - _APP_START_TIME, UPTIME_ROUND_DECIMALS)
 
     return {
-        "status": "ok",
-        "servicio": "EcoClasifica API",
-        "version": "1.0.0",
+        "status": STATUS_OK,
+        "servicio": SERVICE_NAME,
+        "version": API_VERSION,
         "modelo_afinado_disponible": model_available,
         "uptime_seconds": uptime_seconds,
     }
@@ -95,9 +106,3 @@ def classify_image_api(
             "error": True,
             "mensaje": f"Error al clasificar la imagen: {exc}",
         }
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32

@@ -14,10 +14,14 @@ import numpy as np
 from PIL import Image, UnidentifiedImageError
 from transformers import AutoImageProcessor
 
-# Formatos de imagen aceptados
+# Formatos de imagen aceptados y constantes de procesamiento (sin magic numbers)
 VALID_EXTENSIONS: set[str] = {".jpg", ".jpeg", ".png"}
 IMAGE_SIZE: tuple[int, int] = (224, 224)
 MODEL_NAME: str = "microsoft/resnet-50"
+MIN_IMAGE_DIMENSION: int = 1
+DEFAULT_IMAGE_SIZE: int = 224
+CONFIDENCE_THRESHOLD: float = 0.60
+MAX_BATCH_SIZE: int = 32
 
 logger = logging.getLogger(__name__)
 
@@ -110,7 +114,7 @@ def validate_image(image_input: ImageInput) -> bool:
             return False
         img = _load_image_from_input(image_input)
         width, height = img.size
-        return width >= 1 and height >= 1
+        return width >= MIN_IMAGE_DIMENSION and height >= MIN_IMAGE_DIMENSION
     except (TypeError, FileNotFoundError, ValueError):
         return False
     except Exception:  # pragma: no cover — errores inesperados
@@ -167,9 +171,3 @@ def load_and_preprocess_image(image_input: ImageInput) -> dict:
             "Error al preprocesar la imagen con el procesador del modelo. "
             f"Detalle: {exc}"
         ) from exc
-
-
-# Constantes UPPER_CASE (Refactor sin magic numbers)
-DEFAULT_IMAGE_SIZE = 224
-CONFIDENCE_THRESHOLD = 0.60
-MAX_BATCH_SIZE = 32
