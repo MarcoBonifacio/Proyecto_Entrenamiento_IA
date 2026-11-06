@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoClasifica — Presentación del Proyecto Final</title>
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #111827;
+      --bg-card: #1f2937;
+      --bg-card-hover: #374151;
+      --accent-green: #10b981;
+      --accent-emerald: #059669;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --border-color: #374151;
+      --border-accent: rgba(16, 185, 129, 0.3);
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOP BAR DE CONTROL */
+    header {
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .brand span {
+      background: linear-gradient(90deg, #10b981, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .controls-center {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .timer-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(31, 41, 55, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      color: var(--accent-cyan);
+    }
+
+    .timer-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .timer-btn:hover {
+      color: var(--text-main);
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.4rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-green);
+    }
+
+    .btn-primary {
+      background: var(--accent-emerald);
+      border-color: var(--accent-green);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-green);
+    }
+
+    .slide-counter {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-width: 5.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(55, 65, 81, 0.5);
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 10%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem 1.5rem;
+    }
+
+    /* SLIDE LAYOUT */
+    .slide {
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .slide-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-green);
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* GRID CARDS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent-green);
+      transform: translateY(-2px);
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .card-body {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* STAT BADGE */
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      line-height: 1;
+      font-feature-settings: "tnum";
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    /* CODE COMPARISON COMPONENT */
+    .code-box {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.83rem;
+      color: #e6edf3;
+      overflow-x: auto;
+      line-height: 1.45;
+    }
+
+    .code-bad {
+      border-left: 4px solid var(--accent-rose);
+    }
+
+    .code-good {
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pill-red {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-blue {
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    /* SPEAKER NOTES DRAWER */
+    .speaker-notes-box {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      display: none;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .speaker-notes-box.open {
+      display: block;
+    }
+
+    .speaker-notes-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-cyan);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .speaker-notes-content {
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      line-height: 1.6;
+    }
+
+    .speaker-notes-content strong {
+      color: var(--accent-green);
+    }
+
+    /* FOOTER NAV */
+    footer {
+      background: rgba(17, 24, 39, 0.95);
+      border-top: 1px solid var(--border-color);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+    }
+
+    .key-hints {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.25rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    /* HERO PORTADA */
+    .hero-container {
+      text-align: center;
+      padding: 3rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      max-width: 900px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 750px;
+      line-height: 1.6;
+    }
+
+    .team-badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      max-width: 850px;
+    }
+
+    .team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 0.9rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    .team-card.featured {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .team-name {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .team-role {
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+    }
+
+    /* PIPELINE DIAGRAM */
+    .pipeline-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.9rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .pipeline-num {
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 9999px;
+      background: var(--accent-green);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 2.2rem;
+      }
+      .slide-title {
+        font-size: 1.5rem;
+      }
+      .key-hints {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <div>EcoClasifica <span>Slides</span></div>
+    </div>
+
+    <div class="controls-center">
+      <div class="timer-badge">
+        <span>⏱️</span>
+        <span id="timerDisplay">00:00</span>
+        <button class="timer-btn" id="timerToggle" title="Iniciar / Pausar Cronómetro">▶</button>
+        <button class="timer-btn" id="timerReset" title="Reiniciar Cronómetro">↺</button>
+      </div>
+
+      <button class="btn" id="notesToggleBtn" title="Ver / Ocultar notas de qué decir">
+        🗣️ Notas del Orador
+      </button>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn" id="prevBtn" title="Anterior (Flecha Izq)">◀ Anterior</button>
+      <div class="slide-counter" id="slideIndicator">1 / 10</div>
+      <button class="btn btn-primary" id="nextBtn" title="Siguiente (Flecha Der)">Siguiente ▶</button>
+    </div>
+  </header>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- MAIN SLIDES -->
+  <main>
+
+    <!-- SLIDE 1: PORTADA -->
+    <section class="slide active" data-slide="1">
+      <div class="hero-container">
+        <div class="hero-badge">🎓 Proyecto Final — Construcción de Software</div>
+        <h1 class="hero-title">
+          🌿 <span>EcoClasifica</span>
+        </h1>
+        <p class="hero-desc">
+          Clasificación Inteligente y Segregación Ecológica de Residuos Sólidos mediante Visión Artificial, Deep Learning (ResNet-50), Testing TDD y Pipeline CI/CD.
+        </p>
+
+        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
+          <strong>Universidad Continental</strong> · Equipo de Desarrollo <strong>DEV</strong>
+        </div>
+
+        <div class="team-badge-grid">
+          <div class="team-card featured">
+            <div class="team-name">Bryan Alexander Cahuana Mendoza</div>
+            <div class="team-role">DevOps / CI-CD & Sustentador</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Marco Antonio Bonifacio Ruiz</div>
+            <div class="team-role">Ingeniero ML / IA</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Jerson Alejandro Baca Medina</div>
+            <div class="team-role">Desarrollador Fullstack</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Yury Yohan Llanos Luna</div>
+            <div class="team-role">Desarrollador Backend</div>
+          </div>
+          <div class="team-card">
+            <div class="team-name">Benjamin Salazar Arenas</div>
+            <div class="team-role">Desarrollador Frontend</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-1">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "Buenas tardes profesor y compañeros. Mi nombre es <strong>Bryan Cahuana</strong> y junto al <strong>Equipo DEV</strong> presentamos <strong>EcoClasifica</strong>, un sistema integral de software y visión computacional que resuelve el problema de la clasificación de residuos mediante inteligencia artificial, implementando altos estándares de ingeniería de software: <strong>100% de cobertura en tests TDD, pipeline automatizado en GitHub Actions y código libre de code smells</strong>."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: EL PROBLEMA Y LA SOLUCIÓN -->
+    <section class="slide" data-slide="2">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Contexto & Justificación</span>
+          <h2 class="slide-title">El Problema y la Solución Tecnológica</h2>
+          <p class="slide-subtitle">Automatizando el reconocimiento en origen para evitar la contaminación cruzada</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="border-left: 4px solid var(--accent-rose);">
+          <div class="card-title">❌ El Problema Actual</div>
+          <div class="card-body">
+            <p>• <strong>Dificultad de reconocimiento:</strong> Los ciudadanos y operarios dudan sobre el material exacto de un residuo (ej. envases multicapa, tipos de plásticos o metales).</p>
+            <p style="margin-top: 0.5rem;">• <strong>Contaminación cruzada:</strong> Si un residuo no reciclable o sucio se arroja en un contenedor de reciclaje limpio, inutiliza todo el lote.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Pérdida económica y ambiental:</strong> Solo una fracción mínima de materiales se recicla efectivamente debido a la mala segregación en origen.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 4px solid var(--accent-green);">
+          <div class="card-title">✅ La Solución: EcoClasifica</div>
+          <div class="card-body">
+            <p>• <strong>Reconocimiento por Imagen:</strong> El usuario fotografía el residuo y el sistema predice la categoría exacta en tiempo real.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Porcentaje de Confianza:</strong> Proporciona la certidumbre probabilística calculada por la red neuronal profunda.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Educación y Guía Inmediata:</strong> Entrega recomendaciones claras: en qué color de contenedor depositarlo y cómo prepararlo (lavar, aplanar, secar).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-4" style="margin-top: 0.5rem;">
+        <div class="card" style="text-align: center;">
+          <div class="stat-number">29.8k</div>
+          <div class="stat-label">Imágenes Entrenadas</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Clases de Residuos</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Cobertura de Tests</div>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Errores de Linting</div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-2">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "El gran cuello de botella del reciclaje moderno ocurre en el primer segundo: cuando la persona no sabe en qué tacho arrojar el desecho. Con <strong>EcoClasifica</strong> eliminamos esa duda. Basta con una fotografía desde el celular o la cámara web para que nuestra inteligencia artificial no solo clasifique el material con un porcentaje de confianza matemático, sino que entregue la guía inmediata de disposición ambiental."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: ARQUITECTURA DE IA -->
+    <section class="slide" data-slide="3">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Machine Learning & Deep Learning</span>
+          <h2 class="slide-title">Arquitectura del Modelo de IA (ResNet-50)</h2>
+          <p class="slide-subtitle">Transfer Learning sobre redes convolucionales residuales profundas</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">🧠 Modelo Base</div>
+          <div class="card-body">
+            <p><strong>microsoft/resnet-50</strong></p>
+            <p style="margin-top: 0.5rem;">Red convolucional de 50 capas preentrenada sobre <strong>ImageNet-1k</strong> (más de 1 millón de imágenes). Sus conexiones residuales (skip connections) evitan el desvanecimiento del gradiente.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔄 Transfer Learning</div>
+          <div class="card-body">
+            <p><strong>Aprovechamiento de Features</strong></p>
+            <p style="margin-top: 0.5rem;">Reutilizamos los filtros visuales profundos ya aprendidos (texturas, bordes y reflejos de materiales) y reemplazamos la cabeza clasificadora final para adaptarla a nuestras <strong>6 clases</strong>.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⚙️ Pipeline de Inferencia</div>
+          <div class="card-body">
+            <p><strong>Entrada 224 × 224 RGB</strong></p>
+            <p style="margin-top: 0.5rem;">El <code>AutoImageProcessor</code> normaliza los píxeles. La red produce *logits* que se transforman mediante la función <strong>Softmax</strong> en probabilidades reales porcentuales.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 0.5rem; background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.3);">
+        <div class="card-title" style="color: var(--accent-cyan);">📐 Fórmula Matemática de Salida (Softmax)</div>
+        <div class="card-body" style="font-family: monospace; font-size: 0.95rem;">
+          P(Clase_i) = exp(logit_i) / Σ exp(logit_j) &nbsp;&nbsp;⟶&nbsp;&nbsp; Garantiza que la suma de probabilidades de las 6 categorías sea exactamente 100%.
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-3">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "Para el modelo elegimos <strong>ResNet-50</strong> con <strong>Transfer Learning</strong>. En lugar de entrenar una red desde cero, aprovechamos el conocimiento visual previo de millones de imágenes y reentrenamos la última capa densa hacia 6 clases de residuos. La inferencia redimensiona la imagen a 224 por 224 píxeles y calcula la distribución de probabilidad completa mediante la función Softmax."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: EL DATASET Y LAS 6 CLASES -->
+    <section class="slide" data-slide="4">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Datos & Segregación Ecológica</span>
+          <h2 class="slide-title">Dataset TrashBusters y las 6 Categorías</h2>
+          <p class="slide-subtitle">29,849 registros etiquetados bajo la norma estándar de contenedores de reciclaje</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="border-top: 4px solid #3b82f6;">
+          <div class="card-title">📦 Cartón (`cardboard`)</div>
+          <div class="card-body">
+            <span class="pill pill-blue">Contenedor Azul</span>
+            <p style="margin-top: 0.5rem;">Cajas, empaques y corrugados. Recomendación: aplanar, retirar cintas y grapas, depositar seco y sin grasa.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #10b981;">
+          <div class="card-title">🫙 Vidrio (`glass`)</div>
+          <div class="card-body">
+            <span class="pill pill-green">Contenedor Verde</span>
+            <p style="margin-top: 0.5rem;">Botellas, frascos y tarros. Recomendación: retirar tapas metálicas o plásticas, enjuagar residuos orgánicos.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #f59e0b;">
+          <div class="card-title">🥫 Metal (`metal`)</div>
+          <div class="card-body">
+            <span class="pill pill-red" style="color: #fcd34d; border-color: #f59e0b;">Contenedor Amarillo</span>
+            <p style="margin-top: 0.5rem;">Latas de conserva, gaseosa, aluminio. Recomendación: escurrir, aplastar latas de bebidas para ahorrar volumen.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #93c5fd;">
+          <div class="card-title">📄 Papel (`paper`)</div>
+          <div class="card-body">
+            <span class="pill pill-blue">Contenedor Azul</span>
+            <p style="margin-top: 0.5rem;">Hojas, periódicos, revistas limpias. Recomendación: no arrugar innecesariamente, evitar papel con carbón o mojado.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #eab308;">
+          <div class="card-title">♻️ Plástico (`plastic`)</div>
+          <div class="card-body">
+            <span class="pill pill-red" style="color: #fde047; border-color: #eab308;">Contenedor Amarillo</span>
+            <p style="margin-top: 0.5rem;">Botellas PET, tapas, envases PEAD. Recomendación: compactar, colocar la tapa para facilitar el reciclaje.</p>
+          </div>
+        </div>
+
+        <div class="card" style="border-top: 4px solid #6b7280;">
+          <div class="card-title">🗑️ Basura General (`trash`)</div>
+          <div class="card-body">
+            <span class="pill" style="background: rgba(107, 114, 128, 0.2); color: #d1d5db;">Contenedor Gris / Negro</span>
+            <p style="margin-top: 0.5rem;">Residuos no reciclables o contaminados. Recomendación: envolver bien para relleno sanitario seguro.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-4">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "El modelo fue entrenado con el dataset <strong>TrashBusters/combinedd</strong> con cerca de 30 mil imágenes divididas en proporción 80% train, 10% validación y 10% test. Mapeamos cada una de las 6 categorías con las normativas internacionales de contenedores de colores, de modo que cada predicción va acompañada de una acción ecológica inmediata para el usuario."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: ARQUITECTURA DE SOFTWARE -->
+    <section class="slide" data-slide="5">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Diseño de Software & Modularidad</span>
+          <h2 class="slide-title">Arquitectura Modular del Proyecto</h2>
+          <p class="slide-subtitle">Separación estricta de responsabilidades entre Visión, Lógica, UI y API REST</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">📁 src/preprocess.py</div>
+          <div class="card-body">
+            <p><strong>Carga y Validación</strong></p>
+            <p>Valida formatos admitidos (JPG, PNG), tipos de entrada (Path, PIL, NumPy), dimensiones mínimas y redimensiona a 224x224 RGB.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📁 src/model.py</div>
+          <div class="card-body">
+            <p><strong>Inferencia y Red Neuronal</strong></p>
+            <p>Carga el modelo ResNet-50 bajo patrón Singleton, ejecuta inferencia en CPU o CUDA y devuelve tuplas ordenadas de probabilidad.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📁 src/ecoclasifica.py</div>
+          <div class="card-body">
+            <p><strong>Motor de Reglas Base</strong></p>
+            <p>Normaliza alias léxicos (vidrio, lata, cartón), calcula confianza base y degrada la confianza ante imágenes pequeñas (&lt;128px).</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📁 src/postprocess.py</div>
+          <div class="card-body">
+            <p><strong>Formateo y Consejos</strong></p>
+            <p>Convierte resultados numéricos en salidas legibles para humanos con barras de probabilidad ASCII y recomendaciones ecológicas.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📁 src/app.py</div>
+          <div class="card-body">
+            <p><strong>Frontend Web (Gradio)</strong></p>
+            <p>Interfaz interactiva multiplataforma con soporte para arrastrar archivos o captura directa desde la cámara web en el puerto 7860.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📁 src/fastapi_app.py</div>
+          <div class="card-body">
+            <p><strong>Backend REST API</strong></p>
+            <p>Servidor de alto rendimiento con FastAPI, validación estricta de tipos MIME, Magic Bytes, documentación Swagger UI y ReDoc.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-5">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "La arquitectura de software de EcoClasifica sigue el principio de <strong>Responsabilidad Única</strong>: preprocesamiento valida imágenes, model ejecuta la red neuronal, ecoclasifica aplica reglas de negocio, postprocess formatea los resultados, y tenemos dos canales de consumo: una interfaz web en <strong>Gradio</strong> para usuarios finales y una API REST en <strong>FastAPI</strong> para integraciones externas."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: REFACTORIZACIÓN Y CODE SMELLS -->
+    <section class="slide" data-slide="6">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Clean Code & Calidad de Código</span>
+          <h2 class="slide-title">Refactorización: Eliminación de Code Smells</h2>
+          <p class="slide-subtitle">Solución al reporte de constantes no detectadas y magic numbers</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">
+            <span class="pill pill-red">Code Smell 1: Magic Numbers</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Problema:</strong> Valores como <code>128</code>, <code>0.8</code> y <code>2</code> estaban hardcodeados dentro del cuerpo de las funciones.</p>
+            <div class="code-box code-bad" style="margin-top: 0.5rem;">
+# ❌ ANTES (Magic Numbers)
+if max_dimension &lt; 128:
+    confidence *= 0.8
+return round(confidence, 2)
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span class="pill pill-green">Refactorización: Extract Constant</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Solución:</strong> Constantes explícitas <code>UPPER_CASE</code> tipadas en la cabecera del módulo.</p>
+            <div class="code-box code-good" style="margin-top: 0.5rem;">
+# ✅ DESPUÉS (Constantes UPPER_CASE)
+LOW_RESOLUTION_THRESHOLD: int = 128
+CONFIDENCE_ADJUSTMENT: float = 0.8
+ROUND_DECIMALS: int = 2
+
+if max_dimension &lt; LOW_RESOLUTION_THRESHOLD:
+    confidence *= CONFIDENCE_ADJUSTMENT
+return round(confidence, ROUND_DECIMALS)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top: 0.5rem;">
+        <div class="card">
+          <div class="card-title">
+            <span class="pill pill-red">Code Smell 2: Dead Code (Constantes Huérfanas)</span>
+          </div>
+          <div class="card-body">
+            <p>Anteriormente se habían pegado bloques de constantes al final de los archivos que <strong>nunca eran invocadas por las funciones</strong>. La IA del profesor las detectó como inexistentes en el flujo lógico.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span class="pill pill-green">Solución: Reubicación & Uso Activo</span>
+          </div>
+          <div class="card-body">
+            <p>Se eliminó el código muerto del pie de página y se reubicaron en la cabecera según el estándar PEP8, conectándolas con los argumentos reales (ej. <code>DEFAULT_SERVER_PORT = 7860</code>).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-6">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "Un punto crítico solicitado por el profesor fue corregir la falta de constantes definidas. Identificamos el code smell de <strong>Magic Numbers</strong> y <strong>Código Muerto</strong>: habían números sueltos dentro de las funciones y constantes huérfanas al final del archivo. Aplicamos la técnica de refactorización <strong>Extract Constant</strong>, definiendo identificadores UPPER_CASE tipados a nivel de módulo y eliminando cualquier valor literal sin nombre."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: PRUEBAS TDD Y COBERTURA 100% -->
+    <section class="slide" data-slide="7">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Quality Assurance & TDD</span>
+          <h2 class="slide-title">Pruebas Unitarias TDD y Cobertura 100%</h2>
+          <p class="slide-subtitle">Metodología Red-Green-Refactor superando el Quality Gate del 60%</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📊 Reporte de Cobertura Oficial</div>
+          <div class="card-body">
+            <div class="code-box code-good">
+Name                  Stmts   Miss  Cover   Missing
+---------------------------------------------------
+src\ecoclasifica.py      41      0   100%
+src\postprocess.py       32      0   100%
+---------------------------------------------------
+TOTAL                    73      0   100%
+            </div>
+            <p style="margin-top: 0.75rem;">• <strong>Umbral exigido (.coveragerc):</strong> <code>fail_under = 60</code></p>
+            <p>• <strong>Resultado obtenido:</strong> <strong>100% de cobertura total</strong></p>
+            <p>• <strong>Reporte HTML:</strong> Generado e interactivo en <code>htmlcov/index.html</code></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🧪 ¿Qué verifican los Tests Agregados?</div>
+          <div class="card-body">
+            <p>1. <strong>Valores y Tipos de Constantes:</strong> Aserta formalmente que las constantes globales existen con tipos estrictos (<code>str</code>, <code>float</code>, <code>int</code>).</p>
+            <p style="margin-top: 0.5rem;">2. <strong>Resiliencia ante Nulos:</strong> Prueba que <code>normalize_material_name(None)</code> retorna de forma segura <code>DEFAULT_CATEGORY</code>.</p>
+            <p style="margin-top: 0.5rem;">3. <strong>Pruebas de Frontera (Boundary Testing):</strong> Comprueba la degradación exacta de confianza en el límite de 128 píxeles.</p>
+            <p style="margin-top: 0.5rem;">4. <strong>Postprocesamiento Robusto:</strong> Prueba listas de probabilidades y descarte de elementos malformados.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-7">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "En cuanto a calidad de software, aplicamos <strong>Desarrollo Guiado por Pruebas (TDD)</strong> con unittest. El archivo de configuración .coveragerc requería un mínimo del 60%. Gracias a los nuevos tests que agregamos para casos borde y verificación de constantes, alcanzamos un impecable <strong>100% de cobertura</strong> en los módulos evaluados, con cero líneas omitidas."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: PIPELINE CI/CD -->
+    <section class="slide" data-slide="8">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">DevOps & Automatización</span>
+          <h2 class="slide-title">Pipeline CI/CD en GitHub Actions</h2>
+          <p class="slide-subtitle">Automatización continua multi-entorno con Quality Gates estrictos</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">⚡ Disparadores & Matriz de Entorno</div>
+          <div class="card-body">
+            <p>• <strong>Triggers:</strong> Se activa en cada <code>push</code> a ramas <code>main</code> y <code>develop</code>, y en cada <code>pull_request</code> hacia <code>main</code>.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Runner:</strong> Contenedores virtuales con <code>ubuntu-latest</code>.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Matrix Multi-versión:</strong> Trabajos concurrentes en <strong>Python 3.10</strong> y <strong>Python 3.11</strong> para asegurar compatibilidad.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🛡️ Quality Gates de Protección</div>
+          <div class="card-body">
+            <p>• <strong>Cobertura Obligatoria:</strong> <code>coverage report --fail-under=60</code> detiene el flujo si la cobertura cae por debajo del 60%.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Linter Estricto:</strong> <code>flake8 src/ --max-line-length=120</code> rechaza código con problemas de estilo PEP8 o errores sintácticos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <div class="pipeline-step">
+          <div class="pipeline-num">1</div>
+          <div><strong>Checkout:</strong> Clona el repositorio con <code>actions/checkout@v4</code>.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">2</div>
+          <div><strong>Setup Python:</strong> Configura la versión correspondiente con <code>actions/setup-python@v5</code>.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">3</div>
+          <div><strong>Install:</strong> Actualiza pip e instala dependencias de <code>requirements.txt</code>, coverage y flake8.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">4</div>
+          <div><strong>Tests & Coverage:</strong> Ejecuta batería de pruebas unitarias y genera reporte de cobertura.</div>
+        </div>
+        <div class="pipeline-step">
+          <div class="pipeline-num">5</div>
+          <div><strong>Linting:</strong> Audita el código con flake8 para garantizar calidad y legibilidad.</div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-8">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "Como responsable de <strong>DevOps y CI/CD</strong>, configuré el pipeline en <strong>GitHub Actions</strong> ubicado en .github/workflows/ci.yml. En cada push o pull request se levantan entornos limpios en Ubuntu con Python 3.10 y 3.11. El pipeline ejecuta los tests, verifica que la cobertura supere el 60% y audita el estilo con flake8. Si cualquiera de estos pasos falla, el merge queda bloqueado."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: DEMOSTRACIÓN DEL SISTEMA -->
+    <section class="slide" data-slide="9">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Demostración & Producto</span>
+          <h2 class="slide-title">Interfaces del Sistema: Gradio Web & REST API</h2>
+          <p class="slide-subtitle">Dos formas de consumir la inteligencia artificial de EcoClasifica</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🖥️ Interfaz Web (Gradio) — Puerto 7860</div>
+          <div class="card-body">
+            <p>• <strong>Subida interactiva:</strong> Arrastrar/soltar fotos locales o captura directa desde la cámara web.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Gráficos en tiempo real:</strong> Componente <code>gr.Label</code> con las probabilidades ordenadas de las 6 clases.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Tarjeta ecológica:</strong> Emoji del residuo, porcentaje de confianza y guía textual de reciclaje.</p>
+            <div class="code-box" style="margin-top: 0.75rem;">
+# Ejecución local:
+python src/app.py
+# URL: http://localhost:7860
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🌐 API REST (FastAPI) — Puerto 8000</div>
+          <div class="card-body">
+            <p>• <code>GET /health</code>: Estado del microservicio y modelo.</p>
+            <p style="margin-top: 0.5rem;">• <code>GET /classes</code>: Catálogo de 6 categorías soportadas.</p>
+            <p style="margin-top: 0.5rem;">• <code>POST /classify</code>: Envío de archivo binario multipart.</p>
+            <p style="margin-top: 0.5rem;">• <code>POST /classify/base64</code>: Envío en payload JSON.</p>
+            <p style="margin-top: 0.5rem;">• <strong>Swagger UI interactivo:</strong> en <code>/docs</code>.</p>
+            <div class="code-box" style="margin-top: 0.75rem;">
+# Ejecución local:
+python -m uvicorn src.fastapi_app:app --port 8000
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-9">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "El sistema ofrece dos interfaces de acceso: para el usuario final tenemos una interfaz gráfica desarrollada en <strong>Gradio</strong> que corre en el puerto 7860 y permite capturar fotos desde la webcam; y para aplicaciones móviles o sistemas externos, disponemos de una API REST empresarial desarrollada con <strong>FastAPI</strong> con documentación interactiva Swagger en /docs."
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: CONCLUSIONES & PREGUNTAS -->
+    <section class="slide" data-slide="10">
+      <div class="slide-header">
+        <div>
+          <span class="slide-tag">Cierre & Conclusiones</span>
+          <h2 class="slide-title">Conclusiones e Impacto del Proyecto</h2>
+          <p class="slide-subtitle">Logros técnicos alcanzados por el Equipo DEV</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">🎯 Precisión y Utilidad</div>
+          <div class="card-body">
+            <p>La combinación de <strong>ResNet-50</strong> preentrenado con fine-tuning sobre 29.8k imágenes permite una segregación automatizada certera, reduciendo la contaminación cruzada en puntos de reciclaje.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">💎 Calidad de Ingeniería</div>
+          <div class="card-body">
+            <p>Cumplimiento estricto de estándares de la industria: <strong>100% de cobertura en tests TDD</strong>, cero advertencias en <strong>flake8</strong> y eliminación total de <strong>code smells y números mágicos</strong>.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🚀 Automatización Continua</div>
+          <div class="card-body">
+            <p>El pipeline de <strong>CI/CD en GitHub Actions</strong> valida cada cambio de forma desatendida sobre múltiples versiones de Python, asegurando estabilidad y despliegues sin regresiones.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 0.75rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1)); border-color: var(--accent-green);">
+        <h3 style="font-size: 1.8rem; font-weight: 800; color: #fff;">¡Muchas Gracias!</h3>
+        <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 1.05rem;">
+          Estamos listos para la ronda de preguntas y sustentación técnica.
+        </p>
+      </div>
+
+      <div class="speaker-notes-box" id="notes-10">
+        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
+        <div class="speaker-notes-content">
+          "Para concluir: EcoClasifica demuestra cómo la integración de visión artificial moderna con buenas prácticas de ingeniería de software —como TDD, CI/CD y código limpio libre de magic numbers— permite crear herramientas prácticas de alto impacto ecológico. Quedamos a su disposición para resolver cualquier duda o demostración técnica."
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM FOOTER -->
+  <footer>
+    <div class="key-hints">
+      <span>Navegación: <span class="kbd">◀</span> <span class="kbd">▶</span> o <span class="kbd">Espacio</span></span>
+      <span>Notas del orador: <span class="kbd">N</span></span>
+      <span>Cronómetro: <span class="kbd">T</span></span>
+    </div>
+
+    <div style="font-size: 0.82rem; color: var(--text-dim);">
+      EcoClasifica v1.0 · Universidad Continental · Construcción de Software
+    </div>
+  </footer>
+
+  <script>
+    // ESTADO DE LA PRESENTACIÓN
+    const totalSlides = 10;
+    let currentSlide = 1;
+
+    // ELEMENTOS DOM
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const slideIndicator = document.getElementById('slideIndicator');
+    const progressBar = document.getElementById('progressBar');
+    const notesToggleBtn = document.getElementById('notesToggleBtn');
+
+    // NAVEGACIÓN DE DIAPOSITIVAS
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      slides.forEach(slide => {
+        const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
+        if (slideNum === currentSlide) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      // Actualizar contador y progreso
+      slideIndicator.textContent = `${currentSlide} / ${totalSlides}`;
+      progressBar.style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+      // Habilitar / deshabilitar botones
+      prevBtn.disabled = currentSlide === 1;
+      prevBtn.style.opacity = currentSlide === 1 ? '0.5' : '1';
+      nextBtn.textContent = currentSlide === totalSlides ? 'Fin ✔' : 'Siguiente ▶';
+
+      // Scroll arriba suave
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    });
+
+    // TECLAS DE ACCESO RÁPIDO
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (currentSlide > 1) showSlide(currentSlide - 1);
+      } else if (e.key.toLowerCase() === 'n') {
+        toggleNotes();
+      } else if (e.key.toLowerCase() === 't') {
+        toggleTimer();
+      }
+    });
+
+    // NOTAS DEL ORADOR
+    let notesVisible = false;
+    function toggleNotes() {
+      notesVisible = !notesVisible;
+      const allNotes = document.querySelectorAll('.speaker-notes-box');
+      allNotes.forEach(box => {
+        if (notesVisible) {
+          box.classList.add('open');
+        } else {
+          box.classList.remove('open');
+        }
+      });
+      notesToggleBtn.style.background = notesVisible ? 'rgba(6, 182, 212, 0.2)' : 'var(--bg-card)';
+      notesToggleBtn.style.borderColor = notesVisible ? 'var(--accent-cyan)' : 'var(--border-color)';
+    }
+    notesToggleBtn.addEventListener('click', toggleNotes);
+
+    // CRONÓMETRO DE EXPOSICIÓN
+    let timerSeconds = 0;
+    let timerInterval = null;
+    let timerRunning = false;
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerToggle = document.getElementById('timerToggle');
+    const timerReset = document.getElementById('timerReset');
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const secs = (timerSeconds % 60).toString().padStart(2, '0');
+      timerDisplay.textContent = `${mins}:${secs}`;
+    }
+
+    function toggleTimer() {
+      if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerToggle.textContent = '▶';
+      } else {
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          updateTimerDisplay();
+        }, 1000);
+        timerRunning = true;
+        timerToggle.textContent = '⏸';
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSeconds = 0;
+      updateTimerDisplay();
+      timerToggle.textContent = '▶';
+    }
+
+    timerToggle.addEventListener('click', toggleTimer);
+    timerReset.addEventListener('click', resetTimer);
+
+    // INICIALIZACIÓN
+    showSlide(1);
+  </script>
+</body>
+</html>
