@@ -109,3 +109,25 @@ Abre en tu navegador la dirección local: http://127.0.0.1:7860
 
 Control de Versiones
 Las carpetas de gran tamaño (data/, models/, venv/) se encuentran adecuadamente parametrizadas dentro del archivo .gitignore para evitar la subida de binarios pesados al repositorio remoto.
+
+---
+
+## 📥 Guía de Descarga del Modelo Entrenado
+
+Si ya clonaste el repositorio e instalaste las dependencias en tu entorno virtual, sigue estos pasos para incorporar los pesos entrenados del modelo y ejecutar la aplicación sin tener que entrenar nuevamente:
+
+### 1. Descargar la carpeta de pesos desde Google Drive
+Accede al siguiente enlace público de Google Drive y descarga la carpeta completa de pesos:
+- **Enlace de descarga:** [Descargar modelo ecoclasifica-resnet50](https://drive.google.com/drive/folders/1eoQL2Vtrk1EnGlQPMl_FayCfSkH47oEZ?usp=drive_link)
+
+### 2. Ubicar la carpeta en el proyecto
+Mueve la carpeta descargada `ecoclasifica-resnet50` dentro de la ruta `models/` de tu proyecto local. La estructura debe quedar exactamente así:
+
+```text
+Proyecto_Entrenamiento_IA/
+└── models/
+    └── ecoclasifica-resnet50/
+        ├── config.json
+        ├── label_mapping.json
+        ├── model.safetensors
+        └── preprocessor_config.json
