@@ -131,3 +131,10 @@ Proyecto_Entrenamiento_IA/
         ├── label_mapping.json
         ├── model.safetensors
         └── preprocessor_config.json
+        
+3. Iniciar la Aplicación
+Una vez colocada la carpeta en la ruta indicada, ejecuta el servidor web de Gradio desde tu terminal en PowerShell:
+
+PowerShell
+python src/app.py
+Abre tu navegador e ingresa a http://127.0.0.1:7860 para comenzar a clasificar imágenes en tiempo real.
