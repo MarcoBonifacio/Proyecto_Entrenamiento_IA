@@ -276,27 +276,15 @@ def main() -> None:
     # ------------------------------------------------------------------
     training_args = TrainingArguments(
         output_dir=output_dir,
-        num_train_epochs=num_epochs,
+        num_train_epochs=args.epochs if hasattr(args, "epochs") and args.epochs else config.get("num_epochs", 1),
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
         learning_rate=learning_rate,
-        weight_decay=config["weight_decay"],
-        warmup_ratio=config["warmup_ratio"],
-        eval_strategy="steps",
-        eval_steps=config["eval_steps"],
-        save_strategy="steps",
-        save_steps=config["save_steps"],
-        save_total_limit=3,
-        logging_steps=config["logging_steps"],
-        logging_dir=os.path.join(output_dir, "logs"),
-        load_best_model_at_end=True,
-        metric_for_best_model="f1_macro",
-        greater_is_better=True,
-        fp16=config["fp16"] and torch.cuda.is_available(),
-        dataloader_num_workers=config["dataloader_num_workers"],
-        seed=config["seed"],
+        eval_strategy="epoch",
+        save_strategy="epoch",
+        logging_steps=1,
+        remove_unused_columns=False, load_best_model_at_end=True, metric_for_best_model="loss",
         report_to="none",
-        remove_unused_columns=False,
     )
 
     # ------------------------------------------------------------------

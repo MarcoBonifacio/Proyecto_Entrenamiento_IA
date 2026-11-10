@@ -1,50 +1,13 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg-info/
-dist/
-build/
-*.egg
-
-# Virtual environment
-.venv/
+# Entorno virtual
 venv/
-env/
+.venv/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Datos e imagenes pesadas
+data/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-
-# Models (too large for git)
+# Modelos y pesos pesados
 models/
-*.pt
-*.pth
-*.bin
-*.safetensors
 
-# Data
-data/raw/
-data/processed/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-wandb/
-runs/
-
-# Misc
-*.bak
-*.tmp
+# Archivos temporales de Python
+__pycache__/
+*.pyc

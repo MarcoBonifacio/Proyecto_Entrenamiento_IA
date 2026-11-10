@@ -1,214 +1,111 @@
-# 🌿 EcoClasifica — Clasificación Inteligente de Residuos
+# EcoClasifica — Clasificación Inteligente de Residuos
 
-Sistema inteligente de visión artificial basado en Deep Learning y Transfer Learning para clasificar residuos sólidos a partir de imágenes, facilitando la separación ecológica y el reciclaje automatizado.
-
----
-
-## 👥 Equipo de Desarrollo (Equipo DEV)
-
-* **Bryan Alexander Cahuana Mendoza** — *DevOps / CI-CD*
-* **Marco Antonio Bonifacio Ruiz** — *Ingeniero ML / IA*
-* **Jerson Alejandro Baca Medina** — *Desarrollador Fullstack*
-* **Yury Yohan Llanos Luna** — *Desarrollador Backend*
-* **Benjamin Salazar Arenas** — *Desarrollador Frontend*
-
-*Proyecto Final — Construcción de Software — **Universidad Continental***
+Sistema de visión artificial basado en Deep Learning y Transfer Learning para clasificar residuos sólidos a partir de imágenes, facilitando la separación ecológica y el reciclaje automatizado.
 
 ---
 
-## 📌 Problema y Solución
+## Equipo de Desarrollo (Equipo DEV)
 
-* **Problema:** La dificultad de reconocer el material de un residuo para separarlo adecuadamente genera contaminación cruzada en puntos limpios y reduce la tasa de aprovechamiento de materiales reciclables.
-* **Solución:** Una aplicación multiplataforma con interfaz gráfica interactiva (**Gradio**) que analiza fotografías de residuos individuales, clasifica el tipo de material con probabilidades estimadas y brinda recomendaciones inmediatas de disposición ecológica.
+- **Bryan Alexander Cahuana Mendoza** — DevOps / CI-CD
+- **Marco Antonio Bonifacio Ruiz** — Ingeniero ML / IA
+- **Jerson Alejandro Baca Medina** — Desarrollador Fullstack
+- **Yury Yohan Llanos Luna** — Desarrollador Backend
+- **Benjamin Salazar Arenas** — Desarrollador Frontend
 
----
-
-## 🧠 Arquitectura de IA
-
-* **Categoría:** `image-classification`
-* **Modelo Base:** [`microsoft/resnet-50`](https://huggingface.co/microsoft/resnet-50) (pre-entrenado en ImageNet-1k)
-* **Técnica:** Transfer Learning y Fine-Tuning adaptado a 6 clases de residuos
-* **Resolución de Entrada:** Imágenes RGB redimensionadas a 224 × 224 píxeles
-* **Salida:** Categoría predicha con mayor probabilidad y distribución softmax completa de clases
-* **Justificación:** ResNet-50 ofrece un balance óptimo entre precisión top-1, extracción de características visuales profundas mediante conexiones residuales y eficiencia computacional para inferencia local en tiempo real.
-
-### Categorías Soportadas (6 clases):
-1. 📦 **Cartón** (`cardboard`)
-2. 🫙 **Vidrio** (`glass`)
-3. 🥫 **Metal** (`metal`)
-4. 📄 **Papel** (`paper`)
-5. ♻️ **Plástico** (`plastic`)
-6. 🗑️ **Basura general** (`trash`)
+Proyecto Final — Construcción de Software — **Universidad Continental**
 
 ---
 
-## 📊 Dataset
+## Problema y Solución
 
-* **Nombre:** [`TrashBusters/combinedd`](https://huggingface.co/datasets/TrashBusters/combinedd)
-* **Cantidad de Registros:** 29,849 imágenes etiquetadas
-* **Columnas:** `image`, `label`, `label_id`, `label_name`, `source_dataset`, `original_label`, `image_context`
-* **División:** 80% Entrenamiento, 10% Validación, 10% Prueba
+- **Problema:** La dificultad de reconocer el material de un residuo para separarlo adecuadamente genera contaminación cruzada en puntos limpios y reduce la tasa de aprovechamiento de materiales reciclables.
+- **Solución:** Una aplicación web con interfaz gráfica interactiva (Gradio) que analiza fotografías de residuos, clasifica el tipo de material mediante la arquitectura ResNet-50 y ofrece recomendaciones de disposición ecológica.
 
 ---
 
-## 📁 Estructura del Repositorio
+## Arquitectura de IA y Métricas
+
+- **Categoría:** Classification
+- **Modelo Base:** microsoft/resnet-50 (preentrenado en ImageNet-1k)
+- **Técnica:** Transfer Learning y Fine-Tuning
+- **Resolución de Entrada:** Imágenes RGB redimensionadas a 224 x 224 píxeles
+- **Dispositivo de Entrenamiento:** CPU local
+- **Resultado del Entrenamiento (5 Épocas):**
+  - **Accuracy (Evaluación):** ~58.42%
+  - **F1 Macro (Evaluación):** ~0.4709
+  - **Ubicación de Pesos:** models/ecoclasifica-resnet50/
+
+### Categorías Soportadas (6 Clases):
+1. Cartón (`cardboard`)
+2. Vidrio (`glass`)
+3. Metal (`metal`)
+4. Papel (`paper`)
+5. Plástico (`plastic`)
+6. Basura general (`trash`)
+
+---
+
+## Dataset
+
+- **Origen:** TrashNet (dataset-resized)
+- **Volumen Total:** 2,527 imágenes reales distribuidas en 6 categorías
+- **Partición:** 80% Entrenamiento (~2,021 imágenes) / 20% Validación (~506 imágenes)
+
+---
+
+## Estructura del Repositorio
 
 ```text
-ecoclasifica/
+Proyecto_Entrenamiento_IA/
 ├── README.md                  # Documentación integral del proyecto
-├── requirements.txt           # Dependencias del stack tecnológico
-├── .gitignore                 # Exclusiones de Git (modelos pesados, caché)
-├── .github/
-│   └── workflows/
-│       └── ci.yml             # Automatización CI/CD con GitHub Actions
-├── src/                       # Código fuente de la aplicación
-│   ├── __init__.py            # Inicializador de paquete
-│   ├── preprocess.py          # Validación y preprocesamiento de imágenes (224x224)
-│   ├── model.py               # Clase EcoClasificaModel e inferencia ResNet-50
-│   ├── postprocess.py         # Formateo de probabilidades y consejos ecológicos
-│   ├── app.py                 # Interfaz interactiva Gradio
-│   ├── routes.py              # Controladores y servicios modulares
-│   └── api.py                 # Envoltorio de endpoints para integración
-├── tests/                     # Suite de pruebas unitarias (TDD)
-│   ├── __init__.py
-│   ├── test_preprocess.py     # Pruebas de carga, formatos y normalización
-│   ├── test_model.py          # Pruebas del modelo (arquitectura y mocks)
-│   ├── test_postprocess.py    # Pruebas de formato y recomendaciones
-│   ├── test_api.py            # Pruebas de rutas y endpoints
-│   └── test_ecoclasifica.py   # Pruebas de lógica base de reglas
-├── training/                  # Pipeline de entrenamiento y evaluación
-│   ├── __init__.py
-│   ├── config.json            # Hiperparámetros (épocas, LR, batch size)
-│   ├── train.py               # Script de entrenamiento con Hugging Face Trainer
-│   └── evaluate.py            # Métricas, matriz de confusión y reporte de clasificación
+├── requirements.txt           # Dependencias del proyecto
+├── .gitignore                 # Exclusión de archivos pesados (models/, data/, venv/)
+├── preparar_datos.py          # Script de búsqueda, extracción y partición 80/20 de datos
+├── src/
+│   └── app.py                 # Aplicación principal e interfaz web Gradio
+├── training/
+│   ├── config.json            # Configuración de hiperparámetros
+│   └── train.py               # Pipeline de entrenamiento con Hugging Face Trainer
 ├── data/
-│   ├── raw/                   # Datos crudos (.gitkeep)
-│   └── processed/             # Datos preparados (.gitkeep)
-├── models/                    # Pesos afinados (ignorado en git)
-├── static/                    # Recursos visuales y gráficos generados
-├── templates/                 # Plantillas HTML adicionales
-└── docs/                      # Documentación y reportes adicionales
-```
-
----
-
-## 🛠️ Tecnologías Utilizadas
-
-* **Lenguaje:** Python 3.10+
-* **Framework Web:** Gradio
-* **Machine Learning / Visión:** Hugging Face Transformers, PyTorch, Torchvision
-* **Dataset Management:** Hugging Face Datasets
-* **Métricas y Análisis:** Scikit-Learn, Matplotlib, Seaborn
-* **Testing:** `unittest` + TDD
-* **Integración Continua:** GitHub Actions CI/CD
-
----
-
-## 🚀 Instalación y Ejecución Local
-
-### 1. Clonar el Repositorio
-```bash
-git clone https://github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA.git
+│   └── test_dataset/          # Dataset estructurado en train y validation (ignorado en Git)
+└── models/
+    └── ecoclasifica-resnet50/ # Pesos entrenados y mapeo de etiquetas (ignorado en Git)
+Guía de Instalación y Ejecución Paso a Paso
+1. Clonar el Repositorio
+Bash
+git clone [https://github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA.git](https://github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA.git)
 cd Proyecto_Entrenamiento_IA
-```
+2. Crear y Activar Entorno Virtual
+En Windows PowerShell:
 
-### 2. Crear y Activar Entorno Virtual
-En Windows:
-```bash
-py -m venv venv
-venv\Scripts\activate
-```
-
+PowerShell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 En Linux / macOS:
-```bash
+
+Bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-### 3. Instalar Dependencias
-```bash
+3. Instalar Dependencias
+PowerShell
+pip install --upgrade pip
 pip install -r requirements.txt
-```
+4. Extraer y Estructurar el Dataset
+Descarga el archivo ZIP del dataset TrashNet (dataset-resized.zip), extráelo en tu carpeta de Descargas y ejecuta el script automatizado para crear la estructura 80/20 en data/test_dataset:
 
----
+PowerShell
+python preparar_datos.py
+5. Entrenar el Modelo (Opcional)
+Si deseas repetir el entrenamiento de 5 épocas y generar nuevamente los pesos en models/ecoclasifica-resnet50:
 
-## 🧪 Ejecución de Pruebas Unitarias (TDD)
+PowerShell
+python training/train.py --epochs 5
+6. Iniciar la Interfaz Web (Gradio)
+Para realizar inferencias en tiempo real utilizando los pesos preentrenados locales:
 
-Para ejecutar la batería completa de tests unitarios:
-```bash
-python -m unittest discover -s tests -v
-```
-
-Con reporte de cobertura de código:
-```bash
-coverage run -m unittest discover -s tests -v
-coverage report -m
-```
-
----
-
-## 🌐 Servidor REST API (FastAPI) y Swagger
-
-Además de la interfaz web en Gradio, el proyecto cuenta con una API REST desarrollada con **FastAPI** para integración con clientes externos (aplicaciones móviles, frontend independiente, IoT, etc.):
-
-### Iniciar la API REST:
-```bash
-# Opción 1: En 1 clic (Windows)
-run_backend.bat
-
-# Opción 2: Mediante Uvicorn
-python -m uvicorn src.fastapi_app:app --host 0.0.0.0 --port 8000 --reload
-```
-
-* **Documentación Interactiva Swagger UI:** `http://localhost:8000/docs`
-* **Documentación ReDoc:** `http://localhost:8000/redoc`
-
-### Endpoints Principales:
-* `GET /`: Bienvenida e información del servicio.
-* `GET /health`: Health-check y disponibilidad del modelo.
-* `GET /classes`: Listado de las 6 categorías de residuos y consejos de disposición.
-* `POST /classify` (o `/predict`): Sube una imagen (`multipart/form-data`) y obtiene predicción, porcentaje de confianza y recomendación.
-* `POST /classify/base64`: Clasifica enviando la imagen en una cadena base64 dentro de un JSON.
-
----
-
-## 🖥️ Ejecución de la Interfaz Web (Gradio)
-
-Para iniciar la aplicación gráfica localmente:
-```bash
+PowerShell
 python src/app.py
-```
-Abre en tu navegador la URL: `http://localhost:7860`
+Abre en tu navegador la dirección local: http://127.0.0.1:7860
 
-*Características de la interfaz:*
-* Subida de imágenes por arrastrar/soltar o captura en directo desde la webcam.
-* Gráfico de barras de probabilidad en tiempo real para las 6 categorías.
-* Tarjeta informativa con recomendaciones sobre el color de contenedor correspondiente y consejos ecológicos.
-
----
-
-## 🏋️ Pipeline de Entrenamiento
-
-Para entrenar el modelo ResNet-50 sobre el dataset `TrashBusters/combinedd`:
-```bash
-python training/train.py
-```
-*Opcionalmente se pueden sobrescribir hiperparámetros:*
-```bash
-python training/train.py --epochs 3 --batch_size 16 --lr 5e-5
-```
-
-Para evaluar el modelo afinado y generar la matriz de confusión:
-```bash
-python training/evaluate.py
-```
-
----
-
-## 🔄 Integración Continua (CI/CD)
-
-El repositorio incluye un workflow de GitHub Actions en `.github/workflows/ci.yml` que en cada `push` o `pull request` en ramas `main` y `develop`:
-1. Configura matrices de entorno en Python 3.10 y 3.11.
-2. Instala dependencias y herramientas de calidad.
-3. Ejecuta la suite de pruebas automatizadas con `unittest`.
-4. Realiza análisis estático de código mediante `flake8`.
+Control de Versiones
+Las carpetas de gran tamaño (data/, models/, venv/) se encuentran adecuadamente parametrizadas dentro del archivo .gitignore para evitar la subida de binarios pesados al repositorio remoto.
