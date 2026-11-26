@@ -1,1288 +1,1301 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoClasifica — Presentación del Proyecto Final</title>
-  <style>
-    :root {
-      --bg-primary: #0a0f1d;
-      --bg-secondary: #111827;
-      --bg-card: #1f2937;
-      --bg-card-hover: #374151;
-      --accent-green: #10b981;
-      --accent-emerald: #059669;
-      --accent-cyan: #06b6d4;
-      --accent-blue: #3b82f6;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
-      --text-main: #f9fafb;
-      --text-muted: #9ca3af;
-      --text-dim: #6b7280;
-      --border-color: #374151;
-      --border-accent: rgba(16, 185, 129, 0.3);
-      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: var(--font-family);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    /* TOP BAR DE CONTROL */
-    header {
-      background: rgba(17, 24, 39, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-icon {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    .brand span {
-      background: linear-gradient(90deg, #10b981, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .controls-center {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .timer-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(31, 41, 55, 0.8);
-      border: 1px solid var(--border-color);
-      padding: 0.35rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-family: monospace;
-      color: var(--accent-cyan);
-    }
-
-    .timer-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      transition: color 0.2s;
-    }
-
-    .timer-btn:hover {
-      color: var(--text-main);
-    }
-
-    .nav-buttons {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 0.4rem 0.85rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s;
-    }
-
-    .btn:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent-green);
-    }
-
-    .btn-primary {
-      background: var(--accent-emerald);
-      border-color: var(--accent-green);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-green);
-    }
-
-    .slide-counter {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      min-width: 5.5rem;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    /* PROGRESS BAR */
-    .progress-bar-container {
-      width: 100%;
-      height: 4px;
-      background: rgba(55, 65, 81, 0.5);
-      position: relative;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 10%;
-      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* MAIN CONTAINER */
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      max-width: 1200px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 5rem 1.5rem;
-    }
-
-    /* SLIDE LAYOUT */
-    .slide {
-      display: none;
-      animation: fadeIn 0.35s ease-out;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .slide.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .slide-header {
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .slide-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent-green);
-      margin-bottom: 0.25rem;
-      display: block;
-    }
-
-    .slide-title {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
-    }
-
-    .slide-subtitle {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-    }
-
-    /* GRID CARDS */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .card:hover {
-      border-color: var(--accent-green);
-      transform: translateY(-2px);
-    }
-
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-main);
-    }
-
-    .card-body {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* STAT BADGE */
-    .stat-number {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--accent-green);
-      line-height: 1;
-      font-feature-settings: "tnum";
-    }
-
-    .stat-label {
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-    }
-
-    /* CODE COMPARISON COMPONENT */
-    .code-box {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      font-family: 'Consolas', 'Fira Code', monospace;
-      font-size: 0.83rem;
-      color: #e6edf3;
-      overflow-x: auto;
-      line-height: 1.45;
-    }
-
-    .code-bad {
-      border-left: 4px solid var(--accent-rose);
-    }
-
-    .code-good {
-      border-left: 4px solid var(--accent-green);
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .pill-red {
-      background: rgba(244, 63, 94, 0.15);
-      color: #fda4af;
-      border: 1px solid rgba(244, 63, 94, 0.3);
-    }
-
-    .pill-green {
-      background: rgba(16, 185, 129, 0.15);
-      color: #6ee7b7;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .pill-blue {
-      background: rgba(59, 130, 246, 0.15);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-    }
-
-    /* SPEAKER NOTES DRAWER */
-    .speaker-notes-box {
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid var(--accent-cyan);
-      border-radius: 0.75rem;
-      padding: 1rem 1.25rem;
-      margin-top: 1rem;
-      display: none;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    }
-
-    .speaker-notes-box.open {
-      display: block;
-    }
-
-    .speaker-notes-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent-cyan);
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .speaker-notes-content {
-      font-size: 0.95rem;
-      color: #e5e7eb;
-      line-height: 1.6;
-    }
-
-    .speaker-notes-content strong {
-      color: var(--accent-green);
-    }
-
-    /* FOOTER NAV */
-    footer {
-      background: rgba(17, 24, 39, 0.95);
-      border-top: 1px solid var(--border-color);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 90;
-    }
-
-    .key-hints {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-      display: flex;
-      gap: 1rem;
-    }
-
-    .kbd {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.1rem 0.4rem;
-      border-radius: 0.25rem;
-      color: var(--text-muted);
-      font-family: monospace;
-    }
-
-    /* HERO PORTADA */
-    .hero-container {
-      text-align: center;
-      padding: 3rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 1rem;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .hero-title {
-      font-size: 3.2rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      max-width: 900px;
-    }
-
-    .hero-title span {
-      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-desc {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 750px;
-      line-height: 1.6;
-    }
-
-    .team-badge-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      max-width: 850px;
-    }
-
-    .team-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.5rem 0.9rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-
-    .team-card.featured {
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.08);
-    }
-
-    .team-name {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .team-role {
-      font-size: 0.75rem;
-      color: var(--accent-cyan);
-    }
-
-    /* PIPELINE DIAGRAM */
-    .pipeline-step {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 0.9rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .pipeline-num {
-      width: 1.6rem;
-      height: 1.6rem;
-      border-radius: 9999px;
-      background: var(--accent-green);
-      color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 768px) {
-      .grid-2, .grid-3, .grid-4 {
-        grid-template-columns: 1fr;
-      }
-      .hero-title {
-        font-size: 2.2rem;
-      }
-      .slide-title {
-        font-size: 1.5rem;
-      }
-      .key-hints {
-        display: none;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- TOP HEADER -->
-  <header>
-    <div class="brand">
-      <div class="brand-icon">🌿</div>
-      <div>EcoClasifica <span>Slides</span></div>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoClasifica — Presentación Interactiva Semana 15</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+<style>:root { --background: #0b1120; --card: #111827; --foreground: #f9fafb; --muted-foreground: #9ca3af; --border: #1f2937; }</style></head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4 md:p-6 select-none">
+
+  <!-- BARRA SUPERIOR DE NAVEGACIÓN Y CONTROLES -->
+  <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-3.5 mb-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+        🌿
+      </div>
+      <div>
+        <div class="font-bold text-base leading-tight flex items-center gap-2">
+          <span>EcoClasifica</span>
+          <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 font-semibold">
+            Consolidado 2 · Semana 15
+          </span>
+        </div>
+        <div class="text-xs text-[var(--muted-foreground)]">
+          Universidad Continental · Construcción de Software · Equipo DEV
+        </div>
+      </div>
     </div>
 
-    <div class="controls-center">
-      <div class="timer-badge">
+    <!-- Cronómetro + Notas -->
+    <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 bg-[var(--background)] border border-[var(--border)] px-3 py-1.5 rounded-lg text-xs font-mono">
         <span>⏱️</span>
-        <span id="timerDisplay">00:00</span>
-        <button class="timer-btn" id="timerToggle" title="Iniciar / Pausar Cronómetro">▶</button>
-        <button class="timer-btn" id="timerReset" title="Reiniciar Cronómetro">↺</button>
+        <span id="timerDisplay" class="font-bold">00:00</span>
+        <button id="timerToggle" class="px-1.5 py-0.5 rounded hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]" title="Iniciar/Pausar (Tecla T)">▶</button>
+        <button id="timerReset" class="px-1.5 py-0.5 rounded hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]" title="Reiniciar">↺</button>
       </div>
 
-      <button class="btn" id="notesToggleBtn" title="Ver / Ocultar notas de qué decir">
-        🗣️ Notas del Orador
+      <button id="notesBtn" class="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500/50 text-xs font-medium flex items-center gap-1.5 transition">
+        <span>🗣️</span>
+        <span>Guion Expositor</span>
       </button>
     </div>
 
-    <div class="nav-buttons">
-      <button class="btn" id="prevBtn" title="Anterior (Flecha Izq)">◀ Anterior</button>
-      <div class="slide-counter" id="slideIndicator">1 / 10</div>
-      <button class="btn btn-primary" id="nextBtn" title="Siguiente (Flecha Der)">Siguiente ▶</button>
+    <!-- Botones Ant / Sig -->
+    <div class="flex items-center gap-2">
+      <button id="prevBtn" class="px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500/50 text-xs font-semibold transition">
+        ◀ Anterior
+      </button>
+      <span id="slideCounter" class="text-xs font-bold px-2.5 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
+        1 / 7
+      </span>
+      <button id="nextBtn" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition shadow-sm">
+        Siguiente ▶
+      </button>
     </div>
-  </header>
-
-  <!-- PROGRESS BAR -->
-  <div class="progress-bar-container">
-    <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- MAIN SLIDES -->
-  <main>
+  <!-- PESTAÑAS DE ACCESO DIRECTO A CADA DIAPOSITIVA -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1.5 mb-4" id="slideTabs">
+    <button data-target="1" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      1. General & Equipo
+    </button>
+    <button data-target="2" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      2. Versiones Usadas
+    </button>
+    <button data-target="3" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      3. Condiciones & Reglas
+    </button>
+    <button data-target="4" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      4. Ramas de Git (8)
+    </button>
+    <button data-target="5" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      5. Carpetas y Archivos
+    </button>
+    <button data-target="6" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      6. IA ResNet-50 & Clases
+    </button>
+    <button data-target="7" class="slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border transition text-left truncate">
+      7. Docker & Compose
+    </button>
+  </div>
 
-    <!-- SLIDE 1: PORTADA -->
-    <section class="slide active" data-slide="1">
-      <div class="hero-container">
-        <div class="hero-badge">🎓 Proyecto Final — Construcción de Software</div>
-        <h1 class="hero-title">
-          🌿 <span>EcoClasifica</span>
-        </h1>
-        <p class="hero-desc">
-          Clasificación Inteligente y Segregación Ecológica de Residuos Sólidos mediante Visión Artificial, Deep Learning (ResNet-50), Testing TDD y Pipeline CI/CD.
-        </p>
+  <!-- CONTENEDOR DE DIAPOSITIVAS -->
+  <div id="slidesContainer" class="space-y-4">
 
-        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
-          <strong>Universidad Continental</strong> · Equipo de Desarrollo <strong>DEV</strong>
+    <!-- =================================================================== -->
+    <!-- SLIDE 1: PRESENTACIÓN GENERAL, ARQUITECTURA Y EQUIPO DEV            -->
+    <!-- =================================================================== -->
+    <section class="slide-panel bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-5" data-slide="1">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 1 · Requisitos 1 y 2 de la Rúbrica</span>
+          <h1 class="text-xl md:text-2xl font-extrabold mt-0.5">Presentación General y Flujo Full-Stack de EcoClasifica</h1>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
+          Docker Hub: yury1289/ecoclasifica:latest
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="text-xs font-bold uppercase text-rose-500">❌ Problemática Identificada</div>
+          <p class="text-sm font-semibold">Contaminación cruzada en puntos limpios</p>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            La ciudadanía tiene dificultad para reconocer el material exacto de un residuo sólido (plásticos, metales, vidrio, papel, cartón o basura general), reduciendo el aprovechamiento de reciclables.
+          </p>
         </div>
 
-        <div class="team-badge-grid">
-          <div class="team-card featured">
-            <div class="team-name">Bryan Alexander Cahuana Mendoza</div>
-            <div class="team-role">DevOps / CI-CD & Sustentador</div>
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="text-xs font-bold uppercase text-emerald-500">🎯 Objetivo del Sistema</div>
+          <p class="text-sm font-semibold">Clasificación asistida por IA + Guía Ecológica</p>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            Clasificar automáticamente fotografías de residuos en 6 categorías mediante un modelo ResNet-50 afinado, expuesto por una API REST FastAPI y una SPA React con recomendaciones de reciclaje.
+          </p>
+        </div>
+
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="text-xs font-bold uppercase text-sky-500">👥 Público Objetivo</div>
+          <p class="text-sm font-semibold">Ciudadanía, Estudiantes e Instituciones</p>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            Estudiantes universitarios, hogares, puntos de acopio municipal y programas de educación ambiental que requieren una herramienta portable en Docker.
+          </p>
+        </div>
+      </div>
+
+      <!-- Flujo de Integración -->
+      <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-3">
+        <div class="text-xs font-bold uppercase tracking-wider text-emerald-500">🔗 Integración de Componentes en Producción (Puerto 8000)</div>
+        <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold text-emerald-500">1. Frontend SPA (/ui)</div>
+            <div class="text-[var(--muted-foreground)] mt-1">React 19 + Vite compilado en <code>frontend/dist</code>. Subida, Drag&Drop, Cámara o <code>Ctrl+V</code>.</div>
           </div>
-          <div class="team-card">
-            <div class="team-name">Marco Antonio Bonifacio Ruiz</div>
-            <div class="team-role">Ingeniero ML / IA</div>
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold text-sky-500">2. FastAPI (:8000)</div>
+            <div class="text-[var(--muted-foreground)] mt-1">Recibe en <code>POST /classify</code> o <code>/classify/base64</code> y aplica 6 validaciones de seguridad.</div>
           </div>
-          <div class="team-card">
-            <div class="team-name">Jerson Alejandro Baca Medina</div>
-            <div class="team-role">Desarrollador Fullstack</div>
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold text-amber-500">3. Preprocesamiento</div>
+            <div class="text-[var(--muted-foreground)] mt-1"><code>AutoImageProcessor</code> cacheado: convierte a RGB, recorta a <code>224×224</code> y normaliza (ImageNet).</div>
           </div>
-          <div class="team-card">
-            <div class="team-name">Yury Yohan Llanos Luna</div>
-            <div class="team-role">Desarrollador Backend</div>
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold text-purple-500">4. Inferencia ResNet-50</div>
+            <div class="text-[var(--muted-foreground)] mt-1"><code>EcoClasificaModel</code> (singleton en <code>_MODEL_CACHE</code>) calcula logits y aplica <code>Softmax</code>.</div>
           </div>
-          <div class="team-card">
-            <div class="team-name">Benjamin Salazar Arenas</div>
-            <div class="team-role">Desarrollador Frontend</div>
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold text-emerald-500">5. Post-procesamiento</div>
+            <div class="text-[var(--muted-foreground)] mt-1">Traduce etiqueta a español, asigna emoji, desglose de 6 clases y consejo de contenedor.</div>
           </div>
         </div>
       </div>
 
-      <div class="speaker-notes-box" id="notes-1">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Buenas tardes profesor y compañeros. Mi nombre es <strong>Bryan Cahuana</strong> y junto al <strong>Equipo DEV</strong> presentamos <strong>EcoClasifica</strong>, un sistema integral de software y visión computacional que resuelve el problema de la clasificación de residuos mediante inteligencia artificial, implementando altos estándares de ingeniería de software: <strong>100% de cobertura en tests TDD, pipeline automatizado en GitHub Actions y código libre de code smells</strong>."
+      <!-- Equipo DEV -->
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-2">👨‍💻 Integrantes del Equipo DEV y Rol en el Proyecto</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 text-xs">
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+            <div class="font-bold">Yury Yohan Llanos Luna</div>
+            <div class="text-emerald-500 font-semibold mt-0.5">Backend FastAPI & Docker Hub</div>
+            <div class="text-[var(--muted-foreground)] mt-1">API REST, validaciones, integración Docker/Compose y push a <code>yury1289/ecoclasifica</code>.</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+            <div class="font-bold">Bryan A. Cahuana Mendoza</div>
+            <div class="text-sky-500 font-semibold mt-0.5">DevOps & CI/CD</div>
+            <div class="text-[var(--muted-foreground)] mt-1">GitHub Actions (<code>ci.yml</code>), scripts <code>.bat</code>, TDD coverage 100% y refactorización.</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+            <div class="font-bold">Marco A. Bonifacio Ruiz</div>
+            <div class="text-purple-500 font-semibold mt-0.5">Ingeniero ML / IA</div>
+            <div class="text-[var(--muted-foreground)] mt-1">Fine-tuning ResNet-50, <code>training/train.py</code>, <code>evaluate.py</code> y repositorio base.</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+            <div class="font-bold">Benjamin Salazar Arenas</div>
+            <div class="text-amber-500 font-semibold mt-0.5">Desarrollador Frontend</div>
+            <div class="text-[var(--muted-foreground)] mt-1">SPA React 19 + Tailwind v4, diseño Glassmorphism, cámara web y <code>iniciar.bat</code>.</div>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)]">
+            <div class="font-bold">Jerson A. Baca Medina</div>
+            <div class="text-rose-500 font-semibold mt-0.5">Desarrollador Fullstack</div>
+            <div class="text-[var(--muted-foreground)] mt-1">Integración de módulos de pre/post-procesamiento, rutas y pruebas integrales.</div>
+          </div>
         </div>
+      </div>
+
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 1:</strong>
+        "Presentamos <strong>EcoClasifica</strong>, una aplicación full-stack con inteligencia artificial empaquetada en Docker. Todo el flujo —desde la interfaz React en <code>/ui</code> hasta la API FastAPI en el puerto 8000 y el modelo ResNet-50 afinado— corre dentro de un único contenedor portable publicado en Docker Hub bajo <code>yury1289/ecoclasifica:latest</code>."
       </div>
     </section>
 
-    <!-- SLIDE 2: EL PROBLEMA Y LA SOLUCIÓN -->
-    <section class="slide" data-slide="2">
-      <div class="slide-header">
+    <!-- =================================================================== -->
+    <!-- SLIDE 2: TODAS LAS VERSIONES USADAS EN EL PROYECTO                  -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="2">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <span class="slide-tag">Contexto & Justificación</span>
-          <h2 class="slide-title">El Problema y la Solución Tecnológica</h2>
-          <p class="slide-subtitle">Automatizando el reconocimiento en origen para evitar la contaminación cruzada</p>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 2 · Auditoría Técnica de Dependencias</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Versiones Exactas Usadas en EcoClasifica</h2>
+        </div>
+        <!-- Filtro interactivo de versiones -->
+        <div class="flex flex-wrap gap-1.5" id="versionFilters">
+          <button data-vfilter="all" class="vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white">Todas (34)</button>
+          <button data-vfilter="ia" class="vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)]">IA & Data (12)</button>
+          <button data-vfilter="backend" class="vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)]">Backend & QA (8)</button>
+          <button data-vfilter="frontend" class="vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)]">Frontend React (10)</button>
+          <button data-vfilter="devops" class="vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)]">Docker & CI/CD (4)</button>
         </div>
       </div>
 
-      <div class="grid-2">
-        <div class="card" style="border-left: 4px solid var(--accent-rose);">
-          <div class="card-title">❌ El Problema Actual</div>
-          <div class="card-body">
-            <p>• <strong>Dificultad de reconocimiento:</strong> Los ciudadanos y operarios dudan sobre el material exacto de un residuo (ej. envases multicapa, tipos de plásticos o metales).</p>
-            <p style="margin-top: 0.5rem;">• <strong>Contaminación cruzada:</strong> Si un residuo no reciclable o sucio se arroja en un contenedor de reciclaje limpio, inutiliza todo el lote.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Pérdida económica y ambiental:</strong> Solo una fracción mínima de materiales se recicla efectivamente debido a la mala segregación en origen.</p>
+      <p class="text-xs text-[var(--muted-foreground)]">
+        Haz clic en las categorías de arriba para filtrar cada tecnología, su versión exacta declarada en <code>requirements.txt</code>, <code>frontend/package.json</code>, <code>Dockerfile</code> y <code>.github/workflows/ci.yml</code>, y su función específica:
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 text-xs" id="versionGrid">
+        <!-- IA & Data -->
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">microsoft/resnet-50</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Arquitectura CNN residual de 50 capas preentrenada en ImageNet-1k y afinada a 6 clases.</div>
           </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">HF Hub</span>
         </div>
-
-        <div class="card" style="border-left: 4px solid var(--accent-green);">
-          <div class="card-title">✅ La Solución: EcoClasifica</div>
-          <div class="card-body">
-            <p>• <strong>Reconocimiento por Imagen:</strong> El usuario fotografía el residuo y el sistema predice la categoría exacta en tiempo real.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Porcentaje de Confianza:</strong> Proporciona la certidumbre probabilística calculada por la red neuronal profunda.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Educación y Guía Inmediata:</strong> Entrega recomendaciones claras: en qué color de contenedor depositarlo y cómo prepararlo (lavar, aplanar, secar).</p>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">torch (PyTorch)</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Motor de tensores, ejecución en CPU/CUDA, cálculo de logits y función <code>softmax</code>.</div>
           </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=2.0.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">torchvision</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Transformaciones de visión computacional y soporte de arquitecturas de imagen.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=0.15.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">transformers</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5"><code>AutoImageProcessor</code>, <code>AutoModelForImageClassification</code> y <code>Trainer</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=4.35.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Pillow (PIL)</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Decodificación de imágenes, validación de magic bytes, conversión RGB y dimensiones.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=10.0.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">datasets &amp; evaluate</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Carga de dataset <code>imagefolder</code> / TrashNet y evaluación en entrenamiento.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=2.14 / 0.4</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">accelerate</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Orquestación de bucle de entrenamiento en CPU/GPU para Hugging Face Trainer.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=0.24.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">scikit-learn</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Métricas de evaluación: Accuracy (58.42%), Precision, Recall, F1 macro (0.4709) y matriz de confusión.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=1.3.0</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">numpy &amp; tqdm</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Manipulación de arreglos multidimensionales y barras de progreso de entrenamiento.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=1.24 / 4.65</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">matplotlib &amp; seaborn</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Generación gráfica de matriz de confusión y curvas en <code>training/evaluate.py</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=3.7 / 0.12</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">dask &amp; polars</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Procesamiento tabular de metadatos del dataset en <code>preparar_datos.py</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">&gt;=2023 / 0.19</span>
+        </div>
+        <div data-vcat="ia" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">safetensors</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Formato seguro y rápido para almacenar los pesos entrenados (<code>model.safetensors</code>, 94.3 MB).</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono font-bold shrink-0">94.3 MB</span>
+        </div>
+
+        <!-- Backend & QA -->
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Python</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Lenguaje base del backend; 3.11 en Docker (<code>python:3.11-slim</code>) y matriz 3.10/3.11 en CI.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">3.10 / 3.11</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">FastAPI</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Framework ASGI para la API REST (<code>v1.0.0</code> en <code>src/fastapi_app.py</code>) y servidor de <code>/ui</code> y <code>/docs</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=0.100.0</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Uvicorn</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Servidor ASGI de producción escuchando en <code>0.0.0.0:8000</code> dentro del contenedor.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=0.22.0</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">python-multipart</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Recepción de archivos de imagen binarios vía <code>multipart/form-data</code> en <code>POST /classify</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=0.0.6</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">httpx</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Cliente HTTP requerido por <code>fastapi.testclient.TestClient</code> en <code>tests/test_fastapi.py</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=0.24.0</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Gradio</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Interfaz alternativa de prototipado rápido utilizada en la primera etapa del proyecto.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=4.0.0</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">coverage</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Medición de cobertura de pruebas unitarias TDD configurada con <code>.coveragerc</code> (umbral 60%).</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=7.0</span>
+        </div>
+        <div data-vcat="backend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">flake8</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Auditoría estática de estilo PEP8 en <code>src/</code> con límite de 120 caracteres por línea.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono font-bold shrink-0">&gt;=6.0</span>
+        </div>
+
+        <!-- Frontend React -->
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">React &amp; React DOM</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Librería UI principal de la SPA servida en <code>http://localhost:8000/ui</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^19.3.1</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">TypeScript</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Tipado estático de contratos de API (<code>ClassifyApiResponse</code>, <code>ClassificationResponse</code>).</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">~6.0.3</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Vite &amp; @vitejs/plugin-react</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Empaquetador que genera el build optimizado en <code>frontend/dist/</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^8.3.6 / ^6.1.2</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Tailwind CSS &amp; @tailwindcss/vite</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Estilos Glassmorphism, animaciones de escáner y barras de probabilidad.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^4.3.5</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">@tanstack/react-query</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Gestión de estado asíncrono, mutaciones e indicadores de carga hacia FastAPI.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^5.107.1</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">axios</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Cliente HTTP en <code>apiConfig.ts</code> con <code>timeout: 15000</code> ms hacia <code>/classify</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^1.21.1</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">lucide-react</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Iconografía vectorial moderna para estados de cámara, carga y resultados.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^1.72.0</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">clsx &amp; tailwind-merge</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Composición condicional de clases utilitarias CSS sin colisiones.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^2.1.1 / ^3.7.0</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">ESLint &amp; typescript-eslint</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Linter de código TypeScript/React configurado en <code>frontend/eslint.config.js</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^10.14 / ^8.72</span>
+        </div>
+        <div data-vcat="frontend" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">@types/node &amp; @types/react</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Definiciones de tipos para compilación estricta con <code>tsc -b</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono font-bold shrink-0">^24.19 / ^19.3</span>
+        </div>
+
+        <!-- DevOps / Docker / CI -->
+        <div data-vcat="devops" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Docker Engine &amp; Compose v2</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Contenedorización completa; imagen base <code>python:3.11-slim</code> + <code>libgl1</code> y <code>libglib2.0-0</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-mono font-bold shrink-0">v29.9.3</span>
+        </div>
+        <div data-vcat="devops" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">Docker Hub Registry</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Imagen oficial publicada: <code>yury1289/ecoclasifica:latest</code> (~3.63 GB comprimida).</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-mono font-bold shrink-0">:latest</span>
+        </div>
+        <div data-vcat="devops" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">actions/checkout</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Acción oficial de GitHub Actions para clonar el repositorio en el runner Ubuntu.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-mono font-bold shrink-0">@v4</span>
+        </div>
+        <div data-vcat="devops" class="v-item p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] flex justify-between items-start gap-2">
+          <div>
+            <div class="font-bold">actions/setup-python</div>
+            <div class="text-[var(--muted-foreground)] mt-0.5">Aprovisionamiento de matriz Python 3.10 y 3.11 en <code>.github/workflows/ci.yml</code>.</div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-mono font-bold shrink-0">@v5</span>
         </div>
       </div>
 
-      <div class="grid-4" style="margin-top: 0.5rem;">
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">29.8k</div>
-          <div class="stat-label">Imágenes Entrenadas</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">6</div>
-          <div class="stat-label">Clases de Residuos</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Cobertura de Tests</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">0</div>
-          <div class="stat-label">Errores de Linting</div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-2">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El gran cuello de botella del reciclaje moderno ocurre en el primer segundo: cuando la persona no sabe en qué tacho arrojar el desecho. Con <strong>EcoClasifica</strong> eliminamos esa duda. Basta con una fotografía desde el celular o la cámara web para que nuestra inteligencia artificial no solo clasifique el material con un porcentaje de confianza matemático, sino que entregue la guía inmediata de disposición ambiental."
-        </div>
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 2:</strong>
+        "Aquí detallamos todas las versiones del stack: en el contenedor usamos <strong>Python 3.11-slim</strong> sobre Docker 29.9.3; en el backend <strong>FastAPI &gt;=0.100.0</strong> con <strong>PyTorch &gt;=2.0.0</strong> y <strong>Transformers &gt;=4.35.0</strong>; en el frontend <strong>React 19.3.1</strong>, <strong>TypeScript 6.0.3</strong>, <strong>Vite 8.3.6</strong> y <strong>Tailwind CSS 4.3.5</strong>; y en CI/CD validamos simultáneamente en Python 3.10 y 3.11."
       </div>
     </section>
 
-    <!-- SLIDE 3: ARQUITECTURA DE IA -->
-    <section class="slide" data-slide="3">
-      <div class="slide-header">
+    <!-- =================================================================== -->
+    <!-- SLIDE 3: CONDICIONES, VALIDACIONES Y REGLAS DE NEGOCIO              -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="3">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <span class="slide-tag">Machine Learning & Deep Learning</span>
-          <h2 class="slide-title">Arquitectura del Modelo de IA (ResNet-50)</h2>
-          <p class="slide-subtitle">Transfer Learning sobre redes convolucionales residuales profundas</p>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 3 · Requisito 2 de la Rúbrica (Validación y Lógica)</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Condiciones, Validaciones y Reglas de Negocio</h2>
         </div>
+        <span class="text-xs px-2.5 py-1 rounded bg-sky-500/15 text-sky-400 font-semibold">
+          Defensa en profundidad + Clean Code (Sin Magic Numbers)
+        </span>
       </div>
 
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">🧠 Modelo Base</div>
-          <div class="card-body">
-            <p><strong>microsoft/resnet-50</strong></p>
-            <p style="margin-top: 0.5rem;">Red convolucional de 50 capas preentrenada sobre <strong>ImageNet-1k</strong> (más de 1 millón de imágenes). Sus conexiones residuales (skip connections) evitan el desvanecimiento del gradiente.</p>
-          </div>
-        </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Columna 1: 6 Condiciones de Validación en FastAPI -->
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2.5">
+          <div class="text-xs font-bold uppercase tracking-wider text-rose-400">🛡️ 1. Condiciones de Validación de Entrada (src/fastapi_app.py)</div>
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Tamaño de Archivo Binario:</span>
+                <span class="text-[var(--muted-foreground)] block">Mínimo &gt; 0 bytes (`TAMANO_MINIMO_BYTES = 1`). Máximo <strong>10 MB</strong> (`10,485,760 bytes`).</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400 / 413</span>
+            </div>
 
-        <div class="card">
-          <div class="card-title">🔄 Transfer Learning</div>
-          <div class="card-body">
-            <p><strong>Aprovechamiento de Features</strong></p>
-            <p style="margin-top: 0.5rem;">Reutilizamos los filtros visuales profundos ya aprendidos (texturas, bordes y reflejos de materiales) y reemplazamos la cabeza clasificadora final para adaptarla a nuestras <strong>6 clases</strong>.</p>
-          </div>
-        </div>
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Tamaño y Formato Base64 (`/classify/base64`):</span>
+                <span class="text-[var(--muted-foreground)] block">No vacío, máx. <strong>15 MB</strong> de cadena y decodificación estricta (`validate=True`).</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400 / 413</span>
+            </div>
 
-        <div class="card">
-          <div class="card-title">⚙️ Pipeline de Inferencia</div>
-          <div class="card-body">
-            <p><strong>Entrada 224 × 224 RGB</strong></p>
-            <p style="margin-top: 0.5rem;">El <code>AutoImageProcessor</code> normaliza los píxeles. La red produce *logits* que se transforman mediante la función <strong>Softmax</strong> en probabilidades reales porcentuales.</p>
-          </div>
-        </div>
-      </div>
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Condición de Tipo MIME (`TIPOS_MIME_PERMITIDOS`):</span>
+                <span class="text-[var(--muted-foreground)] block">Solo <code>image/jpeg</code>, <code>image/jpg</code>, <code>image/png</code>, <code>image/webp</code>, <code>image/bmp</code>.</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400</span>
+            </div>
 
-      <div class="card" style="margin-top: 0.5rem; background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.3);">
-        <div class="card-title" style="color: var(--accent-cyan);">📐 Fórmula Matemática de Salida (Softmax)</div>
-        <div class="card-body" style="font-family: monospace; font-size: 0.95rem;">
-          P(Clase_i) = exp(logit_i) / Σ exp(logit_j) &nbsp;&nbsp;⟶&nbsp;&nbsp; Garantiza que la suma de probabilidades de las 6 categorías sea exactamente 100%.
-        </div>
-      </div>
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Condición de Extensión (`EXTENSIONES_PERMITIDAS`):</span>
+                <span class="text-[var(--muted-foreground)] block">Solo <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.webp</code>, <code>.bmp</code> (bloquea <code>.pdf</code>, <code>.exe</code>, <code>.txt</code>).</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400</span>
+            </div>
 
-      <div class="speaker-notes-box" id="notes-3">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Para el modelo elegimos <strong>ResNet-50</strong> con <strong>Transfer Learning</strong>. En lugar de entrenar una red desde cero, aprovechamos el conocimiento visual previo de millones de imágenes y reentrenamos la última capa densa hacia 6 clases de residuos. La inferencia redimensiona la imagen a 224 por 224 píxeles y calcula la distribución de probabilidad completa mediante la función Softmax."
-        </div>
-      </div>
-    </section>
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Inspección de Magic Bytes (`Pillow Image.verify()`):</span>
+                <span class="text-[var(--muted-foreground)] block">Verifica la firma binaria real para impedir archivos falsificados con extensión <code>.png</code>.</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400</span>
+            </div>
 
-    <!-- SLIDE 4: EL DATASET Y LAS 6 CLASES -->
-    <section class="slide" data-slide="4">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Datos & Segregación Ecológica</span>
-          <h2 class="slide-title">Dataset TrashBusters y las 6 Categorías</h2>
-          <p class="slide-subtitle">29,849 registros etiquetados bajo la norma estándar de contenedores de reciclaje</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="card" style="border-top: 4px solid #3b82f6;">
-          <div class="card-title">📦 Cartón (`cardboard`)</div>
-          <div class="card-body">
-            <span class="pill pill-blue">Contenedor Azul</span>
-            <p style="margin-top: 0.5rem;">Cajas, empaques y corrugados. Recomendación: aplanar, retirar cintas y grapas, depositar seco y sin grasa.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #10b981;">
-          <div class="card-title">🫙 Vidrio (`glass`)</div>
-          <div class="card-body">
-            <span class="pill pill-green">Contenedor Verde</span>
-            <p style="margin-top: 0.5rem;">Botellas, frascos y tarros. Recomendación: retirar tapas metálicas o plásticas, enjuagar residuos orgánicos.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #f59e0b;">
-          <div class="card-title">🥫 Metal (`metal`)</div>
-          <div class="card-body">
-            <span class="pill pill-red" style="color: #fcd34d; border-color: #f59e0b;">Contenedor Amarillo</span>
-            <p style="margin-top: 0.5rem;">Latas de conserva, gaseosa, aluminio. Recomendación: escurrir, aplastar latas de bebidas para ahorrar volumen.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #93c5fd;">
-          <div class="card-title">📄 Papel (`paper`)</div>
-          <div class="card-body">
-            <span class="pill pill-blue">Contenedor Azul</span>
-            <p style="margin-top: 0.5rem;">Hojas, periódicos, revistas limpias. Recomendación: no arrugar innecesariamente, evitar papel con carbón o mojado.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #eab308;">
-          <div class="card-title">♻️ Plástico (`plastic`)</div>
-          <div class="card-body">
-            <span class="pill pill-red" style="color: #fde047; border-color: #eab308;">Contenedor Amarillo</span>
-            <p style="margin-top: 0.5rem;">Botellas PET, tapas, envases PEAD. Recomendación: compactar, colocar la tapa para facilitar el reciclaje.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #6b7280;">
-          <div class="card-title">🗑️ Basura General (`trash`)</div>
-          <div class="card-body">
-            <span class="pill" style="background: rgba(107, 114, 128, 0.2); color: #d1d5db;">Contenedor Gris / Negro</span>
-            <p style="margin-top: 0.5rem;">Residuos no reciclables o contaminados. Recomendación: envolver bien para relleno sanitario seguro.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-4">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El modelo fue entrenado con el dataset <strong>TrashBusters/combinedd</strong> con cerca de 30 mil imágenes divididas en proporción 80% train, 10% validación y 10% test. Mapeamos cada una de las 6 categorías con las normativas internacionales de contenedores de colores, de modo que cada predicción va acompañada de una acción ecológica inmediata para el usuario."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 5: ARQUITECTURA DE SOFTWARE -->
-    <section class="slide" data-slide="5">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Diseño de Software & Modularidad</span>
-          <h2 class="slide-title">Arquitectura Modular del Proyecto</h2>
-          <p class="slide-subtitle">Separación estricta de responsabilidades entre Visión, Lógica, UI y API REST</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">📁 src/preprocess.py</div>
-          <div class="card-body">
-            <p><strong>Carga y Validación</strong></p>
-            <p>Valida formatos admitidos (JPG, PNG), tipos de entrada (Path, PIL, NumPy), dimensiones mínimas y redimensiona a 224x224 RGB.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/model.py</div>
-          <div class="card-body">
-            <p><strong>Inferencia y Red Neuronal</strong></p>
-            <p>Carga el modelo ResNet-50 bajo patrón Singleton, ejecuta inferencia en CPU o CUDA y devuelve tuplas ordenadas de probabilidad.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/ecoclasifica.py</div>
-          <div class="card-body">
-            <p><strong>Motor de Reglas Base</strong></p>
-            <p>Normaliza alias léxicos (vidrio, lata, cartón), calcula confianza base y degrada la confianza ante imágenes pequeñas (&lt;128px).</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/postprocess.py</div>
-          <div class="card-body">
-            <p><strong>Formateo y Consejos</strong></p>
-            <p>Convierte resultados numéricos en salidas legibles para humanos con barras de probabilidad ASCII y recomendaciones ecológicas.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/app.py</div>
-          <div class="card-body">
-            <p><strong>Frontend Web (Gradio)</strong></p>
-            <p>Interfaz interactiva multiplataforma con soporte para arrastrar archivos o captura directa desde la cámara web en el puerto 7860.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/fastapi_app.py</div>
-          <div class="card-body">
-            <p><strong>Backend REST API</strong></p>
-            <p>Servidor de alto rendimiento con FastAPI, validación estricta de tipos MIME, Magic Bytes, documentación Swagger UI y ReDoc.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-5">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "La arquitectura de software de EcoClasifica sigue el principio de <strong>Responsabilidad Única</strong>: preprocesamiento valida imágenes, model ejecuta la red neuronal, ecoclasifica aplica reglas de negocio, postprocess formatea los resultados, y tenemos dos canales de consumo: una interfaz web en <strong>Gradio</strong> para usuarios finales y una API REST en <strong>FastAPI</strong> para integraciones externas."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 6: REFACTORIZACIÓN Y CODE SMELLS -->
-    <section class="slide" data-slide="6">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Clean Code & Calidad de Código</span>
-          <h2 class="slide-title">Refactorización: Eliminación de Code Smells</h2>
-          <p class="slide-subtitle">Solución al reporte de constantes no detectadas y magic numbers</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-red">Code Smell 1: Magic Numbers</span>
-          </div>
-          <div class="card-body">
-            <p><strong>Problema:</strong> Valores como <code>128</code>, <code>0.8</code> y <code>2</code> estaban hardcodeados dentro del cuerpo de las funciones.</p>
-            <div class="code-box code-bad" style="margin-top: 0.5rem;">
-# ❌ ANTES (Magic Numbers)
-if max_dimension &lt; 128:
-    confidence *= 0.8
-return round(confidence, 2)
+            <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)] flex justify-between items-center gap-2">
+              <div>
+                <span class="font-bold">Rango de Resolución (`10×10` a `8192×8192` px):</span>
+                <span class="text-[var(--muted-foreground)] block">Rechaza imágenes diminutas (&lt;10px) o bombas de descompresión (&gt;8192px).</span>
+              </div>
+              <span class="px-2 py-0.5 rounded bg-rose-500/15 text-rose-400 font-mono font-bold shrink-0">HTTP 400</span>
             </div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-green">Refactorización: Extract Constant</span>
+        <!-- Columna 2: Condiciones de Negocio, Fallback, Entrenamiento y CI -->
+        <div class="space-y-3">
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider text-emerald-500">⚙️ 2. Condiciones de Lógica de Negocio e Inferencia</div>
+            <ul class="space-y-1.5 text-xs text-[var(--muted-foreground)]">
+              <li>• <strong class="text-[var(--foreground)]">Carga Condicional del Modelo (`src/model.py`):</strong> Si <code>Path(ECOCLASIFICA_MODEL_PATH).exists()</code> es verdadero, carga el checkpoint afinado (<code>is_finetuned = True</code>); si no existe, activa el <em>fallback</em> descargando <code>microsoft/resnet-50</code> base sin romperse.</li>
+              <li>• <strong class="text-[var(--foreground)]">Caché Singleton (`_MODEL_CACHE` y `@lru_cache`):</strong> Evita recargar los 94.3 MB de ResNet-50 y el <code>AutoImageProcessor</code> en cada petición HTTP.</li>
+              <li>• <strong class="text-[var(--foreground)]">Penalización por Baja Resolución (`src/ecoclasifica.py`):</strong> Si <code>max_dimension &lt; 128</code> (<code>LOW_RESOLUTION_THRESHOLD</code>), multiplica la confianza base (<code>0.85</code>) por <code>0.8</code> (<code>CONFIDENCE_ADJUSTMENT</code>) = <code>0.68</code>.</li>
+              <li>• <strong class="text-[var(--foreground)]">Normalización de Probabilidades (`classifyApi.ts`):</strong> Si un valor numérico es <code>&gt; 1</code>, lo divide entre 100 (`Math.min(n / 100, 1)`); ordena el desglose de mayor a menor porcentaje.</li>
+              <li>• <strong class="text-[var(--foreground)]">Montaje Condicional de UI (`src/fastapi_app.py`):</strong> Si <code>(FRONTEND_DIST_DIR / "index.html").is_file()</code> existe, habilita <code>GET /ui</code> y sirve los assets de React.</li>
+            </ul>
           </div>
-          <div class="card-body">
-            <p><strong>Solución:</strong> Constantes explícitas <code>UPPER_CASE</code> tipadas en la cabecera del módulo.</p>
-            <div class="code-box code-good" style="margin-top: 0.5rem;">
-# ✅ DESPUÉS (Constantes UPPER_CASE)
-LOW_RESOLUTION_THRESHOLD: int = 128
-CONFIDENCE_ADJUSTMENT: float = 0.8
-ROUND_DECIMALS: int = 2
 
-if max_dimension &lt; LOW_RESOLUTION_THRESHOLD:
-    confidence *= CONFIDENCE_ADJUSTMENT
-return round(confidence, ROUND_DECIMALS)
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-2" style="margin-top: 0.5rem;">
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-red">Code Smell 2: Dead Code (Constantes Huérfanas)</span>
-          </div>
-          <div class="card-body">
-            <p>Anteriormente se habían pegado bloques de constantes al final de los archivos que <strong>nunca eran invocadas por las funciones</strong>. La IA del profesor las detectó como inexistentes en el flujo lógico.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-green">Solución: Reubicación & Uso Activo</span>
-          </div>
-          <div class="card-body">
-            <p>Se eliminó el código muerto del pie de página y se reubicaron en la cabecera según el estándar PEP8, conectándolas con los argumentos reales (ej. <code>DEFAULT_SERVER_PORT = 7860</code>).</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-6">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Un punto crítico solicitado por el profesor fue corregir la falta de constantes definidas. Identificamos el code smell de <strong>Magic Numbers</strong> y <strong>Código Muerto</strong>: habían números sueltos dentro de las funciones y constantes huérfanas al final del archivo. Aplicamos la técnica de refactorización <strong>Extract Constant</strong>, definiendo identificadores UPPER_CASE tipados a nivel de módulo y eliminando cualquier valor literal sin nombre."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 7: PRUEBAS TDD Y COBERTURA 100% -->
-    <section class="slide" data-slide="7">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Quality Assurance & TDD</span>
-          <h2 class="slide-title">Pruebas Unitarias TDD y Cobertura 100%</h2>
-          <p class="slide-subtitle">Metodología Red-Green-Refactor superando el Quality Gate del 60%</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">📊 Reporte de Cobertura Oficial</div>
-          <div class="card-body">
-            <div class="code-box code-good">
-Name                  Stmts   Miss  Cover   Missing
----------------------------------------------------
-src\ecoclasifica.py      41      0   100%
-src\postprocess.py       32      0   100%
----------------------------------------------------
-TOTAL                    73      0   100%
-            </div>
-            <p style="margin-top: 0.75rem;">• <strong>Umbral exigido (.coveragerc):</strong> <code>fail_under = 60</code></p>
-            <p>• <strong>Resultado obtenido:</strong> <strong>100% de cobertura total</strong></p>
-            <p>• <strong>Reporte HTML:</strong> Generado e interactivo en <code>htmlcov/index.html</code></p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🧪 ¿Qué verifican los Tests Agregados?</div>
-          <div class="card-body">
-            <p>1. <strong>Valores y Tipos de Constantes:</strong> Aserta formalmente que las constantes globales existen con tipos estrictos (<code>str</code>, <code>float</code>, <code>int</code>).</p>
-            <p style="margin-top: 0.5rem;">2. <strong>Resiliencia ante Nulos:</strong> Prueba que <code>normalize_material_name(None)</code> retorna de forma segura <code>DEFAULT_CATEGORY</code>.</p>
-            <p style="margin-top: 0.5rem;">3. <strong>Pruebas de Frontera (Boundary Testing):</strong> Comprueba la degradación exacta de confianza en el límite de 128 píxeles.</p>
-            <p style="margin-top: 0.5rem;">4. <strong>Postprocesamiento Robusto:</strong> Prueba listas de probabilidades y descarte de elementos malformados.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-7">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "En cuanto a calidad de software, aplicamos <strong>Desarrollo Guiado por Pruebas (TDD)</strong> con unittest. El archivo de configuración .coveragerc requería un mínimo del 60%. Gracias a los nuevos tests que agregamos para casos borde y verificación de constantes, alcanzamos un impecable <strong>100% de cobertura</strong> en los módulos evaluados, con cero líneas omitidas."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 8: PIPELINE CI/CD -->
-    <section class="slide" data-slide="8">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">DevOps & Automatización</span>
-          <h2 class="slide-title">Pipeline CI/CD en GitHub Actions</h2>
-          <p class="slide-subtitle">Automatización continua multi-entorno con Quality Gates estrictos</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">⚡ Disparadores & Matriz de Entorno</div>
-          <div class="card-body">
-            <p>• <strong>Triggers:</strong> Se activa en cada <code>push</code> a ramas <code>main</code> y <code>develop</code>, y en cada <code>pull_request</code> hacia <code>main</code>.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Runner:</strong> Contenedores virtuales con <code>ubuntu-latest</code>.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Matrix Multi-versión:</strong> Trabajos concurrentes en <strong>Python 3.10</strong> y <strong>Python 3.11</strong> para asegurar compatibilidad.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🛡️ Quality Gates de Protección</div>
-          <div class="card-body">
-            <p>• <strong>Cobertura Obligatoria:</strong> <code>coverage report --fail-under=60</code> detiene el flujo si la cobertura cae por debajo del 60%.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Linter Estricto:</strong> <code>flake8 src/ --max-line-length=120</code> rechaza código con problemas de estilo PEP8 o errores sintácticos.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-        <div class="pipeline-step">
-          <div class="pipeline-num">1</div>
-          <div><strong>Checkout:</strong> Clona el repositorio con <code>actions/checkout@v4</code>.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">2</div>
-          <div><strong>Setup Python:</strong> Configura la versión correspondiente con <code>actions/setup-python@v5</code>.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">3</div>
-          <div><strong>Install:</strong> Actualiza pip e instala dependencias de <code>requirements.txt</code>, coverage y flake8.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">4</div>
-          <div><strong>Tests & Coverage:</strong> Ejecuta batería de pruebas unitarias y genera reporte de cobertura.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">5</div>
-          <div><strong>Linting:</strong> Audita el código con flake8 para garantizar calidad y legibilidad.</div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-8">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Como responsable de <strong>DevOps y CI/CD</strong>, configuré el pipeline en <strong>GitHub Actions</strong> ubicado en .github/workflows/ci.yml. En cada push o pull request se levantan entornos limpios en Ubuntu con Python 3.10 y 3.11. El pipeline ejecuta los tests, verifica que la cobertura supere el 60% y audita el estilo con flake8. Si cualquiera de estos pasos falla, el merge queda bloqueado."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 9: DEMOSTRACIÓN DEL SISTEMA -->
-    <section class="slide" data-slide="9">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Demostración & Producto</span>
-          <h2 class="slide-title">Interfaces del Sistema: Gradio Web & REST API</h2>
-          <p class="slide-subtitle">Dos formas de consumir la inteligencia artificial de EcoClasifica</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">🖥️ Interfaz Web (Gradio) — Puerto 7860</div>
-          <div class="card-body">
-            <p>• <strong>Subida interactiva:</strong> Arrastrar/soltar fotos locales o captura directa desde la cámara web.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Gráficos en tiempo real:</strong> Componente <code>gr.Label</code> con las probabilidades ordenadas de las 6 clases.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Tarjeta ecológica:</strong> Emoji del residuo, porcentaje de confianza y guía textual de reciclaje.</p>
-            <div class="code-box" style="margin-top: 0.75rem;">
-# Ejecución local:
-python src/app.py
-# URL: http://localhost:7860
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🌐 API REST (FastAPI) — Puerto 8000</div>
-          <div class="card-body">
-            <p>• <code>GET /health</code>: Estado del microservicio y modelo.</p>
-            <p style="margin-top: 0.5rem;">• <code>GET /classes</code>: Catálogo de 6 categorías soportadas.</p>
-            <p style="margin-top: 0.5rem;">• <code>POST /classify</code>: Envío de archivo binario multipart.</p>
-            <p style="margin-top: 0.5rem;">• <code>POST /classify/base64</code>: Envío en payload JSON.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Swagger UI interactivo:</strong> en <code>/docs</code>.</p>
-            <div class="code-box" style="margin-top: 0.75rem;">
-# Ejecución local:
-python -m uvicorn src.fastapi_app:app --port 8000
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider text-amber-400">🧪 3. Condiciones de Entrenamiento y Quality Gates CI/CD</div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+                <div class="font-bold text-amber-400">Hiperparámetros (training/config.json)</div>
+                <div class="text-[var(--muted-foreground)] mt-1">
+                  <code>num_epochs: 5</code> · <code>batch_size: 16</code> · <code>lr: 5e-5</code> · <code>weight_decay: 0.01</code> · <code>warmup: 0.1</code> · <code>seed: 42</code> · Split <code>80/10/10</code>.
+                </div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+                <div class="font-bold text-emerald-500">Quality Gates (.coveragerc &amp; ci.yml)</div>
+                <div class="text-[var(--muted-foreground)] mt-1">
+                  Cobertura mínima obligatoria: <code>fail_under = 60</code> (logrado: <strong>100%</strong>). Linter: <code>flake8 --max-line-length=120</code> (logrado: <strong>0 errores</strong>).
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="speaker-notes-box" id="notes-9">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El sistema ofrece dos interfaces de acceso: para el usuario final tenemos una interfaz gráfica desarrollada en <strong>Gradio</strong> que corre en el puerto 7860 y permite capturar fotos desde la webcam; y para aplicaciones móviles o sistemas externos, disponemos de una API REST empresarial desarrollada con <strong>FastAPI</strong> con documentación interactiva Swagger en /docs."
-        </div>
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 3:</strong>
+        "Nuestro backend implementa validación en 6 capas: verifica que el archivo no esté vacío, que no supere 10 MB (devolviendo HTTP 413), que el MIME y la extensión sean válidos, inspecciona los magic bytes reales con Pillow contra archivos suplantados y valida que las dimensiones estén entre 10x10 y 8192x8192 píxeles."
       </div>
     </section>
 
-    <!-- SLIDE 10: CONCLUSIONES & PREGUNTAS -->
-    <section class="slide" data-slide="10">
-      <div class="slide-header">
+    <!-- =================================================================== -->
+    <!-- SLIDE 4: MAPA INTERACTIVO DE LAS 8 RAMAS DE GIT                     -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="4">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-          <span class="slide-tag">Cierre & Conclusiones</span>
-          <h2 class="slide-title">Conclusiones e Impacto del Proyecto</h2>
-          <p class="slide-subtitle">Logros técnicos alcanzados por el Equipo DEV</p>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 4 · Control de Versiones y Flujo Gitflow</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Las 8 Ramas del Repositorio: ¿Para qué sirve cada una?</h2>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-[var(--background)] border border-[var(--border)]">
+          github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA
+        </span>
+      </div>
+
+      <p class="text-xs text-[var(--muted-foreground)]">
+        Haz clic en cualquiera de las <strong>8 ramas</strong> de la izquierda para inspeccionar su autor, último commit, propósito dentro del proyecto y exactamente qué archivos o módulos aporta:
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Lista de ramas -->
+        <div class="lg:col-span-5 space-y-1.5" id="branchList">
+          <button data-branch="semana15" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">🌿 feature/semana15-despliegue-docker</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-mono">4bbf300</span>
+          </button>
+          <button data-branch="main" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">⭐ main (Producción)</span>
+            <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono">0c9d39d</span>
+          </button>
+          <button data-branch="backend" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">⚙️ feature/backend-fastapi</span>
+            <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono">4f00703</span>
+          </button>
+          <button data-branch="optbackend" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">🛠️ feature/optimizacion-backend</span>
+            <span class="px-2 py-0.5 rounded bg-purple-500/15 text-purple-400 font-mono">7fe92d3</span>
+          </button>
+          <button data-branch="frontend" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">🎨 feature/frontend-ui</span>
+            <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 font-mono">8d36210</span>
+          </button>
+          <button data-branch="devops" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">🚀 feature/devops-ci-cd</span>
+            <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono">823c7e9</span>
+          </button>
+          <button data-branch="develop" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">🔄 develop (Integración)</span>
+            <span class="px-2 py-0.5 rounded bg-sky-500/15 text-sky-400 font-mono">823c7e9</span>
+          </button>
+          <button data-branch="master" class="branch-btn w-full text-left p-2.5 rounded-lg border transition flex items-center justify-between text-xs">
+            <span class="font-mono font-bold truncate">📦 master (Base Histórica IA)</span>
+            <span class="px-2 py-0.5 rounded bg-gray-500/15 text-gray-400 font-mono">5530697</span>
+          </button>
+        </div>
+
+        <!-- Detalle de la rama seleccionada -->
+        <div class="lg:col-span-7 bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 flex flex-col justify-between" id="branchDetailBox">
+          <!-- Renderizado dinámico por JS -->
         </div>
       </div>
 
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">🎯 Precisión y Utilidad</div>
-          <div class="card-body">
-            <p>La combinación de <strong>ResNet-50</strong> preentrenado con fine-tuning sobre 29.8k imágenes permite una segregación automatizada certera, reduciendo la contaminación cruzada en puntos de reciclaje.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">💎 Calidad de Ingeniería</div>
-          <div class="card-body">
-            <p>Cumplimiento estricto de estándares de la industria: <strong>100% de cobertura en tests TDD</strong>, cero advertencias en <strong>flake8</strong> y eliminación total de <strong>code smells y números mágicos</strong>.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🚀 Automatización Continua</div>
-          <div class="card-body">
-            <p>El pipeline de <strong>CI/CD en GitHub Actions</strong> valida cada cambio de forma desatendida sobre múltiples versiones de Python, asegurando estabilidad y despliegues sin regresiones.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top: 0.75rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1)); border-color: var(--accent-green);">
-        <h3 style="font-size: 1.8rem; font-weight: 800; color: #fff;">¡Muchas Gracias!</h3>
-        <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 1.05rem;">
-          Estamos listos para la ronda de preguntas y sustentación técnica.
-        </p>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-10">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Para concluir: EcoClasifica demuestra cómo la integración de visión artificial moderna con buenas prácticas de ingeniería de software —como TDD, CI/CD y código limpio libre de magic numbers— permite crear herramientas prácticas de alto impacto ecológico. Quedamos a su disposición para resolver cualquier duda o demostración técnica."
-        </div>
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 4:</strong>
+        "Trabajamos con ramas especializadas por rol bajo Gitflow: <code>master</code> inició el entrenamiento del modelo; <code>feature/backend-fastapi</code> y <code>feature/optimizacion-backend</code> construyeron y blindaron la API REST; <code>feature/frontend-ui</code> incorporó la SPA en React 19; <code>feature/devops-ci-cd</code> y <code>develop</code> automatizaron los tests TDD y GitHub Actions; y <code>feature/semana15-despliegue-docker</code> unificó todo con Docker, Docker Compose y Docker Hub."
       </div>
     </section>
 
-  </main>
+    <!-- =================================================================== -->
+    <!-- SLIDE 5: EXPLORADOR DE CARPETAS Y ARCHIVOS DEL PROYECTO             -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="5">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 5 · Requisito 5 de la Rúbrica (Repositorio GitHub)</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Estructura de Carpetas: ¿Para qué sirve cada archivo?</h2>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-500 font-semibold">
+          Explorador Interactivo de Módulos
+        </span>
+      </div>
 
-  <!-- BOTTOM FOOTER -->
-  <footer>
-    <div class="key-hints">
-      <span>Navegación: <span class="kbd">◀</span> <span class="kbd">▶</span> o <span class="kbd">Espacio</span></span>
-      <span>Notas del orador: <span class="kbd">N</span></span>
-      <span>Cronómetro: <span class="kbd">T</span></span>
-    </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Botones de carpetas -->
+        <div class="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-1.5" id="folderList">
+          <button data-folder="src" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>📁 src/ (Backend &amp; IA)</span>
+            <span class="text-[var(--muted-foreground)] font-mono">8 archivos</span>
+          </button>
+          <button data-folder="frontend" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>📁 frontend/ (SPA React 19 + dist)</span>
+            <span class="text-[var(--muted-foreground)] font-mono">UI + Build</span>
+          </button>
+          <button data-folder="docker" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>🐳 Raíz Docker &amp; Config</span>
+            <span class="text-[var(--muted-foreground)] font-mono">6 archivos</span>
+          </button>
+          <button data-folder="models" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>🧠 models/ecoclasifica-resnet50/</span>
+            <span class="text-[var(--muted-foreground)] font-mono">4 archivos</span>
+          </button>
+          <button data-folder="training" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>📈 training/ &amp; preparar_datos.py</span>
+            <span class="text-[var(--muted-foreground)] font-mono">4 archivos</span>
+          </button>
+          <button data-folder="tests" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>🧪 tests/ &amp; htmlcov/</span>
+            <span class="text-[var(--muted-foreground)] font-mono">6 suites TDD</span>
+          </button>
+          <button data-folder="devops" class="folder-btn text-left p-2.5 rounded-lg border transition text-xs font-semibold flex items-center justify-between">
+            <span>⚙️ .github/, docs/ &amp; Scripts .bat</span>
+            <span class="text-[var(--muted-foreground)] font-mono">CI + 5 scripts</span>
+          </button>
+        </div>
 
-    <div style="font-size: 0.82rem; color: var(--text-dim);">
-      EcoClasifica v1.0 · Universidad Continental · Construcción de Software
-    </div>
-  </footer>
+        <!-- Contenido detallado de la carpeta -->
+        <div class="lg:col-span-8 bg-[var(--background)] border border-[var(--border)] rounded-xl p-4" id="folderDetailBox">
+          <!-- Renderizado dinámico por JS -->
+        </div>
+      </div>
+
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 5:</strong>
+        "El repositorio está organizado modularmente: en <code>src/</code> vive la lógica de negocio y la API FastAPI; en <code>frontend/</code> el código React y su compilado <code>dist/</code>; en <code>models/ecoclasifica-resnet50/</code> los 4 archivos del modelo afinado; en <code>training/</code> los scripts de fine-tuning; en <code>tests/</code> las 6 suites unitarias; y en la raíz los archivos <code>Dockerfile</code>, <code>docker-compose.yml</code> y <code>requirements.txt</code> exigidos por la rúbrica."
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SLIDE 6: COMPONENTE DE IA (RESNET-50), ENTRADAS/SALIDAS Y LÍMITES   -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="6">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 6 · Requisito 3 de la Rúbrica (Componente de IA)</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Modelo ResNet-50: Justificación, Entradas/Salidas y Limitaciones</h2>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-purple-500/15 text-purple-400">
+          Accuracy: 58.42% · F1 Macro: 0.4709
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="font-bold text-purple-400 uppercase">1. Identificación y Justificación</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            <strong>Modelo:</strong> <code>microsoft/resnet-50</code> (50 capas convolucionales con conexiones residuales <em>skip connections</em>).
+          </p>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            <strong>¿Por qué ResNet-50?</strong> Equilibrio ideal entre precisión y baja latencia en CPU. El <em>transfer learning</em> desde ImageNet-1k aprovecha extractores de texturas, brillos y bordes sin requerir millones de fotos ni GPU en producción.
+          </p>
+        </div>
+
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="font-bold text-emerald-500 uppercase">2. Datos de Entrada (Input Tensor)</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            • Fotografía en formato <code>JPEG</code>, <code>PNG</code>, <code>WEBP</code> o <code>BMP</code>.<br/>
+            • Conversión a 3 canales <strong>RGB</strong>.<br/>
+            • Redimensionado y recorte central a <strong>224 × 224 px</strong>.<br/>
+            • Normalización ImageNet:<br/>
+            &nbsp;&nbsp;<code>media = [0.485, 0.456, 0.406]</code><br/>
+            &nbsp;&nbsp;<code>std = [0.229, 0.224, 0.225]</code><br/>
+            • Tensor final: <code>torch.Size([1, 3, 224, 224])</code>.
+          </p>
+        </div>
+
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+          <div class="font-bold text-amber-400 uppercase">3. Limitaciones Actuales del Modelo</div>
+          <p class="text-[var(--muted-foreground)] leading-relaxed">
+            • Entrenado solo por <strong>5 épocas en CPU</strong> sobre TrashNet (2,527 imágenes con fondo blanco/limpio).<br/>
+            • Baja precisión ante fondos complejos, poca iluminación o múltiples objetos superpuestos.<br/>
+            • Clasifica por material visual, no detecta si el envase está contaminado con grasa/comida.<br/>
+            • La clase <code>trash</code> es heterogénea y no hay umbral de rechazo duro.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tabla de las 6 clases de salida -->
+      <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2.5">
+        <div class="text-xs font-bold uppercase tracking-wider text-sky-400">📊 Datos de Salida (Output): Probabilidades Softmax sobre las 6 Clases</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2 text-xs">
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">0 · 📦 Cartón</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: cardboard</div>
+            <div class="text-sky-400 font-semibold mt-1">Contenedor Azul</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">1 · 🍾 Vidrio</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: glass</div>
+            <div class="text-emerald-500 font-semibold mt-1">Contenedor Verde</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">2 · 🥫 Metal</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: metal</div>
+            <div class="text-amber-400 font-semibold mt-1">Contenedor Amarillo</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">3 · 📄 Papel</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: paper</div>
+            <div class="text-sky-400 font-semibold mt-1">Contenedor Azul</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">4 · ♻️ Plástico</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: plastic</div>
+            <div class="text-amber-400 font-semibold mt-1">Contenedor Amarillo</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+            <div class="font-bold">5 · 🗑️ Basura general</div>
+            <div class="font-mono text-[var(--muted-foreground)]">id2label: trash</div>
+            <div class="text-gray-400 font-semibold mt-1">Contenedor Gris</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 6:</strong>
+        "El componente de IA utiliza <strong>ResNet-50</strong> afinado. Recibe una imagen que se normaliza en un tensor <code>1×3×224×224</code> y devuelve mediante Softmax las probabilidades para las 6 categorías, mapeadas de inglés a español con su recomendación ecológica. También identificamos con transparencia sus limitaciones: fue entrenado 5 épocas en CPU sobre fondos limpios y clasifica por material visual."
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SLIDE 7: IMPLEMENTACIÓN DE DOCKER, DOCKER COMPOSE Y DOCKER HUB      -->
+    <!-- =================================================================== -->
+    <section class="slide-panel hidden bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm space-y-4" data-slide="7">
+      <div class="border-b border-[var(--border)] pb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-500">Diapositiva 7 · Requisito 4 de la Rúbrica (Implementación de Docker)</span>
+          <h2 class="text-xl md:text-2xl font-extrabold mt-0.5">Dockerfile, Docker Compose y Despliegue desde Docker Hub</h2>
+        </div>
+        <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-500 font-bold">
+          Puerto 8000:8000 · Healthcheck Activo
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+        <!-- Explicación Dockerfile -->
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+          <div class="font-bold text-emerald-500 uppercase">1. Explicación del Dockerfile</div>
+          <pre class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)] font-mono text-xs overflow-x-auto leading-relaxed">FROM python:3.11-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50 \
+    ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends \
+    libgl1 libglib2.0-0 &amp;&amp; rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src/ ./src/
+COPY frontend/dist/ ./frontend/dist/
+COPY models/ecoclasifica-resnet50/ ./models/ecoclasifica-resnet50/
+EXPOSE 8000
+CMD ["uvicorn", "src.fastapi_app:app", "--host", "0.0.0.0", "--port", "8000"]</pre>
+          <p class="text-[var(--muted-foreground)]">
+            <strong>Punto clave sobre los pesos:</strong> <code>models/</code> se excluye en <code>.gitignore</code> (~94.3 MB), pero se incluye dentro de la imagen publicada en Docker Hub <code>yury1289/ecoclasifica:latest</code>.
+          </p>
+        </div>
+
+        <!-- Explicación Docker Compose -->
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+          <div class="font-bold text-sky-400 uppercase">2. Uso de Docker Compose (docker-compose.yml)</div>
+          <pre class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)] font-mono text-xs overflow-x-auto leading-relaxed">services:
+  ecoclasifica:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE:-yury1289/ecoclasifica:latest}
+    container_name: ecoclasifica
+    ports:
+      - "8000:8000"
+    environment:
+      - ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50
+      - ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped</pre>
+          <p class="text-[var(--muted-foreground)]">
+            Automatiza puertos, variables de entorno, reinicio automático y verificación de salud (<code>healthy</code>) apuntando por defecto a <code>yury1289/ecoclasifica:latest</code>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Comandos de Ejecución y Demostración -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+          <div class="font-bold text-emerald-500">A) Con Docker Compose (Recomendado)</div>
+          <pre class="p-2 rounded bg-[var(--card)] border border-[var(--border)] font-mono overflow-x-auto">docker compose pull
+docker compose up -d
+docker compose ps</pre>
+        </div>
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+          <div class="font-bold text-sky-400">B) Con Docker CLI Directo</div>
+          <pre class="p-2 rounded bg-[var(--card)] border border-[var(--border)] font-mono overflow-x-auto">docker pull yury1289/ecoclasifica:latest
+docker run -d --name ecoclasifica -p 8000:8000 yury1289/ecoclasifica:latest</pre>
+        </div>
+        <div class="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+          <div class="font-bold text-amber-400">C) Rutas de Demostración en Vivo</div>
+          <div class="space-y-1 text-[var(--muted-foreground)]">
+            <div>• UI Web: <code>http://localhost:8000/ui</code></div>
+            <div>• Swagger: <code>http://localhost:8000/docs</code></div>
+            <div>• Salud: <code>http://localhost:8000/health</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-note hidden bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 text-xs leading-relaxed">
+        <strong class="text-emerald-500 uppercase block mb-1">🗣️ Guion sugerido para la Diapositiva 7:</strong>
+        "Para el despliegue usamos tanto <code>Dockerfile</code> como <code>docker-compose.yml</code>. La imagen oficial ya está en Docker Hub como <code>yury1289/ecoclasifica:latest</code>. Con un solo comando (<code>docker compose up -d</code> o <code>docker run -p 8000:8000</code>), cualquier equipo levanta el contenedor con el modelo afinado incluido y accede en tiempo real a <code>localhost:8000/ui</code> y <code>localhost:8000/docs</code>."
+      </div>
+    </section>
+
+  </div>
 
   <script>
-    // ESTADO DE LA PRESENTACIÓN
-    const totalSlides = 10;
+    // =========================================================================
+    // DATOS DETALLADOS DE LAS 8 RAMAS DE GIT
+    // =========================================================================
+    const branchData = {
+      semana15: {
+        name: "feature/semana15-despliegue-docker",
+        commit: "4bbf300 (3 commits sobre origin/main)",
+        author: "Yury Yohan Llanos Luna",
+        badge: "Rama de Entrega Semana 15 · Consolidado 2",
+        purpose: "Integrar en un solo servicio desplegable el backend FastAPI, el build de producción de React (/ui) y el modelo ResNet-50 afinado mediante Docker, Docker Compose y Docker Hub (yury1289/ecoclasifica:latest).",
+        items: [
+          "Dockerfile, docker-compose.yml (con healthcheck y puerto 8000:8000) y .dockerignore.",
+          "src/fastapi_app.py: sirve la SPA compilada (frontend/dist) en GET /ui y archivos estáticos.",
+          "src/model.py y src/preprocess.py: caché en memoria (_MODEL_CACHE y @lru_cache) y variables de entorno ECOCLASIFICA_MODEL_PATH / ECOCLASIFICA_FRONTEND_DIST.",
+          "src/postprocess.py y src/routes.py: traducción automática de etiquetas inglés->español (LABEL_ALIASES) y emojis.",
+          "frontend/dist/ versionado en Git para que docker build funcione tras clonar sin requerir Node.js.",
+          "README.md alineado 100% con los 5 apartados de la rúbrica de Consolidado 2 (Semana 15)."
+        ]
+      },
+      main: {
+        name: "main (origin/main)",
+        commit: "0c9d39d (remoto) / 4bbf300 (local)",
+        author: "Equipo DEV (Merges de Marco, Yury, Bryan y Benjamin)",
+        badge: "Rama Principal de Producción",
+        purpose: "Contener el código estable e integrado del proyecto tras superar las revisiones de Pull Request y el pipeline CI de GitHub Actions.",
+        items: [
+          "Integra los merges de feature/backend-fastapi, feature/optimizacion-backend, feature/devops-ci-cd y feature/frontend-ui.",
+          "Protegida por el workflow .github/workflows/ci.yml que se dispara en cada push y pull_request hacia main.",
+          "Contiene la estructura base completa de src/, frontend/, tests/, training/ y scripts .bat."
+        ]
+      },
+      backend: {
+        name: "origin/feature/backend-fastapi",
+        commit: "4f00703",
+        author: "Yury Yohan Llanos Luna",
+        badge: "Desarrollo de Backend & API REST",
+        purpose: "Construir la API REST profesional con FastAPI para exponer el modelo ResNet-50 mediante endpoints documentados con OpenAPI / Swagger.",
+        items: [
+          "src/fastapi_app.py: creación de endpoints GET /, GET /health, GET /classes, POST /classify, POST /predict y POST /classify/base64.",
+          "Modelos Pydantic (Base64ImageRequest, ClasificacionResponse, ErrorResponse, HealthResponse) con ejemplos para Swagger (/docs y /redoc).",
+          "tests/test_fastapi.py: 17 pruebas unitarias con TestClient verificando respuestas HTTP 200, 400 y 413."
+        ]
+      },
+      optbackend: {
+        name: "origin/feature/optimizacion-backend",
+        commit: "7fe92d3",
+        author: "Yury Yohan Llanos Luna",
+        badge: "Seguridad, Validaciones & PEP8",
+        purpose: "Fortalecer las validaciones contra archivos maliciosos o corruptos en FastAPI y eliminar advertencias del linter flake8 en el pipeline CI.",
+        items: [
+          "Validación de Magic Bytes con Pillow (Image.verify()), límites de 10 MB (HTTP 413) y dimensiones entre 10x10 y 8192x8192 píxeles.",
+          "Eliminación de números mágicos usando constantes UPPER_CASE (TAMANO_MAXIMO_BYTES, DIMENSION_MINIMA_PX, etc.).",
+          "Cumplimiento estricto de PEP8 (flake8 src/ --max-line-length=120 con 0 errores)."
+        ]
+      },
+      frontend: {
+        name: "origin/feature/frontend-ui",
+        commit: "8d36210",
+        author: "Benjamin Salazar Arenas",
+        badge: "Interfaz Gráfica SPA en React 19",
+        purpose: "Proveer una interfaz gráfica moderna, intuitiva y responsiva (Glassmorphism) conectada al backend FastAPI.",
+        items: [
+          "frontend/src/: SPA en React 19.3 + TypeScript 6.0 + Vite 8.3 + Tailwind CSS 4.3.",
+          "Componentes: Dropzone (subida y arrastrar/soltar), captura desde cámara web en vivo, pegado con Ctrl+V (useClipboardPaste), ResultCard y efecto TypewriterText.",
+          "iniciar.bat: script para levantar en modo desarrollo el backend y el servidor Vite simultáneamente."
+        ]
+      },
+      devops: {
+        name: "origin/feature/devops-ci-cd",
+        commit: "823c7e9",
+        author: "Bryan Alexander Cahuana Mendoza",
+        badge: "CI/CD, Automatización & TDD 100%",
+        purpose: "Implementar la integración continua en GitHub Actions, refactorizar code smells y automatizar la ejecución local en Windows.",
+        items: [
+          ".github/workflows/ci.yml: pipeline automatizado en Ubuntu con matriz Python 3.10 y 3.11, coverage >= 60% y flake8.",
+          ".coveragerc y htmlcov/: configuración y reporte interactivo con 100% de cobertura en módulos core.",
+          "run_app.bat, run_backend.bat, run_tests.bat, abrir_presentacion.bat y docs/presentacion.html."
+        ]
+      },
+      develop: {
+        name: "origin/develop",
+        commit: "823c7e9",
+        author: "Bryan Alexander Cahuana Mendoza",
+        badge: "Rama de Integración Continua",
+        purpose: "Servir como entorno de pre-producción donde se prueban los cambios de DevOps y TDD antes de fusionarlos en main.",
+        items: [
+          "Monitoreada automáticamente por GitHub Actions (on: push: branches: [main, develop]).",
+          "Sincronizada con el commit 823c7e9 de automatización de scripts y pruebas TDD."
+        ]
+      },
+      master: {
+        name: "origin/master",
+        commit: "5530697",
+        author: "Marco Antonio Bonifacio Ruiz",
+        badge: "Rama Fundacional de IA / Entrenamiento",
+        purpose: "Establecer la base del proyecto de entrenamiento de IA, descarga de datos y arquitectura inicial de módulos Python.",
+        items: [
+          "preparar_datos.py: descarga y organización del dataset de residuos en carpetas train/ y val/.",
+          "training/train.py, training/evaluate.py y training/config.json: pipeline de fine-tuning de microsoft/resnet-50.",
+          "Estructura inicial de src/ (preprocess.py, model.py, postprocess.py) y tests unitarios base."
+        ]
+      }
+    };
+
+    // =========================================================================
+    // DATOS DETALLADOS DE LAS CARPETAS Y ARCHIVOS DEL PROYECTO
+    // =========================================================================
+    const folderData = {
+      src: {
+        title: "📁 Carpeta src/ — Backend FastAPI, Inferencia IA y Lógica de Negocio",
+        desc: "Contiene todos los módulos de Python que procesan la imagen, ejecutan ResNet-50, aplican reglas de negocio y exponen la API REST.",
+        files: [
+          { name: "src/fastapi_app.py", role: "Punto de entrada principal en producción y Docker. Define la app FastAPI (v1.0.0), CORS, las 6 validaciones de seguridad, los endpoints REST (/, /health, /classes, /classify, /predict, /classify/base64) y sirve el frontend compilado en /ui." },
+          { name: "src/model.py", role: "Define la clase EcoClasificaModel y classify_waste() con caché en memoria (_MODEL_CACHE). Carga el checkpoint afinado desde ECOCLASIFICA_MODEL_PATH o hace fallback a microsoft/resnet-50 base." },
+          { name: "src/preprocess.py", role: "Valida formatos y dimensiones, convierte a RGB y ejecuta el AutoImageProcessor cacheado (@lru_cache) para generar el tensor 1×3×224×224 normalizado." },
+          { name: "src/postprocess.py", role: "Normaliza nombres de categorías inglés/español (LABEL_ALIASES), asigna emojis (CATEGORY_EMOJIS) y genera las recomendaciones ecológicas de reciclaje (DISPOSAL_RECOMMENDATIONS)." },
+          { name: "src/routes.py", role: "Capa controladora que conecta la API con el modelo y el post-procesamiento (health_check() y classify_image_api())." },
+          { name: "src/ecoclasifica.py", role: "Motor de reglas de negocio base con constantes tipadas UPPER_CASE, normalización léxica y penalización de confianza para imágenes menores a 128px." },
+          { name: "src/api.py", role: "Fachada de compatibilidad para invocaciones programáticas de health_check y clasificación." },
+          { name: "src/app.py", role: "Servidor alternativo ligero de clasificación en FastAPI utilizado por iniciar.bat en desarrollo." }
+        ]
+      },
+      frontend: {
+        title: "📁 Carpeta frontend/ — Interfaz Gráfica React 19 + Build de Producción",
+        desc: "Single Page Application (SPA) con diseño Glassmorphism que consume la API de FastAPI.",
+        files: [
+          { name: "frontend/dist/", role: "Build estático de producción (index.html, bg-eco.jpg, favicon.svg, assets/*.js y *.css) copiado dentro de la imagen Docker y servido por FastAPI en http://localhost:8000/ui." },
+          { name: "frontend/src/features/classification/api/classifyApi.ts", role: "Envía la imagen por multipart/form-data a POST /classify y normaliza la respuesta en español (categoria, confianza, emoji, recomendacion, todas_las_predicciones)." },
+          { name: "frontend/src/features/classification/components/ResultCard.tsx", role: "Muestra la barra de progreso de inferencia, la categoría detectada con su emoji, barras porcentuales de las 6 clases y la recomendación con efecto máquina de escribir (TypewriterText)." },
+          { name: "frontend/src/features/classification/components/Dropzone.tsx", role: "Permite arrastrar y soltar imágenes, seleccionar archivos locales o activar la cámara web en vivo." },
+          { name: "frontend/src/services/apiConfig.ts", role: "Configura la instancia de Axios con timeout de 15s y baseURL relativo ('') para funcionar dentro del mismo contenedor Docker en el puerto 8000." },
+          { name: "frontend/package.json & vite.config.ts", role: "Declara dependencias (React 19.3.1, Tailwind CSS 4.3.5, Vite 8.3.6, Axios, React Query) y configuración de compilación." }
+        ]
+      },
+      docker: {
+        title: "🐳 Archivos de Contenedorización y Configuración en la Raíz",
+        desc: "Archivos que garantizan la portabilidad del sistema completo en Docker y Docker Hub.",
+        files: [
+          { name: "Dockerfile", role: "Receta de construcción sobre python:3.11-slim: instala libgl1/libglib2.0-0, requirements.txt, copia src/, frontend/dist/ y models/ecoclasifica-resnet50/, expone el puerto 8000 y lanza Uvicorn." },
+          { name: "docker-compose.yml", role: "Orquesta el contenedor ecoclasifica en el puerto 8000:8000 usando por defecto la imagen yury1289/ecoclasifica:latest, con variables de entorno, restart: unless-stopped y healthcheck contra /health." },
+          { name: ".dockerignore", role: "Excluye venv/, node_modules/, .git/, data/, tests/, *.zip y pesos duplicados sueltos de la raíz para acelerar el docker build." },
+          { name: ".gitignore", role: "Evita subir a GitHub entornos virtuales, secretos (.env), archivos .zip pesados y la carpeta models/ (~94.3 MB)." },
+          { name: "requirements.txt", role: "Lista las dependencias de Python para IA, FastAPI, métricas y testing." },
+          { name: "README.md", role: "Documentación técnica integral alineada con los 5 puntos de la rúbrica de Consolidado 2 (Semana 15)." }
+        ]
+      },
+      models: {
+        title: "🧠 Carpeta models/ecoclasifica-resnet50/ — Checkpoint del Modelo Afinado",
+        desc: "Almacena el modelo ResNet-50 entrenado sobre las 6 categorías. Excluido de Git por peso, pero incluido dentro de yury1289/ecoclasifica:latest en Docker Hub.",
+        files: [
+          { name: "model.safetensors (94.3 MB)", role: "Pesos tensoriales de la red ResNet-50 afinada tras 5 épocas de transfer learning." },
+          { name: "config.json", role: "Arquitectura del modelo (ResNetForImageClassification) y mapeo id2label / label2id de las 6 clases." },
+          { name: "preprocessor_config.json", role: "Parámetros exactos del AutoImageProcessor (resize, center crop 224×224 y media/desviación ImageNet)." },
+          { name: "label_mapping.json", role: "Diccionario de correspondencia entre índices numéricos (0-5), etiquetas en inglés y nombres en español." }
+        ]
+      },
+      training: {
+        title: "📈 Carpeta training/ y preparar_datos.py — Pipeline de Entrenamiento ML",
+        desc: "Scripts para preparar el dataset, ejecutar el fine-tuning de ResNet-50 y evaluar métricas.",
+        files: [
+          { name: "preparar_datos.py", role: "Descarga y estructura las imágenes de entrenamiento y validación en data/train y data/val por categoría." },
+          { name: "training/train.py", role: "Ejecuta el fine-tuning de microsoft/resnet-50 con Hugging Face Trainer y guarda el mejor checkpoint en models/ecoclasifica-resnet50/." },
+          { name: "training/evaluate.py", role: "Calcula Accuracy (58.42%), Precision, Recall, F1 macro (0.4709) y exporta reportes y matriz de confusión." },
+          { name: "training/config.json", role: "Centraliza hiperparámetros: 5 épocas, batch_size 16, lr 5e-5, image_size 224, seed 42 y partición 80/10/10." }
+        ]
+      },
+      tests: {
+        title: "🧪 Carpetas tests/ y htmlcov/ — Suite de Pruebas Unitarias TDD",
+        desc: "Garantiza el funcionamiento correcto de cada capa mediante unittest y FastAPI TestClient.",
+        files: [
+          { name: "tests/test_fastapi.py", role: "17 pruebas integrales de todos los endpoints de FastAPI (/, /health, /classes, /classify, /predict, /classify/base64) y rechazos HTTP 400/413." },
+          { name: "tests/test_ecoclasifica.py", role: "Verifica constantes UPPER_CASE, normalización de materiales, cálculo de confianza y degradación a <128px." },
+          { name: "tests/test_postprocess.py", role: "Verifica formateo de barras de probabilidad, normalización inglés/español y recomendaciones de reciclaje." },
+          { name: "tests/test_preprocess.py", role: "Prueba validación de imágenes, conversión RGB y generación del tensor 1×3×224×224." },
+          { name: "tests/test_model.py & tests/test_api.py", role: "Prueban la inicialización del modelo ResNet-50, predicción con mocks y endpoints de salud/clasificación." },
+          { name: ".coveragerc & htmlcov/", role: "Configuración de cobertura (fail_under = 60) y reporte visual HTML con 100% de cobertura en módulos core." }
+        ]
+      },
+      devops: {
+        title: "⚙️ Carpetas .github/, docs/, static/, templates/ y Scripts .bat",
+        desc: "Automatización CI/CD, diapositivas y scripts de ejecución rápida en Windows.",
+        files: [
+          { name: ".github/workflows/ci.yml", role: "Pipeline CI en GitHub Actions: corre tests, verifica cobertura >=60% y ejecuta flake8 en Python 3.10 y 3.11." },
+          { name: "docs/presentacion.html & abrir_presentacion.bat", role: "Presentación interactiva en HTML para la sustentación del equipo." },
+          { name: "run_backend.bat / iniciar.bat / run_app.bat / run_tests.bat", role: "Scripts automatizados para iniciar FastAPI en el puerto 8000, abrir el frontend o correr la suite de tests con cobertura." },
+          { name: "static/ & templates/", role: " Carpetas reservadas para recursos estáticos y plantillas base de la estructura original del proyecto." }
+        ]
+      }
+    };
+
+    // =========================================================================
+    // LÓGICA DE NAVEGACIÓN DE DIAPOSITIVAS
+    // =========================================================================
+    const totalSlides = 7;
     let currentSlide = 1;
 
-    // ELEMENTOS DOM
-    const slides = document.querySelectorAll('.slide');
+    const slides = document.querySelectorAll('.slide-panel');
+    const tabs = document.querySelectorAll('.slide-tab');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const slideIndicator = document.getElementById('slideIndicator');
-    const progressBar = document.getElementById('progressBar');
-    const notesToggleBtn = document.getElementById('notesToggleBtn');
+    const slideCounter = document.getElementById('slideCounter');
 
-    // NAVEGACIÓN DE DIAPOSITIVAS
-    function showSlide(index) {
-      if (index < 1) index = 1;
-      if (index > totalSlides) index = totalSlides;
-      currentSlide = index;
+    function showSlide(n) {
+      if (n < 1) n = 1;
+      if (n > totalSlides) n = totalSlides;
+      currentSlide = n;
 
-      slides.forEach(slide => {
-        const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
-        if (slideNum === currentSlide) {
-          slide.classList.add('active');
+      slides.forEach(s => {
+        const num = parseInt(s.getAttribute('data-slide'), 10);
+        s.classList.toggle('hidden', num !== currentSlide);
+      });
+
+      tabs.forEach(t => {
+        const num = parseInt(t.getAttribute('data-target'), 10);
+        if (num === currentSlide) {
+          t.className = "slide-tab px-2.5 py-2 rounded-lg text-xs font-bold border border-emerald-500 bg-emerald-500/15 text-emerald-500 transition text-left truncate";
         } else {
-          slide.classList.remove('active');
+          t.className = "slide-tab px-2.5 py-2 rounded-lg text-xs font-semibold border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-left truncate";
         }
       });
 
-      // Actualizar contador y progreso
-      slideIndicator.textContent = `${currentSlide} / ${totalSlides}`;
-      progressBar.style.width = `${(currentSlide / totalSlides) * 100}%`;
-
-      // Habilitar / deshabilitar botones
+      slideCounter.textContent = `${currentSlide} / ${totalSlides}`;
       prevBtn.disabled = currentSlide === 1;
-      prevBtn.style.opacity = currentSlide === 1 ? '0.5' : '1';
-      nextBtn.textContent = currentSlide === totalSlides ? 'Fin ✔' : 'Siguiente ▶';
-
-      // Scroll arriba suave
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      prevBtn.style.opacity = currentSlide === 1 ? '0.45' : '1';
+      nextBtn.textContent = currentSlide === totalSlides ? 'Inicio ↺' : 'Siguiente ▶';
     }
 
     prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
     nextBtn.addEventListener('click', () => {
-      if (currentSlide < totalSlides) {
-        showSlide(currentSlide + 1);
-      }
+      if (currentSlide === totalSlides) showSlide(1);
+      else showSlide(currentSlide + 1);
     });
 
-    // TECLAS DE ACCESO RÁPIDO
+    tabs.forEach(t => {
+      t.addEventListener('click', () => showSlide(parseInt(t.getAttribute('data-target'), 10)));
+    });
+
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') {
-        e.preventDefault();
-        if (currentSlide < totalSlides) showSlide(currentSlide + 1);
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        if (currentSlide > 1) showSlide(currentSlide - 1);
-      } else if (e.key.toLowerCase() === 'n') {
-        toggleNotes();
-      } else if (e.key.toLowerCase() === 't') {
-        toggleTimer();
-      }
+      if (e.key === 'ArrowRight') showSlide(currentSlide + 1);
+      else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+      else if (e.key.toLowerCase() === 'n') toggleNotes();
+      else if (e.key.toLowerCase() === 't') toggleTimer();
     });
 
-    // NOTAS DEL ORADOR
-    let notesVisible = false;
-    function toggleNotes() {
-      notesVisible = !notesVisible;
-      const allNotes = document.querySelectorAll('.speaker-notes-box');
-      allNotes.forEach(box => {
-        if (notesVisible) {
-          box.classList.add('open');
+    // =========================================================================
+    // FILTRO INTERACTIVO DE VERSIONES (SLIDE 2)
+    // =========================================================================
+    const vFilterBtns = document.querySelectorAll('.vfilter-btn');
+    const vItems = document.querySelectorAll('.v-item');
+
+    vFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-vfilter');
+        vFilterBtns.forEach(b => {
+          if (b === btn) {
+            b.className = "vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white";
+          } else {
+            b.className = "vfilter-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)]";
+          }
+        });
+        vItems.forEach(item => {
+          const cat = item.getAttribute('data-vcat');
+          item.classList.toggle('hidden', filter !== 'all' && cat !== filter);
+        });
+      });
+    });
+
+    // =========================================================================
+    // INSPECTOR INTERACTIVO DE RAMAS (SLIDE 4)
+    // =========================================================================
+    const branchBtns = document.querySelectorAll('.branch-btn');
+    const branchDetailBox = document.getElementById('branchDetailBox');
+
+    function renderBranch(key) {
+      const b = branchData[key];
+      branchBtns.forEach(btn => {
+        const k = btn.getAttribute('data-branch');
+        if (k === key) {
+          btn.className = "branch-btn w-full text-left p-2.5 rounded-lg border border-emerald-500 bg-emerald-500/15 transition flex items-center justify-between text-xs";
         } else {
-          box.classList.remove('open');
+          btn.className = "branch-btn w-full text-left p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500/40 transition flex items-center justify-between text-xs";
         }
       });
-      notesToggleBtn.style.background = notesVisible ? 'rgba(6, 182, 212, 0.2)' : 'var(--bg-card)';
-      notesToggleBtn.style.borderColor = notesVisible ? 'var(--accent-cyan)' : 'var(--border-color)';
-    }
-    notesToggleBtn.addEventListener('click', toggleNotes);
 
-    // CRONÓMETRO DE EXPOSICIÓN
-    let timerSeconds = 0;
-    let timerInterval = null;
-    let timerRunning = false;
+      const listHtml = b.items.map(i => `<li class="flex items-start gap-2"><span class="text-emerald-500 font-bold">✔</span><span>${i}</span></li>`).join('');
+      branchDetailBox.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2.5">
+            <div>
+              <span class="text-xs font-bold uppercase text-emerald-500">${b.badge}</span>
+              <h3 class="text-base font-extrabold font-mono mt-0.5">${b.name}</h3>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded bg-[var(--card)] border border-[var(--border)]">Commit: ${b.commit}</span>
+          </div>
+          <div class="text-xs">
+            <span class="font-bold">Autor / Responsable:</span>
+            <span class="text-[var(--muted-foreground)] ml-1">${b.author}</span>
+          </div>
+          <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)] text-xs leading-relaxed">
+            <strong class="block text-emerald-500 mb-0.5">¿Para qué sirve esta rama?</strong>
+            ${b.purpose}
+          </div>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-1.5">Aportes y archivos clave en esta rama:</div>
+            <ul class="space-y-1.5 text-xs text-[var(--muted-foreground)]">
+              ${listHtml}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    branchBtns.forEach(btn => {
+      btn.addEventListener('click', () => renderBranch(btn.getAttribute('data-branch')));
+    });
+
+    // =========================================================================
+    // EXPLORADOR INTERACTIVO DE CARPETAS Y ARCHIVOS (SLIDE 5)
+    // =========================================================================
+    const folderBtns = document.querySelectorAll('.folder-btn');
+    const folderDetailBox = document.getElementById('folderDetailBox');
+
+    function renderFolder(key) {
+      const f = folderData[key];
+      folderBtns.forEach(btn => {
+        const k = btn.getAttribute('data-folder');
+        if (k === key) {
+          btn.className = "folder-btn text-left p-2.5 rounded-lg border border-emerald-500 bg-emerald-500/15 text-emerald-500 transition text-xs font-bold flex items-center justify-between";
+        } else {
+          btn.className = "folder-btn text-left p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500/40 transition text-xs font-semibold flex items-center justify-between";
+        }
+      });
+
+      const filesHtml = f.files.map(file => `
+        <div class="p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+          <div class="font-mono font-bold text-xs text-emerald-500">${file.name}</div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-0.5 leading-relaxed">${file.role}</div>
+        </div>
+      `).join('');
+
+      folderDetailBox.innerHTML = `
+        <div class="space-y-3">
+          <div class="border-b border-[var(--border)] pb-2">
+            <h3 class="text-base font-extrabold">${f.title}</h3>
+            <p class="text-xs text-[var(--muted-foreground)] mt-0.5">${f.desc}</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            ${filesHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    folderBtns.forEach(btn => {
+      btn.addEventListener('click', () => renderFolder(btn.getAttribute('data-folder')));
+    });
+
+    // =========================================================================
+    // GUION DEL EXPOSITOR Y CRONÓMETRO
+    // =========================================================================
+    let notesOpen = false;
+    const notesBtn = document.getElementById('notesBtn');
+    function toggleNotes() {
+      notesOpen = !notesOpen;
+      document.querySelectorAll('.speaker-note').forEach(el => {
+        el.classList.toggle('hidden', !notesOpen);
+      });
+      notesBtn.className = notesOpen
+        ? "px-3 py-1.5 rounded-lg border border-emerald-500 bg-emerald-500/15 text-emerald-500 text-xs font-bold flex items-center gap-1.5 transition"
+        : "px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500/50 text-xs font-medium flex items-center gap-1.5 transition";
+    }
+    notesBtn.addEventListener('click', toggleNotes);
+
+    let seconds = 0;
+    let timerId = null;
     const timerDisplay = document.getElementById('timerDisplay');
     const timerToggle = document.getElementById('timerToggle');
     const timerReset = document.getElementById('timerReset');
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-      const secs = (timerSeconds % 60).toString().padStart(2, '0');
-      timerDisplay.textContent = `${mins}:${secs}`;
-    }
-
     function toggleTimer() {
-      if (timerRunning) {
-        clearInterval(timerInterval);
-        timerRunning = false;
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
         timerToggle.textContent = '▶';
       } else {
-        timerInterval = setInterval(() => {
-          timerSeconds++;
-          updateTimerDisplay();
+        timerId = setInterval(() => {
+          seconds++;
+          const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+          const s = String(seconds % 60).padStart(2, '0');
+          timerDisplay.textContent = `${m}:${s}`;
         }, 1000);
-        timerRunning = true;
         timerToggle.textContent = '⏸';
       }
     }
-
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerRunning = false;
-      timerSeconds = 0;
-      updateTimerDisplay();
-      timerToggle.textContent = '▶';
-    }
-
     timerToggle.addEventListener('click', toggleTimer);
-    timerReset.addEventListener('click', resetTimer);
+    timerReset.addEventListener('click', () => {
+      if (timerId) clearInterval(timerId);
+      timerId = null;
+      seconds = 0;
+      timerDisplay.textContent = '00:00';
+      timerToggle.textContent = '▶';
+    });
 
-    // INICIALIZACIÓN
+    // Inicializar vistas
     showSlide(1);
+    renderBranch('semana15');
+    renderFolder('src');
   </script>
 </body>
 </html>
