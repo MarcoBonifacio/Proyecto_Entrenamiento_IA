@@ -133,77 +133,103 @@ En el contenedor se fijan a `/app/models/ecoclasifica-resnet50` y `/app/frontend
 
 ---
 
-## 4. Implementación y despliegue con Docker
+## 4. Implementación de Docker
 
-### Explicación del `Dockerfile` y `docker-compose.yml`
+Esta sección cubre los 5 puntos requeridos en el apartado **4. Implementación de Docker** de la consigna de la Semana 15:
 
-- **`Dockerfile`:**
-  1. **Imagen base:** `python:3.11-slim` para reducir la superficie y peso del contenedor.
-  2. **Variables de entorno:** Define `PYTHONDONTWRITEBYTECODE=1`, `PYTHONUNBUFFERED=1`, `ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50` y `ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist`.
-  3. **Dependencias del sistema e instalación Python:** Instala `libgl1` y `libglib2.0-0` (requeridas para procesamiento de imágenes) e instala `requirements.txt` en una capa cacheable.
-  4. **Integración full-stack + IA:** Copia el código fuente (`src/`), el build de producción del frontend (`frontend/dist/`) y los pesos afinados (`models/ecoclasifica-resnet50/`).
-  5. **Exposición y arranque:** Expone el puerto `8000` y ejecuta `uvicorn src.fastapi_app:app --host 0.0.0.0 --port 8000`.
-- **`docker-compose.yml`:**
-  - Orquesta el servicio `ecoclasifica`, mapea el puerto `"8000:8000"`, aplica `restart: unless-stopped` y permite usar tanto la imagen local como la imagen remota mediante `${DOCKER_IMAGE:-ecoclasifica:latest}`.
+### 4.1. Presentación y explicación del `Dockerfile`
 
-### Opción A (Recomendada para el equipo y evaluación): Ejecución directa desde Docker Hub
+El archivo `Dockerfile` empaqueta en una sola unidad portable el backend FastAPI, la interfaz web React compilada y el modelo ResNet-50 afinado:
 
-La imagen oficial con el backend FastAPI, el frontend React compilado y el modelo ResNet-50 afinado está publicada en Docker Hub bajo **`yury1289/ecoclasifica:latest`**. No requiere clonar el repositorio ni entrenar el modelo:
+1. **Imagen base (`FROM python:3.11-slim`):** Utiliza una distribución ligera de Debian con Python 3.11 para minimizar el tamaño y la superficie de ataque del contenedor.
+2. **Variables de entorno (`ENV`):**
+   - `PYTHONDONTWRITEBYTECODE=1` y `PYTHONUNBUFFERED=1`: evitan archivos `.pyc` y habilitan logs en tiempo real.
+   - `ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50`: ruta interna del checkpoint afinado.
+   - `ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist`: ruta interna del build de producción de React servido en `/ui`.
+3. **Dependencias del sistema (`RUN apt-get ...`):** Instala `libgl1` y `libglib2.0-0` (necesarias para Pillow/Torchvision) y limpia la caché de `apt`.
+4. **Dependencias de Python (`COPY requirements.txt .` + `RUN pip install ...`):** Se copian e instalan antes del código fuente para aprovechar la caché de capas de Docker.
+5. **Integración de componentes (`COPY`):**
+   - `COPY src/ ./src/`: lógica de negocio y API REST FastAPI.
+   - `COPY frontend/dist/ ./frontend/dist/`: interfaz gráfica compilada (SPA React + Vite).
+   - `COPY models/ecoclasifica-resnet50/ ./models/ecoclasifica-resnet50/`: pesos entrenados (`model.safetensors`), configuración y mapeo de las 6 clases.
+6. **Puerto y comando de arranque (`EXPOSE 8000` + `CMD`):** Expone el puerto `8000` e inicia el servidor ASGI con `uvicorn src.fastapi_app:app --host 0.0.0.0 --port 8000`.
+
+### 4.2. Construcción de la imagen Docker
+
+Desde la raíz del proyecto (`Proyecto_Entrenamiento_IA`), la imagen se construye y etiqueta hacia el repositorio oficial de Docker Hub (`yury1289/ecoclasifica:latest`):
+
+```bat
+docker build -t ecoclasifica:latest .
+docker tag ecoclasifica:latest yury1289/ecoclasifica:latest
+```
+
+Para publicar la imagen en Docker Hub:
+
+```bat
+docker login -u yury1289
+docker push yury1289/ecoclasifica:latest
+```
+
+### 4.3. Ejecución del contenedor
+
+Cualquier integrante del equipo o el docente puede descargar y ejecutar el contenedor directamente desde Docker Hub en Windows (`cmd.exe` o PowerShell):
 
 ```bat
 docker pull yury1289/ecoclasifica:latest
 docker run -d --name ecoclasifica -p 8000:8000 yury1289/ecoclasifica:latest
 ```
 
-Una vez iniciado el contenedor, abrir en el navegador:
-
-- **Interfaz web (UI React):** <http://localhost:8000/ui>
-- **Documentación interactiva Swagger (OpenAPI):** <http://localhost:8000/docs>
-- **Estado del servicio (Health Check):** <http://localhost:8000/health> → `{"status":"ok", ..., "modelo_afinado_disponible": true}`
-
-Para ver logs o detener el contenedor:
+Comandos útiles de administración del contenedor:
 
 ```bat
+docker ps --filter "name=ecoclasifica"
 docker logs -f ecoclasifica
 docker rm -f ecoclasifica
 ```
 
-También se puede levantar con `docker-compose.yml` usando la imagen de Docker Hub en PowerShell:
+### 4.4. Demostración del funcionamiento del sistema desde el contenedor
 
-```powershell
-$env:DOCKER_IMAGE="yury1289/ecoclasifica:latest"
-docker compose pull
-docker compose up -d --no-build
-```
+Con el contenedor activo en el puerto `8000`, el sistema completo se demuestra en tiempo real desde:
 
-### Opción B: Construcción local de la imagen Docker
+- **Interfaz gráfica web (React SPA):** <http://localhost:8000/ui> (permite subir o arrastrar una imagen de residuo, usar la cámara o pegar con `Ctrl + V` y visualizar la categoría, porcentaje de confianza, desglose de las 6 clases y recomendación ecológica).
+- **Documentación interactiva Swagger (OpenAPI):** <http://localhost:8000/docs> (permite probar en vivo `GET /health`, `GET /classes`, `POST /classify` y `POST /classify/base64`).
+- **Verificación de estado (Health Check):** <http://localhost:8000/health> → devuelve `{"status": "ok", "servicio": "EcoClasifica API", "modelo_afinado_disponible": true, ...}`.
 
-Si deseas construir la imagen localmente desde la raíz del proyecto (requiere tener `models/ecoclasifica-resnet50/` y `frontend/dist/`):
-
-```powershell
-# Construir y levantar con Docker Compose
-docker compose up -d --build
-
-# O manualmente con Docker CLI
-docker build -t ecoclasifica:latest .
-docker run -d --name ecoclasifica -p 8000:8000 ecoclasifica:latest
-```
-
-### Publicación de nuevas versiones en Docker Hub (`yury1289/ecoclasifica:latest`)
-
-```bat
-docker tag ecoclasifica:latest yury1289/ecoclasifica:latest
-docker login -u yury1289
-docker push yury1289/ecoclasifica:latest
-```
-
-### Verificación desde consola (PowerShell)
+También se puede verificar desde PowerShell:
 
 ```powershell
 Invoke-RestMethod http://localhost:8000/health
 Invoke-RestMethod http://localhost:8000/classes
 curl.exe -X POST -F "file=@C:\ruta\a\residuo.jpg" http://localhost:8000/classify
 ```
+
+### 4.5. Uso de Docker Compose
+
+El proyecto incluye el archivo `docker-compose.yml` para automatizar y estandarizar el despliegue declarativo del servicio `ecoclasifica` sin tener que recordar parámetros manuales de `docker run`:
+
+- **¿Por qué corresponde usar Docker Compose en EcoClasifica?**
+  1. **Configuración declarativa en un solo archivo:** Define el nombre del contenedor (`ecoclasifica`), el mapeo de puertos (`"8000:8000"`), las variables de entorno (`ECOCLASIFICA_MODEL_PATH` y `ECOCLASIFICA_FRONTEND_DIST`) y la política de reinicio automático (`restart: unless-stopped`).
+  2. **Monitoreo de salud integrado (`healthcheck`):** Verifica periódicamente desde dentro del contenedor que `http://localhost:8000/health` responda HTTP 200, reportando el estado `(healthy)` en `docker compose ps`.
+  3. **Portabilidad con Docker Hub (`yury1289/ecoclasifica:latest`):** Usa `image: ${DOCKER_IMAGE:-yury1289/ecoclasifica:latest}`, lo que permite tanto descargar la imagen lista desde Docker Hub como reconstruirla localmente con `--build`.
+
+#### Comandos con Docker Compose (`cmd.exe` o PowerShell, desde la carpeta del proyecto)
+
+```bat
+REM 1. Descargar la imagen publicada en Docker Hub y levantar el servicio en segundo plano
+docker compose pull
+docker compose up -d
+
+REM 2. Verificar estado del servicio y healthcheck (Up / healthy)
+docker compose ps
+
+REM 3. Ver logs en tiempo real
+docker compose logs -f
+
+REM 4. Detener y eliminar el contenedor y la red creada por Compose
+docker compose down
+```
+
+*(Si se realizaron cambios locales en el código o modelo y se desea reconstruir la imagen con Compose: `docker compose up -d --build`).*
 
 ---
 

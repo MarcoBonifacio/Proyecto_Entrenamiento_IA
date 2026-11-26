@@ -1,9 +1,21 @@
 services:
   ecoclasifica:
-    build: .
-    image: ${DOCKER_IMAGE:-ecoclasifica:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE:-yury1289/ecoclasifica:latest}
     container_name: ecoclasifica
     ports:
       - "8000:8000"
+    environment:
+      - ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50
+      - ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     restart: unless-stopped
+
 
