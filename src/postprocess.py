@@ -6,19 +6,51 @@ para el usuario, incluyendo recomendaciones de disposición ecológica.
 
 from __future__ import annotations
 
+import unicodedata
+
 DEFAULT_CONFIDENCE = 0.0
 BAR_LENGTH = 20
 LABEL_PADDING = 18
 PERCENTAGE_MULTIPLIER = 100.0
 
 CATEGORY_EMOJIS = {
-    "Cartón": "",
-    "Vidrio": "",
-    "Metal": "",
-    "Papel": "",
-    "Plástico": "",
-    "Basura general": "",
+    "Cartón": "📦",
+    "Vidrio": "🍾",
+    "Metal": "🥫",
+    "Papel": "📄",
+    "Plástico": "♻️",
+    "Basura general": "🗑️",
 }
+
+# Etiquetas en inglés del modelo (id2label) -> nombre normalizado en español.
+LABEL_ALIASES = {
+    "cardboard": "Cartón",
+    "glass": "Vidrio",
+    "metal": "Metal",
+    "paper": "Papel",
+    "plastic": "Plástico",
+    "trash": "Basura general",
+}
+
+
+def _fold(text: str) -> str:
+    """Minúsculas y sin acentos, para comparar nombres de categoría."""
+    norm = unicodedata.normalize("NFKD", text.strip().casefold())
+    return "".join(c for c in norm if not unicodedata.combining(c))
+
+
+def normalize_category(category: str) -> str:
+    """Devuelve el nombre canónico de la categoría (tolera inglés, acentos y mayúsculas)."""
+    if not isinstance(category, str):
+        return "Desconocido"
+    key = _fold(category)
+    if key in LABEL_ALIASES:
+        return LABEL_ALIASES[key]
+    for canon in CATEGORY_EMOJIS:
+        if _fold(canon) == key:
+            return canon
+    return category.strip()
+
 
 DISPOSAL_RECOMMENDATIONS = {
     "Cartón": (
@@ -87,7 +119,7 @@ def format_prediction(prediction_dict: dict) -> str:
 def get_disposal_recommendation(category: str) -> str:
     """Devuelve una recomendación de disposición ecológica."""
     return DISPOSAL_RECOMMENDATIONS.get(
-        category,
+        normalize_category(category),
         "No se encontró una recomendación específica para esta categoría. "
         "Consulta con tu municipio sobre la disposición adecuada de este residuo.",
     )
@@ -95,7 +127,7 @@ def get_disposal_recommendation(category: str) -> str:
 
 def create_results_summary(prediction_dict: dict) -> dict:
     """Crea un resumen completo de la predicción con recomendación."""
-    categoria = prediction_dict.get("categoria", "Desconocido")
+    categoria = normalize_category(prediction_dict.get("categoria", "Desconocido"))
 
     return {
         "prediccion": format_prediction(prediction_dict),

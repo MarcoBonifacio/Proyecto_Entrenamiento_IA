@@ -1,13 +1,37 @@
-# Entorno virtual
+# Entornos virtuales
 venv/
 .venv/
+env/
+ENV/
 
-# Datos e imagenes pesadas
+# Secretos y variables de entorno locales
+.env
+.env.*
+*.pem
+*.key
+
+# Datos e imágenes pesadas de entrenamiento
 data/
 
-# Modelos y pesos pesados
+# Modelos y pesos pesados (disponibles directamente en la imagen de Docker Hub: yury1289/ecoclasifica:latest)
 models/
+/model.safetensors
+/config.json
+/label_mapping.json
+/preprocessor_config.json
 
-# Archivos temporales de Python
+# Archivos comprimidos y temporales
+*.zip
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# Archivos temporales y reportes de pruebas de Python
 __pycache__/
-*.pyc
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/

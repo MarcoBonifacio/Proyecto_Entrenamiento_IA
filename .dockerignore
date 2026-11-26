@@ -1,0 +1,42 @@
+# Control de versiones
+.git/
+.gitignore
+.github/
+
+# Dependencias y builds locales
+node_modules/
+frontend/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# Temporales y entregables pesados
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.zip
+data/
+docs/
+tests/
+training/
+
+# Copias sueltas de los pesos en la raíz (el modelo se toma de models/)
+/model.safetensors
+/config.json
+/label_mapping.json
+/preprocessor_config.json

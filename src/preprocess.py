@@ -7,6 +7,8 @@ antes de pasarlas al modelo de clasificación de residuos.
 from __future__ import annotations
 
 import logging
+import os
+from functools import lru_cache
 from pathlib import Path
 from typing import Union
 
@@ -18,6 +20,11 @@ from transformers import AutoImageProcessor
 VALID_EXTENSIONS: set[str] = {".jpg", ".jpeg", ".png"}
 IMAGE_SIZE: tuple[int, int] = (224, 224)
 MODEL_NAME: str = "microsoft/resnet-50"
+# Mismo procesador que se guardó al entrenar (preprocessor_config.json del modelo afinado).
+PROCESSOR_PATH: str = os.environ.get(
+    "ECOCLASIFICA_MODEL_PATH",
+    str(Path(__file__).resolve().parent.parent / "models" / "ecoclasifica-resnet50"),
+)
 MIN_IMAGE_DIMENSION: int = 1
 DEFAULT_IMAGE_SIZE: int = 224
 CONFIDENCE_THRESHOLD: float = 0.60
@@ -122,11 +129,24 @@ def validate_image(image_input: ImageInput) -> bool:
         return False
 
 
+@lru_cache(maxsize=1)
+def _get_image_processor() -> AutoImageProcessor:
+    """Carga (una sola vez) el procesador usado en el entrenamiento.
+
+    Se prefiere el ``preprocessor_config.json`` del modelo afinado (sin red);
+    si no existe, se recurre al procesador de ``microsoft/resnet-50``.
+    """
+    if (Path(PROCESSOR_PATH) / "preprocessor_config.json").is_file():
+        return AutoImageProcessor.from_pretrained(PROCESSOR_PATH)
+    return AutoImageProcessor.from_pretrained(MODEL_NAME)
+
+
 def load_and_preprocess_image(image_input: ImageInput) -> dict:
     """Carga, valida y preprocesa una imagen para el modelo ResNet-50.
 
-    La imagen se redimensiona a 224×224 y se transforma mediante el
-    ``AutoImageProcessor`` de HuggingFace para ResNet-50.
+    La imagen se transforma con el mismo ``AutoImageProcessor`` usado en el
+    entrenamiento (resize del lado corto, recorte central 224×224 y
+    normalización ImageNet), sin redimensionados previos que lo alteren.
 
     Parameters
     ----------
@@ -154,12 +174,10 @@ def load_and_preprocess_image(image_input: ImageInput) -> dict:
     # 1. Cargar y convertir a PIL Image RGB
     img = _load_image_from_input(image_input)
 
-    # 2. Redimensionar a 224×224
-    img = img.resize(IMAGE_SIZE, Image.Resampling.LANCZOS)
-
-    # 3. Procesar con AutoImageProcessor de ResNet-50
+    # 2. Procesar con el AutoImageProcessor del entrenamiento (imagen original, sin
+    #    pre-resize: el procesador ya hace resize + center crop + normalización).
     try:
-        processor = AutoImageProcessor.from_pretrained(MODEL_NAME)
+        processor = _get_image_processor()
         inputs = processor(images=img, return_tensors="pt")
         logger.info(
             "Imagen preprocesada exitosamente — forma del tensor: %s",
