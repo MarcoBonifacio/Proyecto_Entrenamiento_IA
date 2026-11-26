@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoClasifica — Presentación del Proyecto Final</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoClasifica — Presentación Interactiva Consolidado 2 (Semana 15)</title>
   <style>
     :root {
-      --bg-primary: #0a0f1d;
-      --bg-secondary: #111827;
-      --bg-card: #1f2937;
-      --bg-card-hover: #374151;
+      --bg-deep: #0b1120;
+      --bg-surface: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #26354d;
+      --bg-code: #090d16;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
       --accent-green: #10b981;
-      --accent-emerald: #059669;
-      --accent-cyan: #06b6d4;
-      --accent-blue: #3b82f6;
+      --accent-green-dark: #059669;
+      --accent-sky: #38bdf8;
+      --accent-purple: #a855f7;
       --accent-amber: #f59e0b;
       --accent-rose: #f43f5e;
-      --text-main: #f9fafb;
-      --text-muted: #9ca3af;
-      --text-dim: #6b7280;
-      --border-color: #374151;
-      --border-accent: rgba(16, 185, 129, 0.3);
-      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --border: #334155;
+      --border-highlight: rgba(16, 185, 129, 0.45);
+      --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --font-sans: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      --font-mono: 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace;
     }
 
     * {
@@ -31,1258 +37,2073 @@
     }
 
     body {
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: var(--font-family);
+      background: radial-gradient(circle at 15% 10%, rgba(16, 185, 129, 0.08), transparent 35%),
+                  radial-gradient(circle at 85% 90%, rgba(56, 189, 248, 0.08), transparent 35%),
+                  var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
       overflow-x: hidden;
     }
 
-    /* TOP BAR DE CONTROL */
-    header {
-      background: rgba(17, 24, 39, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* ==================== TOP NAVBAR ==================== */
+    .topbar {
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.25rem;
       position: sticky;
       top: 0;
       z-index: 100;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
     }
 
-    .brand-icon {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-sky));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .brand span {
-      background: linear-gradient(90deg, #10b981, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .controls-center {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .timer-badge {
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(31, 41, 55, 0.8);
-      border: 1px solid var(--border-color);
-      padding: 0.35rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-family: monospace;
-      color: var(--accent-cyan);
     }
 
-    .timer-btn {
-      background: transparent;
+    .brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.18rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .badge-sky {
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .badge-purple {
+      background: rgba(168, 85, 247, 0.15);
+      color: #d8b4fe;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .badge-rose {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fda4af;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .timer-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      padding: 0.32rem 0.65rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-sky);
+    }
+
+    .timer-pill button {
+      background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
       font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      transition: color 0.2s;
+      padding: 0 0.2rem;
     }
 
-    .timer-btn:hover {
-      color: var(--text-main);
+    .timer-pill button:hover {
+      color: var(--text-primary);
     }
 
-    .nav-buttons {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .slide-select {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.38rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .slide-select:focus {
+      border-color: var(--accent-green);
     }
 
     .btn {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 0.4rem 0.85rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 500;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.38rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s;
+      gap: 0.35rem;
+      transition: all 0.18s ease;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       background: var(--bg-card-hover);
       border-color: var(--accent-green);
     }
 
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
     .btn-primary {
-      background: var(--accent-emerald);
+      background: linear-gradient(135deg, var(--accent-green-dark), var(--accent-green));
       border-color: var(--accent-green);
-      color: #fff;
+      color: #ffffff;
     }
 
-    .btn-primary:hover {
-      background: var(--accent-green);
+    .btn-primary:hover:not(:disabled) {
+      filter: brightness(1.08);
     }
 
-    .slide-counter {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      min-width: 5.5rem;
+    .btn-active {
+      border-color: var(--accent-sky);
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+
+    .counter-box {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.35rem 0.7rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      min-width: 64px;
       text-align: center;
-      font-weight: 600;
     }
 
-    /* PROGRESS BAR */
-    .progress-bar-container {
+    /* ==================== PROGRESS BAR ==================== */
+    .progress-track {
       width: 100%;
       height: 4px;
-      background: rgba(55, 65, 81, 0.5);
-      position: relative;
+      background: rgba(51, 65, 85, 0.5);
     }
 
-    .progress-bar {
+    .progress-fill {
       height: 100%;
       width: 10%;
-      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-sky));
+      transition: width 0.28s ease;
     }
 
-    /* MAIN CONTAINER */
-    main {
+    /* ==================== QUICK TABS BAR ==================== */
+    .quick-tabs {
+      max-width: 1280px;
+      width: 100%;
+      margin: 0.75rem auto 0;
+      padding: 0 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(9, 1fr);
+      gap: 0.35rem;
+    }
+
+    .qtab {
+      background: rgba(30, 41, 59, 0.65);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.73rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.18s ease;
+    }
+
+    .qtab:hover {
+      color: var(--text-primary);
+      border-color: var(--accent-sky);
+    }
+
+    .qtab.active {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: var(--accent-green);
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ==================== MAIN SLIDE STAGE ==================== */
+    .stage {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      max-width: 1200px;
+      max-width: 1280px;
       width: 100%;
       margin: 0 auto;
-      padding: 2rem 1.5rem 5rem 1.5rem;
+      padding: 1rem 1.25rem 3.5rem;
     }
 
-    /* SLIDE LAYOUT */
     .slide {
       display: none;
-      animation: fadeIn 0.35s ease-out;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.1rem;
+      animation: slideFade 0.28s ease-out;
     }
 
     .slide.active {
       display: flex;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes slideFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .slide-header {
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-green);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
       display: flex;
+      flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-end;
-    }
-
-    .slide-tag {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent-green);
-      margin-bottom: 0.25rem;
-      display: block;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-lg);
     }
 
     .slide-title {
-      font-size: 2rem;
+      font-size: 1.45rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-top: 0.2rem;
     }
 
     .slide-subtitle {
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      margin-top: 0.25rem;
     }
 
-    /* GRID CARDS */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
+    /* ==================== GRID & CARDS ==================== */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+    .grid-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+    .col-4 { grid-column: span 4; }
+    .col-5 { grid-column: span 5; }
+    .col-7 { grid-column: span 7; }
+    .col-8 { grid-column: span 8; }
 
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 0.75rem;
-      padding: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      transition: transform 0.2s, border-color 0.2s;
+      gap: 0.65rem;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     }
 
     .card:hover {
-      border-color: var(--accent-green);
+      border-color: var(--border-highlight);
       transform: translateY(-2px);
     }
 
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 700;
+    .card-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.5rem;
-      color: var(--text-main);
     }
 
-    .card-body {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.5;
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
     }
 
-    /* STAT BADGE */
-    .stat-number {
-      font-size: 2.2rem;
+    .card-text {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.52;
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
       font-weight: 800;
       color: var(--accent-green);
-      line-height: 1;
-      font-feature-settings: "tnum";
+      font-family: var(--font-mono);
+      line-height: 1.1;
     }
 
-    .stat-label {
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .stat-lbl {
+      font-size: 0.75rem;
       color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    /* CODE COMPARISON COMPONENT */
-    .code-box {
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      font-family: 'Consolas', 'Fira Code', monospace;
-      font-size: 0.83rem;
-      color: #e6edf3;
-      overflow-x: auto;
-      line-height: 1.45;
+    /* ==================== SUB-TABS & ACCORDIONS ==================== */
+    .subtab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.55rem;
     }
 
-    .code-bad {
-      border-left: 4px solid var(--accent-rose);
+    .subtab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .code-good {
-      border-left: 4px solid var(--accent-green);
+    .subtab-btn:hover {
+      color: var(--text-primary);
     }
 
-    .pill {
-      display: inline-flex;
+    .subtab-btn.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: var(--accent-sky);
+      color: #7dd3fc;
+    }
+
+    .subtab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .subtab-panel.active {
+      display: flex;
+    }
+
+    /* ==================== TERMINAL / CODE BLOCKS ==================== */
+    .terminal {
+      background: var(--bg-code);
+      border: 1px solid #1e293b;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      background: #111827;
+      border-bottom: 1px solid #1e293b;
+      padding: 0.38rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .terminal-dots {
+      display: flex;
       align-items: center;
       gap: 0.35rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .copy-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.18rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-family: var(--font-sans);
       font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .pill-red {
-      background: rgba(244, 63, 94, 0.15);
-      color: #fda4af;
-      border: 1px solid rgba(244, 63, 94, 0.3);
+    .copy-btn:hover {
+      border-color: var(--accent-green);
+      color: #34d399;
     }
 
-    .pill-green {
-      background: rgba(16, 185, 129, 0.15);
-      color: #6ee7b7;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .copy-btn.copied {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--accent-green);
+      color: #34d399;
     }
 
-    .pill-blue {
-      background: rgba(59, 130, 246, 0.15);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.3);
+    .terminal pre {
+      padding: 0.8rem 0.95rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      line-height: 1.5;
+      white-space: pre;
     }
 
-    /* SPEAKER NOTES DRAWER */
-    .speaker-notes-box {
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid var(--accent-cyan);
-      border-radius: 0.75rem;
-      padding: 1rem 1.25rem;
-      margin-top: 1rem;
-      display: none;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    code.inline {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      color: #7dd3fc;
     }
 
-    .speaker-notes-box.open {
+    /* ==================== TABLES ==================== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .data-table th {
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--accent-sky);
+      text-align: left;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    .data-table td {
+      padding: 0.48rem 0.65rem;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    .data-table tr:hover td {
+      background: rgba(30, 41, 59, 0.45);
+    }
+
+    /* ==================== SVG CONTAINER ==================== */
+    .svg-box {
+      background: #080d1a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0.85rem;
+      overflow-x: auto;
+    }
+
+    .svg-box svg {
+      width: 100%;
+      height: auto;
       display: block;
     }
 
-    .speaker-notes-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--accent-cyan);
-      margin-bottom: 0.5rem;
+    /* ==================== SPEAKER NOTES ==================== */
+    .speaker-drawer {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-left: 4px solid var(--accent-green);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.1rem;
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .speaker-drawer.visible {
+      display: block;
+    }
+
+    .speaker-drawer strong {
+      color: #34d399;
+    }
+
+    /* ==================== INTERACTIVE LIST BUTTONS ==================== */
+    .selector-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .selector-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-
-    .speaker-notes-content {
-      font-size: 0.95rem;
-      color: #e5e7eb;
-      line-height: 1.6;
-    }
-
-    .speaker-notes-content strong {
-      color: var(--accent-green);
-    }
-
-    /* FOOTER NAV */
-    footer {
-      background: rgba(17, 24, 39, 0.95);
-      border-top: 1px solid var(--border-color);
-      padding: 0.75rem 1.5rem;
-      display: flex;
       justify-content: space-between;
-      align-items: center;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+
+    .selector-item:hover {
+      border-color: var(--accent-sky);
+      color: var(--text-primary);
+    }
+
+    .selector-item.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--accent-green);
+      color: #34d399;
+    }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: rgba(15, 23, 42, 0.94);
+      border-top: 1px solid var(--border);
+      padding: 0.55rem 1.25rem;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       z-index: 90;
-    }
-
-    .key-hints {
-      font-size: 0.78rem;
-      color: var(--text-dim);
       display: flex;
-      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
     .kbd {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.1rem 0.4rem;
-      border-radius: 0.25rem;
-      color: var(--text-muted);
-      font-family: monospace;
+      border: 1px solid var(--border);
+      padding: 0.08rem 0.38rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
     }
 
-    /* HERO PORTADA */
-    .hero-container {
-      text-align: center;
-      padding: 3rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 1rem;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .hero-title {
-      font-size: 3.2rem;
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      line-height: 1.1;
-      max-width: 900px;
-    }
-
-    .hero-title span {
-      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-desc {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 750px;
-      line-height: 1.6;
-    }
-
-    .team-badge-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      max-width: 850px;
-    }
-
-    .team-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      padding: 0.5rem 0.9rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-
-    .team-card.featured {
-      border-color: var(--accent-green);
-      background: rgba(16, 185, 129, 0.08);
-    }
-
-    .team-name {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .team-role {
-      font-size: 0.75rem;
-      color: var(--accent-cyan);
-    }
-
-    /* PIPELINE DIAGRAM */
-    .pipeline-step {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 0.9rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-    }
-
-    .pipeline-num {
-      width: 1.6rem;
-      height: 1.6rem;
-      border-radius: 9999px;
-      background: var(--accent-green);
-      color: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.8rem;
-    }
-
-    @media (max-width: 768px) {
-      .grid-2, .grid-3, .grid-4 {
-        grid-template-columns: 1fr;
-      }
-      .hero-title {
-        font-size: 2.2rem;
-      }
-      .slide-title {
-        font-size: 1.5rem;
-      }
-      .key-hints {
-        display: none;
-      }
+    @media (max-width: 960px) {
+      .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
+      .col-4, .col-5, .col-7, .col-8 { grid-column: span 12; }
+      .quick-tabs { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
-  <header>
+  <!-- ==================== TOPBAR ==================== -->
+  <header class="topbar">
     <div class="brand">
-      <div class="brand-icon">🌿</div>
-      <div>EcoClasifica <span>Slides</span></div>
+      <div class="brand-logo">🌿</div>
+      <div>
+        <div class="brand-title">
+          <span>EcoClasifica</span>
+          <span class="badge badge-green">Consolidado 2 · Semana 15 (20 pts)</span>
+          <span class="badge badge-sky">Docker Hub: yury1289/ecoclasifica:latest</span>
+        </div>
+        <div class="brand-sub">
+          Universidad Continental · Construcción de Software · Sustentación Grupal Equipo DEV
+        </div>
+      </div>
     </div>
 
-    <div class="controls-center">
-      <div class="timer-badge">
+    <div class="nav-controls">
+      <div class="timer-pill">
         <span>⏱️</span>
-        <span id="timerDisplay">00:00</span>
-        <button class="timer-btn" id="timerToggle" title="Iniciar / Pausar Cronómetro">▶</button>
-        <button class="timer-btn" id="timerReset" title="Reiniciar Cronómetro">↺</button>
+        <span id="timerText">00:00</span>
+        <button id="timerPlayBtn" title="Iniciar/Pausar cronómetro (Tecla T)">▶</button>
+        <button id="timerResetBtn" title="Reiniciar cronómetro">↺</button>
       </div>
 
-      <button class="btn" id="notesToggleBtn" title="Ver / Ocultar notas de qué decir">
-        🗣️ Notas del Orador
+      <button class="btn btn-active" id="notesToggleBtn" title="Mostrar/Ocultar guion del expositor (Tecla N)">
+        🗣️ Guion Expositor
       </button>
-    </div>
 
-    <div class="nav-buttons">
-      <button class="btn" id="prevBtn" title="Anterior (Flecha Izq)">◀ Anterior</button>
-      <div class="slide-counter" id="slideIndicator">1 / 10</div>
-      <button class="btn btn-primary" id="nextBtn" title="Siguiente (Flecha Der)">Siguiente ▶</button>
+      <select class="slide-select" id="slideSelect" aria-label="Selector rápido de diapositiva">
+        <option value="1">1. Presentación General y Rúbrica (20 pts)</option>
+        <option value="2">2. Interfaz Gráfica React 19 y Usabilidad (3 pts)</option>
+        <option value="3">3. Lógica de Negocio, Endpoints y 6 Condiciones (4 pts)</option>
+        <option value="4">4. Modelo IA ResNet-50, Tensores y 6 Clases (4 pts)</option>
+        <option value="5">5. Pesos, Logits classifier.1.weight y Limitaciones (4 pts)</option>
+        <option value="6">6. Configuración y Construcción de Imagen Docker (3 pts)</option>
+        <option value="7">7. Ejecución del Contenedor, Compose y Portabilidad (3 pts)</option>
+        <option value="8">8. Repositorio GitHub: 8 Ramas, Carpetas y Versiones (1 pt)</option>
+        <option value="9">9. Sustentación Técnica y Demo en Tiempo Real (2 pts)</option>
+      </select>
+
+      <button class="btn" id="prevBtn" title="Diapositiva anterior (Flecha Izquierda)">◀ Anterior</button>
+      <div class="counter-box" id="slideCounter">1 / 9</div>
+      <button class="btn btn-primary" id="nextBtn" title="Siguiente diapositiva (Flecha Derecha / Espacio)">Siguiente ▶</button>
     </div>
   </header>
 
-  <!-- PROGRESS BAR -->
-  <div class="progress-bar-container">
-    <div class="progress-bar" id="progressBar"></div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressBar"></div>
   </div>
 
-  <!-- MAIN SLIDES -->
-  <main>
+  <!-- ==================== BARRA DE PESTAÑAS RÁPIDAS ==================== -->
+  <nav class="quick-tabs" id="quickTabs">
+    <button class="qtab active" data-slide="1">1. General &amp; Equipo</button>
+    <button class="qtab" data-slide="2">2. UI React 19 (3p)</button>
+    <button class="qtab" data-slide="3">3. Backend &amp; Reglas (4p)</button>
+    <button class="qtab" data-slide="4">4. IA ResNet-50 (4p)</button>
+    <button class="qtab" data-slide="5">5. Logits &amp; Límites</button>
+    <button class="qtab" data-slide="6">6. Dockerfile (3p)</button>
+    <button class="qtab" data-slide="7">7. Portabilidad (3p)</button>
+    <button class="qtab" data-slide="8">8. Git &amp; Carpetas (1p)</button>
+    <button class="qtab" data-slide="9">9. Demo en Vivo (2p)</button>
+  </nav>
 
-    <!-- SLIDE 1: PORTADA -->
-    <section class="slide active" data-slide="1">
-      <div class="hero-container">
-        <div class="hero-badge">🎓 Proyecto Final — Construcción de Software</div>
-        <h1 class="hero-title">
-          🌿 <span>EcoClasifica</span>
-        </h1>
-        <p class="hero-desc">
-          Clasificación Inteligente y Segregación Ecológica de Residuos Sólidos mediante Visión Artificial, Deep Learning (ResNet-50), Testing TDD y Pipeline CI/CD.
-        </p>
+  <!-- ==================== ESCENARIO DE DIAPOSITIVAS ==================== -->
+  <main class="stage">
 
-        <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">
-          <strong>Universidad Continental</strong> · Equipo de Desarrollo <strong>DEV</strong>
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 1: PRESENTACIÓN GENERAL, EQUIPO DEV Y ARQUITECTURA    -->
+    <!-- ================================================================= -->
+    <section class="slide active" data-index="1">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-green">1. Presentación General del Proyecto · Todos los Integrantes</span>
+          <h1 class="slide-title">EcoClasifica — Clasificación Inteligente de Residuos Sólidos con IA y Docker</h1>
+          <p class="slide-subtitle">Integración de interfaz gráfica React 19, API REST FastAPI, modelo ResNet-50 afinado y despliegue portable en Docker Hub</p>
         </div>
+        <div class="badge badge-sky">Rúbrica Consolidado 2: 20 / 20 Puntos</div>
+      </div>
 
-        <div class="team-badge-grid">
-          <div class="team-card featured">
-            <div class="team-name">Bryan Alexander Cahuana Mendoza</div>
-            <div class="team-role">DevOps / CI-CD & Sustentador</div>
-          </div>
-          <div class="team-card">
-            <div class="team-name">Marco Antonio Bonifacio Ruiz</div>
-            <div class="team-role">Ingeniero ML / IA</div>
-          </div>
-          <div class="team-card">
-            <div class="team-name">Jerson Alejandro Baca Medina</div>
-            <div class="team-role">Desarrollador Fullstack</div>
-          </div>
-          <div class="team-card">
-            <div class="team-name">Yury Yohan Llanos Luna</div>
-            <div class="team-role">Desarrollador Backend</div>
-          </div>
-          <div class="team-card">
-            <div class="team-name">Benjamin Salazar Arenas</div>
-            <div class="team-role">Desarrollador Frontend</div>
-          </div>
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-title"><span style="color:var(--accent-rose)">●</span> Problemática Identificada</div>
+          <p class="card-text">
+            La separación errónea de desechos sólidos en origen por desconocimiento ciudadano genera <strong>contaminación cruzada</strong> en contenedores de reciclaje, reduciendo el aprovechamiento en instituciones educativas, municipios y plantas de reciclaje.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span style="color:var(--accent-green)">●</span> Objetivo del Sistema</div>
+          <p class="card-text">
+            Clasificar automáticamente fotografías de residuos en <strong>6 categorías</strong> mediante una red profunda <strong>Microsoft ResNet-50</strong> afinada, servida por una API REST FastAPI y una SPA React dentro de un contenedor Docker portable.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span style="color:var(--accent-sky)">●</span> Público Objetivo</div>
+          <p class="card-text">
+            Estudiantes y docentes universitarios, hogares, puntos limpios municipales, plantas de segregación y programas de educación ambiental que requieren clasificación asistida en tiempo real.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-title"><span style="color:var(--accent-amber)">●</span> Stack Tecnológico Principal</div>
+          <p class="card-text">
+            <code class="inline">Python 3.11</code> <code class="inline">FastAPI</code> <code class="inline">Uvicorn</code> <code class="inline">PyTorch &gt;=2.0</code> <code class="inline">Transformers</code> <code class="inline">ResNet-50</code> <code class="inline">React 19.3</code> <code class="inline">Tailwind v4</code> <code class="inline">Docker Compose</code>
+          </p>
         </div>
       </div>
 
-      <div class="speaker-notes-box" id="notes-1">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Buenas tardes profesor y compañeros. Mi nombre es <strong>Bryan Cahuana</strong> y junto al <strong>Equipo DEV</strong> presentamos <strong>EcoClasifica</strong>, un sistema integral de software y visión computacional que resuelve el problema de la clasificación de residuos mediante inteligencia artificial, implementando altos estándares de ingeniería de software: <strong>100% de cobertura en tests TDD, pipeline automatizado en GitHub Actions y código libre de code smells</strong>."
+      <!-- DIAGRAMA SVG 1: ARQUITECTURA E INTEGRACIÓN DE COMPONENTES -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📐 Diagrama Vectorial de Arquitectura e Integración de Componentes (Puerto 8000:8000)</div>
+          <span class="badge badge-green">Flujo End-to-End en Contenedor Único</span>
         </div>
+        <div class="svg-box">
+          <svg viewBox="0 0 1050 185" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gGreen" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#059669"/>
+                <stop offset="100%" stop-color="#10b981"/>
+              </linearGradient>
+              <linearGradient id="gSky" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#38bdf8"/>
+              </linearGradient>
+              <linearGradient id="gPurple" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7e22ce"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+              </marker>
+            </defs>
+
+            <!-- Caja 1: Usuario / UI React -->
+            <rect x="15" y="25" width="180" height="135" rx="10" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
+            <rect x="15" y="25" width="180" height="28" rx="10" fill="url(#gSky)"/>
+            <text x="105" y="44" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">1. SPA React 19 (/ui)</text>
+            <text x="105" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">frontend/dist/index.html</text>
+            <text x="105" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Archivo / Drag &amp; Drop</text>
+            <text x="105" y="110" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Cámara Web en vivo</text>
+            <text x="105" y="128" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Pegado rápido Ctrl + V</text>
+            <text x="105" y="147" fill="#38bdf8" font-size="10" font-family="monospace" text-anchor="middle">Axios POST /classify</text>
+
+            <line x1="195" y1="92" x2="232" y2="92" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Caja 2: FastAPI + Validaciones -->
+            <rect x="235" y="25" width="185" height="135" rx="10" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <rect x="235" y="25" width="185" height="28" rx="10" fill="url(#gGreen)"/>
+            <text x="327" y="44" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">2. FastAPI (:8000)</text>
+            <text x="327" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">src/fastapi_app.py</text>
+            <text x="327" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Tamaño &gt;0B y &le;10 MB</text>
+            <text x="327" y="110" fill="#94a3b8" font-size="10.5" text-anchor="middle">• MIME y extensión válida</text>
+            <text x="327" y="128" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Magic Bytes (Pillow)</text>
+            <text x="327" y="147" fill="#34d399" font-size="10" font-family="monospace" text-anchor="middle">10x10 a 8192x8192 px</text>
+
+            <line x1="420" y1="92" x2="457" y2="92" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Caja 3: Preprocesamiento -->
+            <rect x="460" y="25" width="180" height="135" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="2"/>
+            <rect x="460" y="25" width="180" height="28" rx="10" fill="#d97706"/>
+            <text x="550" y="44" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">3. Preprocesamiento</text>
+            <text x="550" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">src/preprocess.py</text>
+            <text x="550" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">• @lru_cache Processor</text>
+            <text x="550" y="110" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Conversión PIL RGB</text>
+            <text x="550" y="128" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Crop 224x224 + ImageNet</text>
+            <text x="550" y="147" fill="#fcd34d" font-size="10" font-family="monospace" text-anchor="middle">Tensor [1, 3, 224, 224]</text>
+
+            <line x1="640" y1="92" x2="677" y2="92" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Caja 4: ResNet-50 -->
+            <rect x="680" y="25" width="170" height="135" rx="10" fill="#111827" stroke="#a855f7" stroke-width="2"/>
+            <rect x="680" y="25" width="170" height="28" rx="10" fill="url(#gPurple)"/>
+            <text x="765" y="44" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">4. ResNet-50 Fine-Tuned</text>
+            <text x="765" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">src/model.py</text>
+            <text x="765" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Singleton _MODEL_CACHE</text>
+            <text x="765" y="110" fill="#94a3b8" font-size="10.5" text-anchor="middle">• model.safetensors</text>
+            <text x="765" y="128" fill="#94a3b8" font-size="10.5" text-anchor="middle">• classifier.1.weight (6)</text>
+            <text x="765" y="147" fill="#d8b4fe" font-size="10" font-family="monospace" text-anchor="middle">Logits → Softmax (%)</text>
+
+            <line x1="850" y1="92" x2="882" y2="92" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Caja 5: Post-procesamiento -->
+            <rect x="885" y="25" width="150" height="135" rx="10" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <rect x="885" y="25" width="150" height="28" rx="10" fill="url(#gGreen)"/>
+            <text x="960" y="44" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">5. Post-Proceso</text>
+            <text x="960" y="72" fill="#cbd5e1" font-size="11" text-anchor="middle">src/postprocess.py</text>
+            <text x="960" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">• normalize_category()</text>
+            <text x="960" y="110" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Emoji + 6 clases</text>
+            <text x="960" y="128" fill="#94a3b8" font-size="10.5" text-anchor="middle">• Consejo ecológico</text>
+            <text x="960" y="147" fill="#34d399" font-size="10" font-family="monospace" text-anchor="middle">JSON Response 200</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- EQUIPO DEV (5 INTEGRANTES) -->
+      <div class="grid-5">
+        <div class="card">
+          <span class="badge badge-rose">Fullstack · Slide 1 &amp; 8</span>
+          <div class="card-title">Jerson A. Baca Medina</div>
+          <p class="card-text">Integración <code class="inline">src/routes.py</code> y <code class="inline">src/api.py</code>, acoplamiento UI-API y auditoría de dependencias.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-amber">Frontend · Slide 2</span>
+          <div class="card-title">Benjamin Salazar Arenas</div>
+          <p class="card-text">SPA React 19 + Tailwind v4 (<code class="inline">frontend/</code>), cámara web, <code class="inline">Ctrl+V</code>, Glassmorphism y build <code class="inline">dist/</code>.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-green">Backend &amp; Docker · Slide 3, 6, 7</span>
+          <div class="card-title">Yury Yohan Llanos Luna</div>
+          <p class="card-text">API <code class="inline">src/fastapi_app.py</code>, 6 validaciones, <code class="inline">Dockerfile</code>, <code class="inline">docker-compose.yml</code> y Docker Hub.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-purple">ML / IA · Slide 4 &amp; 5</span>
+          <div class="card-title">Marco A. Bonifacio Ruiz</div>
+          <p class="card-text">Fine-tuning <code class="inline">microsoft/resnet-50</code>, <code class="inline">src/model.py</code>, <code class="inline">preprocess.py</code> y análisis de logits.</p>
+        </div>
+        <div class="card">
+          <span class="badge badge-sky">DevOps &amp; QA · Slide 8 &amp; 9</span>
+          <div class="card-title">Bryan A. Cahuana Mendoza</div>
+          <p class="card-text">GitHub Actions (<code class="inline">ci.yml</code>), TDD 100% cobertura, refactorización Clean Code y scripts <code class="inline">.bat</code>.</p>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Jerson Baca — Introducción General):</strong>
+        "Buenas tardes profesor y compañeros. Presentamos <strong>EcoClasifica</strong>, un sistema integrador que clasifica residuos sólidos mediante visión artificial en 6 categorías para evitar la contaminación cruzada. Todo el flujo —desde la SPA en React 19 servida en <code>/ui</code>, la lógica de negocio y validaciones en FastAPI sobre el puerto 8000, hasta el modelo ResNet-50 afinado— está integrado y publicado en Docker Hub bajo <code>yury1289/ecoclasifica:latest</code>."
       </div>
     </section>
 
-    <!-- SLIDE 2: EL PROBLEMA Y LA SOLUCIÓN -->
-    <section class="slide" data-slide="2">
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 2: DISEÑO DE INTERFACES GRÁFICAS Y USABILIDAD (3 PTS) -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="2">
       <div class="slide-header">
         <div>
-          <span class="slide-tag">Contexto & Justificación</span>
-          <h2 class="slide-title">El Problema y la Solución Tecnológica</h2>
-          <p class="slide-subtitle">Automatizando el reconocimiento en origen para evitar la contaminación cruzada</p>
+          <span class="badge badge-amber">2. Criterio de Rúbrica: Diseño de Interfaces Gráficas y Usabilidad (3 Puntos) · Expositor: Benjamin Salazar Arenas</span>
+          <h2 class="slide-title">Interfaz Gráfica SPA en React 19, Flujo Intuitivo y Compilación en <code>/ui</code></h2>
+          <p class="slide-subtitle">Estética Glassmorphism en Tailwind CSS v4, 4 métodos de captura fotográfica y normalización reactiva</p>
         </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card" style="border-left: 4px solid var(--accent-rose);">
-          <div class="card-title">❌ El Problema Actual</div>
-          <div class="card-body">
-            <p>• <strong>Dificultad de reconocimiento:</strong> Los ciudadanos y operarios dudan sobre el material exacto de un residuo (ej. envases multicapa, tipos de plásticos o metales).</p>
-            <p style="margin-top: 0.5rem;">• <strong>Contaminación cruzada:</strong> Si un residuo no reciclable o sucio se arroja en un contenedor de reciclaje limpio, inutiliza todo el lote.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Pérdida económica y ambiental:</strong> Solo una fracción mínima de materiales se recicla efectivamente debido a la mala segregación en origen.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-left: 4px solid var(--accent-green);">
-          <div class="card-title">✅ La Solución: EcoClasifica</div>
-          <div class="card-body">
-            <p>• <strong>Reconocimiento por Imagen:</strong> El usuario fotografía el residuo y el sistema predice la categoría exacta en tiempo real.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Porcentaje de Confianza:</strong> Proporciona la certidumbre probabilística calculada por la red neuronal profunda.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Educación y Guía Inmediata:</strong> Entrega recomendaciones claras: en qué color de contenedor depositarlo y cómo prepararlo (lavar, aplanar, secar).</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-4" style="margin-top: 0.5rem;">
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">29.8k</div>
-          <div class="stat-label">Imágenes Entrenadas</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">6</div>
-          <div class="stat-label">Clases de Residuos</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Cobertura de Tests</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div class="stat-number">0</div>
-          <div class="stat-label">Errores de Linting</div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-2">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El gran cuello de botella del reciclaje moderno ocurre en el primer segundo: cuando la persona no sabe en qué tacho arrojar el desecho. Con <strong>EcoClasifica</strong> eliminamos esa duda. Basta con una fotografía desde el celular o la cámara web para que nuestra inteligencia artificial no solo clasifique el material con un porcentaje de confianza matemático, sino que entregue la guía inmediata de disposición ambiental."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 3: ARQUITECTURA DE IA -->
-    <section class="slide" data-slide="3">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Machine Learning & Deep Learning</span>
-          <h2 class="slide-title">Arquitectura del Modelo de IA (ResNet-50)</h2>
-          <p class="slide-subtitle">Transfer Learning sobre redes convolucionales residuales profundas</p>
-        </div>
+        <span class="badge badge-green">Servida por FastAPI en http://localhost:8000/ui</span>
       </div>
 
       <div class="grid-3">
         <div class="card">
-          <div class="card-title">🧠 Modelo Base</div>
-          <div class="card-body">
-            <p><strong>microsoft/resnet-50</strong></p>
-            <p style="margin-top: 0.5rem;">Red convolucional de 50 capas preentrenada sobre <strong>ImageNet-1k</strong> (más de 1 millón de imágenes). Sus conexiones residuales (skip connections) evitan el desvanecimiento del gradiente.</p>
+          <div class="card-header">
+            <div class="card-title">📸 4 Canales de Entrada (Dropzone.tsx)</div>
+            <span class="badge badge-amber">Usabilidad</span>
+          </div>
+          <p class="card-text">
+            • <strong>Selector de Archivos:</strong> exploración local filtrada a formatos de imagen.<br/>
+            • <strong>Drag &amp; Drop:</strong> arrastrar y soltar con borde reactivo.<br/>
+            • <strong>Cámara Web en Vivo:</strong> captura de stream por <code class="inline">getUserMedia</code>.<br/>
+            • <strong>Pegado con <code class="inline">Ctrl + V</code>:</strong> hook <code class="inline">useClipboardPaste.ts</code> que intercepta imágenes del portapapeles.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">✨ Feedback Visual (ResultCard.tsx)</div>
+            <span class="badge badge-sky">Glassmorphism</span>
+          </div>
+          <p class="card-text">
+            • <strong>Escáner animado:</strong> efecto láser mientras ResNet-50 ejecuta la inferencia.<br/>
+            • <strong>Barra de progreso inteligente:</strong> aceleración suave <code class="inline">cubic-bezier(0.22, 1, 0.36, 1)</code> al superar el 85%.<br/>
+            • <strong>Desglose de las 6 clases:</strong> barras horizontales ordenadas por probabilidad.<br/>
+            • <strong>Efecto Typewriter:</strong> <code class="inline">TypewriterText.tsx</code> escribe el consejo palabra por palabra (60 ms).
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📦 Bundle Estático (frontend/dist/)</div>
+            <span class="badge badge-green">~1.01 MB total</span>
+          </div>
+          <p class="card-text">
+            Generado con <code class="inline">tsc -b &amp;&amp; vite build</code> y montado directamente por FastAPI:<br/>
+            • <code class="inline">index.html</code> (458 B)<br/>
+            • <code class="inline">assets/index-CtXqmN2G.js</code> (322 KB)<br/>
+            • <code class="inline">assets/index-CXyR538g.css</code> (28.2 KB)<br/>
+            • <code class="inline">bg-eco.jpg</code> (646.8 KB) + <code class="inline">favicon.svg</code> + <code class="inline">icons.svg</code>
+          </p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">💻 Normalización Defensiva de Probabilidades en <code>classifyApi.ts</code></div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot" style="background:#f43f5e"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#10b981"></span><span>frontend/src/features/classification/api/classifyApi.ts</span></div>
+              <button class="copy-btn" data-copy="const toProbability = (value: unknown): number => {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n) || n < 0) return 0;
+  return n > 1 ? Math.min(n / 100, 1) : n;
+};
+
+export const normalizeClassification = (raw: ClassifyApiResponse): ClassificationResponse => {
+  const breakdown = Object.entries(raw.todas_las_predicciones ?? {})
+    .map(([label, p]) => ({ label, percent: toProbability(p) * 100 }))
+    .sort((a, b) => b.percent - a.percent);
+  return {
+    prediction: raw.categoria?.trim() || 'Desconocido',
+    confidence: toProbability(raw.confianza),
+    emoji: raw.emoji ?? '',
+    disposal_recommendation: raw.recomendacion || undefined,
+    breakdown,
+  };
+};">Copiar</button>
+            </div>
+            <pre>const toProbability = (value: unknown): number =&gt; {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n) || n &lt; 0) return 0;
+  return n &gt; 1 ? Math.min(n / 100, 1) : n;
+};
+
+export const normalizeClassification = (raw: ClassifyApiResponse): ClassificationResponse =&gt; {
+  const breakdown = Object.entries(raw.todas_las_predicciones ?? {})
+    .map(([label, p]) =&gt; ({ label, percent: toProbability(p) * 100 }))
+    .sort((a, b) =&gt; b.percent - a.percent);
+  return {
+    prediction: raw.categoria?.trim() || 'Desconocido',
+    confidence: toProbability(raw.confianza),
+    emoji: raw.emoji ?? '',
+    disposal_recommendation: raw.recomendacion || undefined,
+    breakdown,
+  };
+};</pre>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">🔄 Transfer Learning</div>
-          <div class="card-body">
-            <p><strong>Aprovechamiento de Features</strong></p>
-            <p style="margin-top: 0.5rem;">Reutilizamos los filtros visuales profundos ya aprendidos (texturas, bordes y reflejos de materiales) y reemplazamos la cabeza clasificadora final para adaptarla a nuestras <strong>6 clases</strong>.</p>
-          </div>
-        </div>
+          <div class="card-title">🔗 Acoplamiento Zero-CORS en Contenedor (<code>apiConfig.ts</code> + <code>fastapi_app.py</code>)</div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot" style="background:#f43f5e"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#10b981"></span><span>frontend/src/services/apiConfig.ts &amp; src/fastapi_app.py</span></div>
+              <button class="copy-btn" data-copy="// frontend/src/services/apiConfig.ts
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '',
+  timeout: 15000,
+  headers: { 'Accept': 'application/json' },
+});
 
-        <div class="card">
-          <div class="card-title">⚙️ Pipeline de Inferencia</div>
-          <div class="card-body">
-            <p><strong>Entrada 224 × 224 RGB</strong></p>
-            <p style="margin-top: 0.5rem;">El <code>AutoImageProcessor</code> normaliza los píxeles. La red produce *logits* que se transforman mediante la función <strong>Softmax</strong> en probabilidades reales porcentuales.</p>
+# src/fastapi_app.py (líneas 509-524)
+FRONTEND_DIST_DIR: Path = Path(os.environ.get('ECOCLASIFICA_FRONTEND_DIST', ...))
+if (FRONTEND_DIST_DIR / 'index.html').is_file():
+    @app.get('/ui', include_in_schema=False)
+    def serve_ui() -> FileResponse:
+        return FileResponse(FRONTEND_DIST_DIR / 'index.html')
+    app.mount('/', StaticFiles(directory=str(FRONTEND_DIST_DIR)), name='frontend')">Copiar</button>
+            </div>
+            <pre>// 1. En apiConfig.ts: baseURL vacío ('') usa el mismo origen del contenedor (:8000)
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '',
+  timeout: 15000,
+  headers: { 'Accept': 'application/json' },
+});
+
+# 2. En src/fastapi_app.py: FastAPI sirve la SPA compilada en GET /ui
+if (FRONTEND_DIST_DIR / "index.html").is_file():
+    @app.get("/ui", include_in_schema=False)
+    def serve_ui() -&gt; FileResponse:
+        return FileResponse(FRONTEND_DIST_DIR / "index.html")
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST_DIR)), name="frontend")</pre>
           </div>
         </div>
       </div>
 
-      <div class="card" style="margin-top: 0.5rem; background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.3);">
-        <div class="card-title" style="color: var(--accent-cyan);">📐 Fórmula Matemática de Salida (Softmax)</div>
-        <div class="card-body" style="font-family: monospace; font-size: 0.95rem;">
-          P(Clase_i) = exp(logit_i) / Σ exp(logit_j) &nbsp;&nbsp;⟶&nbsp;&nbsp; Garantiza que la suma de probabilidades de las 6 categorías sea exactamente 100%.
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-3">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Para el modelo elegimos <strong>ResNet-50</strong> con <strong>Transfer Learning</strong>. En lugar de entrenar una red desde cero, aprovechamos el conocimiento visual previo de millones de imágenes y reentrenamos la última capa densa hacia 6 clases de residuos. La inferencia redimensiona la imagen a 224 por 224 píxeles y calcula la distribución de probabilidad completa mediante la función Softmax."
-        </div>
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Benjamin Salazar — Frontend y Usabilidad):</strong>
+        "Para obtener los 3 puntos de diseño de interfaces y usabilidad, construimos una SPA en React 19 y Tailwind CSS v4 que ofrece 4 canales de entrada (archivo, drag &amp; drop, cámara en vivo y pegado con <code>Ctrl+V</code>). Además, configuramos Axios con <code>baseURL</code> relativo y montamos el bundle de producción <code>frontend/dist</code> directamente dentro de FastAPI en la ruta <code>/ui</code>, logrando que todo funcione en el puerto 8000 sin errores de CORS."
       </div>
     </section>
 
-    <!-- SLIDE 4: EL DATASET Y LAS 6 CLASES -->
-    <section class="slide" data-slide="4">
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 3: FUNCIONAMIENTO Y LÓGICA DE NEGOCIO (4 PTS)         -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="3">
       <div class="slide-header">
         <div>
-          <span class="slide-tag">Datos & Segregación Ecológica</span>
-          <h2 class="slide-title">Dataset TrashBusters y las 6 Categorías</h2>
-          <p class="slide-subtitle">29,849 registros etiquetados bajo la norma estándar de contenedores de reciclaje</p>
+          <span class="badge badge-green">3. Criterio de Rúbrica: Funcionamiento y Lógica de Negocio (4 Puntos) · Expositor: Yury Yohan Llanos Luna</span>
+          <h2 class="slide-title">API REST FastAPI, Validación de Datos en 6 Capas y Manejo de Errores</h2>
+          <p class="slide-subtitle">Endpoints documentados en OpenAPI (/docs), defensa contra archivos maliciosos y normalización bilingüe</p>
         </div>
+        <span class="badge badge-sky">17 Tests de Endpoints en tests/test_fastapi.py</span>
+      </div>
+
+      <div class="grid-12">
+        <!-- Tabla de Endpoints -->
+        <div class="card col-5">
+          <div class="card-title">🌐 Catálogo de Endpoints en <code>src/fastapi_app.py</code></div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Método</th><th>Ruta</th><th>Función en Lógica de Negocio</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="badge badge-sky">GET</span></td><td><code class="inline">/</code></td><td>Bienvenida, metadatos, formatos válidos y límite 10 MB.</td></tr>
+              <tr><td><span class="badge badge-green">GET</span></td><td><code class="inline">/health</code></td><td>Salud (<code class="inline">status: ok</code>), <code class="inline">modelo_afinado_disponible</code> y uptime.</td></tr>
+              <tr><td><span class="badge badge-green">GET</span></td><td><code class="inline">/classes</code></td><td>Las 6 categorías con su emoji y consejo de disposición.</td></tr>
+              <tr><td><span class="badge badge-amber">POST</span></td><td><code class="inline">/classify</code></td><td>Clasifica archivo <code class="inline">multipart/form-data</code> (<code class="inline">file</code>).</td></tr>
+              <tr><td><span class="badge badge-amber">POST</span></td><td><code class="inline">/predict</code></td><td>Alias de compatibilidad idéntico a <code class="inline">/classify</code>.</td></tr>
+              <tr><td><span class="badge badge-amber">POST</span></td><td><code class="inline">/classify/base64</code></td><td>Clasifica JSON <code class="inline">{"image_base64": "..."}</code>.</td></tr>
+              <tr><td><span class="badge badge-purple">GET</span></td><td><code class="inline">/ui</code> · <code class="inline">/docs</code></td><td>Interfaz React SPA y Swagger UI interactivo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Inspector Interactivo de las 6 Condiciones -->
+        <div class="card col-7">
+          <div class="card-header">
+            <div class="card-title">🛡️ Inspector Interactivo: Las 6 Condiciones de Validación y Reglas</div>
+            <span class="badge badge-rose">Haz clic en cada condición</span>
+          </div>
+
+          <div class="subtab-bar" id="ruleTabs">
+            <button class="subtab-btn active" data-rule="r1">1. Tamaño (400/413)</button>
+            <button class="subtab-btn" data-rule="r2">2. MIME &amp; Extensión</button>
+            <button class="subtab-btn" data-rule="r3">3. Magic Bytes Pillow</button>
+            <button class="subtab-btn" data-rule="r4">4. Resolución (10-8192)</button>
+            <button class="subtab-btn" data-rule="r5">5. Base64 Estricto</button>
+            <button class="subtab-btn" data-rule="r6">6. Normalización &amp; &lt;128px</button>
+          </div>
+
+          <div id="ruleContent" class="card-text" style="background:var(--bg-deep); border:1px solid var(--border); padding:0.9rem; border-radius:var(--radius-md);">
+            <!-- Renderizado por JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Yury Llanos — Lógica de Negocio y Validación):</strong>
+        "En la lógica de negocio implementamos defensa en profundidad dentro de <code>src/fastapi_app.py</code>, <code>src/routes.py</code> y <code>src/postprocess.py</code>. Antes de invocar a ResNet-50, toda imagen supera 6 validaciones: no estar vacía, no exceder 10 MB (HTTP 413), poseer tipo MIME y extensión permitidos, pasar la inspección de <em>magic bytes</em> con Pillow <code>Image.verify()</code> para bloquear archivos suplantados y medir entre 10x10 y 8192x8192 píxeles. Luego, <code>normalize_category()</code> traduce la salida del modelo de inglés a español canónico con su emoji y recomendación."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 4: COMPONENTE DE IA RESNET-50 Y 6 CLASES (4 PTS)      -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="4">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-purple">4. Criterio de Rúbrica: Implementación e Integración del Modelo de IA (4 Puntos) · Expositor: Marco Antonio Bonifacio Ruiz</span>
+          <h2 class="slide-title">Arquitectura Microsoft ResNet-50, Flujo Tensorial 224×224 y las 6 Clases</h2>
+          <p class="slide-subtitle">Transfer Learning desde ImageNet-1k, conexiones residuales y distribución de probabilidad Softmax</p>
+        </div>
+        <span class="badge badge-green">Inferencia en CPU con Caché Singleton (_MODEL_CACHE)</span>
+      </div>
+
+      <!-- DIAGRAMA SVG 2: FLUJO TENSORIAL 224x224 -> RESNET-50 -> SOFTMAX -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🧠 Diagrama Vectorial del Pipeline Neuronal: De la Imagen RGB a la Función Softmax</div>
+          <span class="badge badge-purple">microsoft/resnet-50 Fine-Tuned</span>
+        </div>
+        <div class="svg-box">
+          <svg viewBox="0 0 1050 170" xmlns="http://www.w3.org/2000/svg">
+            <!-- Paso 1: Imagen -->
+            <rect x="15" y="20" width="155" height="130" rx="10" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
+            <text x="92" y="45" fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle">Entrada PIL RGB</text>
+            <text x="92" y="68" fill="#cbd5e1" font-size="10.5" text-anchor="middle">AutoImageProcessor</text>
+            <text x="92" y="88" fill="#94a3b8" font-size="10" text-anchor="middle">mean=[0.485,0.456,0.406]</text>
+            <text x="92" y="106" fill="#94a3b8" font-size="10" text-anchor="middle">std=[0.229,0.224,0.225]</text>
+            <text x="92" y="132" fill="#7dd3fc" font-size="10.5" font-family="monospace" text-anchor="middle">Resize + CenterCrop</text>
+
+            <line x1="170" y1="85" x2="205" y2="85" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Paso 2: Tensor 1x3x224x224 -->
+            <rect x="208" y="20" width="160" height="130" rx="10" fill="#111827" stroke="#f59e0b" stroke-width="2"/>
+            <text x="288" y="45" fill="#fcd34d" font-size="12" font-weight="bold" text-anchor="middle">Tensor de Entrada</text>
+            <text x="288" y="74" fill="#ffffff" font-size="13" font-family="monospace" font-weight="bold" text-anchor="middle">[1, 3, 224, 224]</text>
+            <text x="288" y="98" fill="#94a3b8" font-size="10.5" text-anchor="middle">Batch=1 · Canales=3</text>
+            <text x="288" y="116" fill="#94a3b8" font-size="10.5" text-anchor="middle">Alto=224 · Ancho=224</text>
+            <text x="288" y="136" fill="#fcd34d" font-size="10" font-family="monospace" text-anchor="middle">float32 (CPU/CUDA)</text>
+
+            <line x1="368" y1="85" x2="403" y2="85" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Paso 3: Backbone ResNet-50 -->
+            <rect x="406" y="20" width="210" height="130" rx="10" fill="#111827" stroke="#a855f7" stroke-width="2"/>
+            <text x="511" y="45" fill="#d8b4fe" font-size="12" font-weight="bold" text-anchor="middle">Backbone ResNet-50 (50 Capas)</text>
+            <text x="511" y="68" fill="#cbd5e1" font-size="10.5" text-anchor="middle">4 Stages de Bloques Residuales</text>
+            <text x="511" y="88" fill="#34d399" font-size="11" font-family="monospace" text-anchor="middle">Skip Connection: y = F(x) + x</text>
+            <text x="511" y="110" fill="#94a3b8" font-size="10" text-anchor="middle">Global Average Pooling</text>
+            <text x="511" y="134" fill="#d8b4fe" font-size="10.5" font-family="monospace" text-anchor="middle">Feature Vector: [1, 2048]</text>
+
+            <line x1="616" y1="85" x2="651" y2="85" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Paso 4: Cabeza Lineal classifier.1.weight -->
+            <rect x="654" y="20" width="180" height="130" rx="10" fill="#111827" stroke="#f43f5e" stroke-width="2"/>
+            <text x="744" y="45" fill="#fda4af" font-size="12" font-weight="bold" text-anchor="middle">Cabeza Clasificadora</text>
+            <text x="744" y="68" fill="#ffffff" font-size="11" font-family="monospace" text-anchor="middle">classifier.1.weight</text>
+            <text x="744" y="88" fill="#94a3b8" font-size="10.5" text-anchor="middle">Matriz Lineal [6, 2048]</text>
+            <text x="744" y="108" fill="#94a3b8" font-size="10.5" text-anchor="middle">+ classifier.1.bias [6]</text>
+            <text x="744" y="134" fill="#fda4af" font-size="10.5" font-family="monospace" text-anchor="middle">6 Logits z = W·h + b</text>
+
+            <line x1="834" y1="85" x2="869" y2="85" stroke="#38bdf8" stroke-width="2.2" marker-end="url(#arrow)"/>
+
+            <!-- Paso 5: Softmax -->
+            <rect x="872" y="20" width="163" height="130" rx="10" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <text x="953" y="45" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">Función Softmax</text>
+            <text x="953" y="70" fill="#ffffff" font-size="10.5" font-family="monospace" text-anchor="middle">P(i) = e^z_i / Σ e^z_j</text>
+            <text x="953" y="94" fill="#94a3b8" font-size="10" text-anchor="middle">Suma exacta = 1.0 (100%)</text>
+            <text x="953" y="114" fill="#94a3b8" font-size="10" text-anchor="middle">argmax → Clase ganadora</text>
+            <text x="953" y="134" fill="#34d399" font-size="10" font-family="monospace" text-anchor="middle">round(prob, 4)</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Las 6 Clases del Modelo -->
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-header"><div class="card-title">0 · 📦 Cartón (<code class="inline">cardboard</code>)</div><span class="badge badge-sky">Contenedor Azul</span></div>
+          <p class="card-text"><strong>RECICLABLE:</strong> Aplana las cajas y retira cintas adhesivas. Deposita en el contenedor azul de papel y cartón. Evita mojarlo.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">1 · 🍾 Vidrio (<code class="inline">glass</code>)</div><span class="badge badge-green">Contenedor Verde</span></div>
+          <p class="card-text"><strong>RECICLABLE:</strong> Enjuaga el envase y retira tapas metálicas. Deposita en el contenedor verde. Se recicla infinitamente.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">2 · 🥫 Metal (<code class="inline">metal</code>)</div><span class="badge badge-amber">Contenedor Amarillo</span></div>
+          <p class="card-text"><strong>RECICLABLE:</strong> Enjuaga latas y enlatados antes de reciclar. El aluminio reciclado ahorra 95% de energía frente a producir nuevo.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">3 · 📄 Papel (<code class="inline">paper</code>)</div><span class="badge badge-sky">Contenedor Azul</span></div>
+          <p class="card-text"><strong>RECICLABLE:</strong> Asegúrate de que esté limpio y seco. Deposita en el contenedor azul. No mezcles con servilletas usadas.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">4 · ♻️ Plástico (<code class="inline">plastic</code>)</div><span class="badge badge-amber">Contenedor Amarillo</span></div>
+          <p class="card-text"><strong>RECICLABLE (según tipo):</strong> Revisa el número de reciclaje (1-7), enjuaga el envase y deposita en el contenedor amarillo.</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">5 · 🗑️ Basura general (<code class="inline">trash</code>)</div><span class="badge badge-rose">Contenedor Gris</span></div>
+          <p class="card-text"><strong>NO RECICLABLE:</strong> No corresponde a las categorías reciclables principales. Deposita en el contenedor gris o evalúa reutilización.</p>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Marco Bonifacio — Modelo ResNet-50 y Entradas/Salidas):</strong>
+        "Elegimos <strong>Microsoft ResNet-50</strong> porque sus conexiones residuales evitan el desvanecimiento del gradiente y el <em>transfer learning</em> desde ImageNet-1k aprovecha filtros visuales de texturas, brillos y bordes con baja latencia en CPU. La imagen se transforma en un tensor <code>[1, 3, 224, 224]</code> sin redimensionamientos previos que la distorsionen, pasa por el backbone de 50 capas hacia la matriz lineal <code>classifier.1.weight</code> de 6 salidas y se convierte mediante Softmax en las probabilidades de nuestras 6 categorías."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 5: PESOS, DISPERSIÓN DE LOGITS Y LIMITACIONES REALES  -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="5">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-purple">5. Criterio de Rúbrica: Demostración y Limitaciones del Modelo de IA (4 Puntos) · Expositor: Marco Antonio Bonifacio Ruiz</span>
+          <h2 class="slide-title">Análisis Técnico del Checkpoint Afinado y Limitaciones Reales del Modelo</h2>
+          <p class="slide-subtitle">Comportamiento de logits en <code>classifier.1.weight</code>, métricas de evaluación y mejoras para iteraciones futuras</p>
+        </div>
+        <span class="badge badge-amber">Accuracy: 58.42% · F1 Macro: 0.4709</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔬 Diagnóstico Real: Dispersión/Compresión de Logits en <code>classifier.1.weight</code></div>
+            <span class="badge badge-rose">Limitación Técnica Clave</span>
+          </div>
+          <p class="card-text">
+            Al inspeccionar los tensores de <code class="inline">models/ecoclasifica-resnet50/model.safetensors</code> (94.3 MB) entrenados en CPU durante <strong>5 épocas</strong> (<code class="inline">learning_rate: 5e-5</code>, <code class="inline">batch_size: 16</code>, <code class="inline">weight_decay: 0.01</code>):
+          </p>
+          <p class="card-text">
+            1. <strong>Magnitud acotada en <code class="inline">classifier.1.weight</code>:</strong> Los pesos de la nueva cabeza lineal (<code class="inline">shape [6, 2048]</code>) partieron de inicialización aleatoria mientras el backbone preentrenado tenía gradientes suaves con <code class="inline">lr=5e-5</code>. Tras solo 5 épocas en CPU, los logits resultantes (<code class="inline">z_i</code>) presentan valores cercanos entre sí.<br/>
+            2. <strong>Efecto en Softmax:</strong> Cuando la diferencia entre logits es pequeña, la exponencial <code class="inline">exp(z_i) / Σ exp(z_j)</code> produce <strong>confianzas repartidas</strong> (por ejemplo 30%–45% en la clase principal y 15%–20% en clases secundarias) especialmente ante tomas ambiguas, ángulos inusuales o fondos ruidosos.<br/>
+            3. <strong>Corrección crítica aplicada en <code class="inline">src/preprocess.py</code>:</strong> Se eliminó el doble <code class="inline">img.resize((224,224))</code> previo y se cargó el <code class="inline">preprocessor_config.json</code> local con <code class="inline">@lru_cache</code> para que la inferencia use exactamente el mismo recorte central del entrenamiento.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚠️ Las 5 Limitaciones Actuales y Hoja de Ruta de Mejora</div>
+            <span class="badge badge-amber">Transparencia Científica</span>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr><th>Limitación Identificada</th><th>Causa Raíz</th><th>Solución en Próxima Iteración</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Compresión de logits y confianzas repartidas</strong></td>
+                <td>Solo 5 épocas en CPU con <code class="inline">lr=5e-5</code> sobre <code class="inline">classifier.1.weight</code>.</td>
+                <td>Entrenar 15–25 épocas en GPU, usar <em>two-stage fine-tuning</em> (congelar backbone 3 épocas con <code class="inline">lr=1e-3</code> en cabeza).</td>
+              </tr>
+              <tr>
+                <td><strong>2. Sensibilidad a fondos ruidosos o múltiples objetos</strong></td>
+                <td>Dataset TrashNet (2,527 fotos) tiene fondos blancos/limpios y 1 objeto por foto.</td>
+                <td>Aplicar <em>Data Augmentation</em> agresivo (<code class="inline">RandomBackground</code>, <code class="inline">ColorJitter</code>) y ampliar con TrashBusters.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Clasifica material visual, no estado higiénico</strong></td>
+                <td>No distingue si una caja de cartón tiene grasa o restos orgánicos.</td>
+                <td>Añadir sub-etiquetas de contaminación o advertencia preventiva en la UI.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Clase <code class="inline">trash</code> heterogénea</strong></td>
+                <td>Agrupa residuos no reciclables de geometrías muy distintas.</td>
+                <td>Subdividir en orgánicos, textiles y multicapa.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Sin umbral de rechazo duro</strong></td>
+                <td>Softmax siempre suma 100% entre las 6 clases.</td>
+                <td>Activar rechazo cuando <code class="inline">confianza &lt; CONFIDENCE_THRESHOLD (0.60)</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📂 Los 4 Archivos del Checkpoint en <code>models/ecoclasifica-resnet50/</code> (Empaquetados en Docker Hub)</div>
+        <div class="grid-4">
+          <div style="background:var(--bg-deep); padding:0.7rem; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="color:var(--accent-green); font-family:var(--font-mono); font-weight:700; font-size:0.8rem;">model.safetensors</div>
+            <div class="card-text">94,335,752 bytes (94.3 MB). Tensores de las 50 capas y <code class="inline">classifier.1.weight</code>.</div>
+          </div>
+          <div style="background:var(--bg-deep); padding:0.7rem; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="color:var(--accent-sky); font-family:var(--font-mono); font-weight:700; font-size:0.8rem;">config.json</div>
+            <div class="card-text">973 bytes. Configuración de <code class="inline">ResNetForImageClassification</code> y mapa <code class="inline">id2label</code>.</div>
+          </div>
+          <div style="background:var(--bg-deep); padding:0.7rem; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="color:var(--accent-amber); font-family:var(--font-mono); font-weight:700; font-size:0.8rem;">preprocessor_config.json</div>
+            <div class="card-text">374 bytes. Parámetros exactos de <code class="inline">ConvNextImageProcessor</code> (224×224, ImageNet).</div>
+          </div>
+          <div style="background:var(--bg-deep); padding:0.7rem; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="color:var(--accent-purple); font-family:var(--font-mono); font-weight:700; font-size:0.8rem;">label_mapping.json</div>
+            <div class="card-text">116 bytes. Correspondencia oficial de IDs (0 a 5) con las 6 etiquetas del dataset.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Marco Bonifacio — Limitaciones del Modelo):</strong>
+        "Un punto fundamental de la rúbrica es identificar con rigor las limitaciones del modelo. Al entrenar 5 épocas en CPU con <code>learning_rate=5e-5</code>, los pesos de la capa final <code>classifier.1.weight</code> producen logits cercanos entre sí; al pasar por Softmax, esto genera probabilidades repartidas si la foto tiene fondo ruidoso o iluminación deficiente. Por eso recomendamos fotografías claras de un solo residuo y planteamos como mejora un entrenamiento en dos etapas con mayor <code>learning_rate</code> en la cabeza clasificadora y <em>Data Augmentation</em>."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 6: CONFIGURACIÓN Y CONSTRUCCIÓN DE IMAGEN DOCKER (3P) -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="6">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-sky">6. Criterio de Rúbrica: Configuración y Construcción de la Imagen Docker (3 Puntos) · Expositor: Yury Yohan Llanos Luna</span>
+          <h2 class="slide-title">Presentación y Explicación del <code>Dockerfile</code>, <code>.dockerignore</code> y Build</h2>
+          <p class="slide-subtitle">Empaquetado multicapa con caché de dependencias Python, frontend compilado y pesos ResNet-50</p>
+        </div>
+        <span class="badge badge-green">Imagen Local: ecoclasifica:latest → Docker Hub: yury1289/ecoclasifica:latest</span>
+      </div>
+
+      <div class="grid-12">
+        <div class="card col-7">
+          <div class="card-title">🐳 Código Completo del <code>Dockerfile</code> en la Raíz del Proyecto</div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot" style="background:#f43f5e"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#10b981"></span><span>Dockerfile</span></div>
+              <button class="copy-btn" data-copy='FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50 \
+    ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+
+# Dependencias de sistema (OpenCV/Pillow/torchvision)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Dependencias Python (capa cacheable)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Código fuente
+COPY src/ ./src/
+
+# Interfaz web (build de producción de React/Vite)
+COPY frontend/dist/ ./frontend/dist/
+
+# Archivos del modelo ResNet-50 afinado
+COPY models/ecoclasifica-resnet50/ ./models/ecoclasifica-resnet50/
+
+EXPOSE 8000
+
+CMD ["uvicorn", "src.fastapi_app:app", "--host", "0.0.0.0", "--port", "8000"]'>Copiar Dockerfile</button>
+            </div>
+            <pre>FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50 \
+    ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+
+# Dependencias de sistema (OpenCV/Pillow/torchvision)
+RUN apt-get update \
+    &amp;&amp; apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+    &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Dependencias Python (capa cacheable)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Código fuente + Build React + Modelo ResNet-50 afinado
+COPY src/ ./src/
+COPY frontend/dist/ ./frontend/dist/
+COPY models/ecoclasifica-resnet50/ ./models/ecoclasifica-resnet50/
+
+EXPOSE 8000
+CMD ["uvicorn", "src.fastapi_app:app", "--host", "0.0.0.0", "--port", "8000"]</pre>
+          </div>
+        </div>
+
+        <div class="card col-5">
+          <div class="card-title">🔍 Decisiones de Arquitectura en el <code>Dockerfile</code></div>
+          <p class="card-text">
+            1. <strong>Base <code class="inline">python:3.11-slim</code>:</strong> Reduce drásticamente el peso del sistema operativo base e instala únicamente <code class="inline">libgl1</code> y <code class="inline">libglib2.0-0</code> requeridas por Pillow/Torchvision.<br/>
+            2. <strong>Variables de Entorno sin Rutas Hardcodeadas:</strong> Inyecta <code class="inline">ECOCLASIFICA_MODEL_PATH</code> y <code class="inline">ECOCLASIFICA_FRONTEND_DIST</code> para que FastAPI localice tanto el modelo como el frontend dentro de <code class="inline">/app</code>.<br/>
+            3. <strong>Orden Estratégico de Capas:</strong> <code class="inline">COPY requirements.txt</code> va antes de <code class="inline">COPY src/</code>; así Docker reutiliza la capa de PyTorch en caché si solo cambia el código.<br/>
+            4. <strong>Optimización con <code class="inline">.dockerignore</code>:</strong> Excluye <code class="inline">.git/</code>, <code class="inline">venv/</code>, <code class="inline">frontend/node_modules/</code>, <code class="inline">data/</code>, <code class="inline">*.zip</code> (223 MB) y copias duplicadas de pesos en la raíz.
+          </p>
+
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span>Comandos de Construcción y Publicación en Docker Hub</span>
+              <button class="copy-btn" data-copy="docker build -t ecoclasifica:latest .
+docker tag ecoclasifica:latest yury1289/ecoclasifica:latest
+docker login -u yury1289
+docker push yury1289/ecoclasifica:latest">Copiar</button>
+            </div>
+            <pre>docker build -t ecoclasifica:latest .
+docker tag ecoclasifica:latest yury1289/ecoclasifica:latest
+docker login -u yury1289
+docker push yury1289/ecoclasifica:latest</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Yury Llanos — Explicación del Dockerfile):</strong>
+        "Para la construcción de la imagen Docker partimos de <code>python:3.11-slim</code>, instalamos las librerías gráficas nativas <code>libgl1</code> y <code>libglib2.0-0</code>, cacheamos la capa de <code>requirements.txt</code> y copiamos los tres pilares del sistema: el backend en <code>src/</code>, la interfaz React compilada en <code>frontend/dist/</code> y los 4 archivos del modelo afinado en <code>models/ecoclasifica-resnet50/</code>. Finalmente etiquetamos y subimos la imagen a Docker Hub como <code>yury1289/ecoclasifica:latest</code>."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 7: EJECUCIÓN DEL CONTENEDOR Y PORTABILIDAD (3 PTS)    -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="7">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-green">7. Criterio de Rúbrica: Ejecución del Contenedor y Portabilidad (3 Puntos) · Expositor: Yury Yohan Llanos Luna</span>
+          <h2 class="slide-title">Portabilidad vía Docker Hub y Orquestación con <code>docker-compose.yml</code></h2>
+          <p class="slide-subtitle">Despliegue en cualquier equipo con un solo comando, sin clonar código ni reentrenar el modelo</p>
+        </div>
+        <span class="badge badge-sky">Healthcheck Automático cada 30s en /health</span>
+      </div>
+
+      <!-- DIAGRAMA SVG 3: PORTABILIDAD DOCKER HUB -> CONTENEDOR -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🌐 Diagrama Vectorial de Portabilidad: De Docker Hub a Cualquier Equipo</div>
+          <span class="badge badge-green">yury1289/ecoclasifica:latest (~3.63 GB comprimida)</span>
+        </div>
+        <div class="svg-box">
+          <svg viewBox="0 0 1050 155" xmlns="http://www.w3.org/2000/svg">
+            <!-- Nodo 1: Equipo Origen -->
+            <rect x="15" y="18" width="250" height="120" rx="10" fill="#111827" stroke="#10b981" stroke-width="2"/>
+            <text x="140" y="42" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">1. Equipo de Build (DevOps)</text>
+            <text x="140" y="65" fill="#cbd5e1" font-size="10.5" text-anchor="middle">Dockerfile + src/ + frontend/dist/</text>
+            <text x="140" y="84" fill="#cbd5e1" font-size="10.5" text-anchor="middle">+ models/ecoclasifica-resnet50/</text>
+            <text x="140" y="115" fill="#38bdf8" font-size="10.5" font-family="monospace" text-anchor="middle">docker push yury1289/ecoclasifica</text>
+
+            <line x1="265" y1="78" x2="345" y2="78" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+            <!-- Nodo 2: Docker Hub -->
+            <rect x="348" y="18" width="320" height="120" rx="10" fill="#111827" stroke="#38bdf8" stroke-width="2"/>
+            <text x="508" y="42" fill="#7dd3fc" font-size="12.5" font-weight="bold" text-anchor="middle">2. Docker Hub Registry (Nube Pública)</text>
+            <text x="508" y="68" fill="#ffffff" font-size="13" font-family="monospace" font-weight="bold" text-anchor="middle">yury1289/ecoclasifica:latest</text>
+            <text x="508" y="92" fill="#94a3b8" font-size="10.5" text-anchor="middle">Incluye los 94.3 MB de model.safetensors</text>
+            <text x="508" y="114" fill="#34d399" font-size="10.5" text-anchor="middle">✔ No requiere descargar pesos aparte ni Node.js</text>
+
+            <line x1="668" y1="78" x2="748" y2="78" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+            <!-- Nodo 3: Equipo Compañero / Docente -->
+            <rect x="751" y="18" width="284" height="120" rx="10" fill="#111827" stroke="#a855f7" stroke-width="2"/>
+            <text x="893" y="42" fill="#d8b4fe" font-size="12" font-weight="bold" text-anchor="middle">3. PC Compañero / Docente (:8000)</text>
+            <text x="893" y="66" fill="#cbd5e1" font-size="10.5" font-family="monospace" text-anchor="middle">docker run -p 8000:8000 ...</text>
+            <text x="893" y="88" fill="#34d399" font-size="10.5" font-family="monospace" text-anchor="middle">→ http://localhost:8000/ui</text>
+            <text x="893" y="106" fill="#7dd3fc" font-size="10.5" font-family="monospace" text-anchor="middle">→ http://localhost:8000/docs</text>
+            <text x="893" y="124" fill="#fcd34d" font-size="10.5" font-family="monospace" text-anchor="middle">→ http://localhost:8000/health</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📄 Archivo <code>docker-compose.yml</code> (Con Healthcheck Integrado)</div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <div class="terminal-dots"><span class="dot" style="background:#f43f5e"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#10b981"></span><span>docker-compose.yml</span></div>
+              <button class="copy-btn" data-copy='services:
+  ecoclasifica:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE:-yury1289/ecoclasifica:latest}
+    container_name: ecoclasifica
+    ports:
+      - "8000:8000"
+    environment:
+      - ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50
+      - ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen(&apos;http://localhost:8000/health&apos;)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped'>Copiar Compose</button>
+            </div>
+            <pre>services:
+  ecoclasifica:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE:-yury1289/ecoclasifica:latest}
+    container_name: ecoclasifica
+    ports:
+      - "8000:8000"
+    environment:
+      - ECOCLASIFICA_MODEL_PATH=/app/models/ecoclasifica-resnet50
+      - ECOCLASIFICA_FRONTEND_DIST=/app/frontend/dist
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⚡ Comandos Exactos para Windows (<code>cmd.exe</code> y PowerShell)</div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span>Opción A — Descarga y Ejecución Directa desde Docker Hub</span>
+              <button class="copy-btn" data-copy="docker pull yury1289/ecoclasifica:latest
+docker run -d --name ecoclasifica -p 8000:8000 yury1289/ecoclasifica:latest">Copiar</button>
+            </div>
+            <pre>docker pull yury1289/ecoclasifica:latest
+docker run -d --name ecoclasifica -p 8000:8000 yury1289/ecoclasifica:latest</pre>
+          </div>
+
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span>Opción B — Con Docker Compose (Pull o Build local)</span>
+              <button class="copy-btn" data-copy="docker compose pull
+docker compose up -d
+docker compose ps
+docker compose logs -f">Copiar</button>
+            </div>
+            <pre>docker compose pull
+docker compose up -d
+docker compose ps
+REM Para reconstruir localmente: docker compose up -d --build
+REM Para detener y cerrar:      docker compose down</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Yury Llanos — Ejecución del Contenedor y Docker Compose):</strong>
+        "Para garantizar la portabilidad total y el uso de Docker Compose exigido por la consigna, nuestro <code>docker-compose.yml</code> apunta por defecto a <code>yury1289/ecoclasifica:latest</code>, mapea el puerto <code>8000:8000</code> e incluye un <code>healthcheck</code> que consulta <code>/health</code> cada 30 segundos. Cualquier compañero puede ejecutar <code>docker pull yury1289/ecoclasifica:latest</code> y <code>docker run -d --name ecoclasifica -p 8000:8000 yury1289/ecoclasifica:latest</code> o <code>docker compose up -d</code>."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 8: REPOSITORIO GITHUB, 8 RAMAS, CARPETAS Y VERSIONES  -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="8">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-sky">8. Criterio de Rúbrica: Documentación y Repositorio GitHub (1 Punto) · Expositores: Bryan Cahuana &amp; Jerson Baca</span>
+          <h2 class="slide-title">Auditoría del Repositorio GitHub: Las 8 Ramas, Carpetas y Versiones</h2>
+          <p class="slide-subtitle">Explorador interactivo de ramas (Gitflow), estructura completa de archivos, TDD 100% y pipeline CI/CD</p>
+        </div>
+        <span class="badge badge-green">github.com/MarcoBonifacio/Proyecto_Entrenamiento_IA</span>
+      </div>
+
+      <!-- Sub-pestañas para alternar entre: 1) Las 8 Ramas, 2) Carpetas y Archivos, 3) Versiones y CI/CD -->
+      <div class="card">
+        <div class="subtab-bar" id="repoMainTabs">
+          <button class="subtab-btn active" data-repotab="tab-branches">🌿 1. Las 8 Ramas de Git (¿Para qué sirve cada una?)</button>
+          <button class="subtab-btn" data-repotab="tab-folders">📁 2. Diccionario de Carpetas y Archivos del Proyecto</button>
+          <button class="subtab-btn" data-repotab="tab-versions">📦 3. Versiones Exactas Usadas, TDD 100% y GitHub Actions</button>
+        </div>
+
+        <!-- PANEL 1: LAS 8 RAMAS -->
+        <div class="subtab-panel active" id="tab-branches">
+          <div class="grid-12">
+            <div class="col-5 selector-list" id="branchButtons">
+              <button class="selector-item active" data-bkey="b1"><span>1. feature/semana15-despliegue-docker</span><code class="inline">f3a2078</code></button>
+              <button class="selector-item" data-bkey="b2"><span>2. main (Producción Estable)</span><code class="inline">0c9d39d</code></button>
+              <button class="selector-item" data-bkey="b3"><span>3. feature/backend-fastapi</span><code class="inline">4f00703</code></button>
+              <button class="selector-item" data-bkey="b4"><span>4. feature/optimizacion-backend</span><code class="inline">7fe92d3</code></button>
+              <button class="selector-item" data-bkey="b5"><span>5. feature/frontend-ui</span><code class="inline">8d36210</code></button>
+              <button class="selector-item" data-bkey="b6"><span>6. feature/devops-ci-cd</span><code class="inline">823c7e9</code></button>
+              <button class="selector-item" data-bkey="b7"><span>7. develop (Integración QA)</span><code class="inline">823c7e9</code></button>
+              <button class="selector-item" data-bkey="b8"><span>8. master (Base Histórica IA)</span><code class="inline">5530697</code></button>
+            </div>
+            <div class="col-7" id="branchInspector" style="background:var(--bg-deep); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem;">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 2: CARPETAS Y ARCHIVOS -->
+        <div class="subtab-panel" id="tab-folders">
+          <div class="grid-12">
+            <div class="col-4 selector-list" id="folderButtons">
+              <button class="selector-item active" data-fkey="f1"><span>📁 src/ (Backend &amp; IA)</span><code class="inline">8 archivos</code></button>
+              <button class="selector-item" data-fkey="f2"><span>📁 frontend/ (React 19 + dist)</span><code class="inline">SPA + Build</code></button>
+              <button class="selector-item" data-fkey="f3"><span>🐳 Raíz Docker &amp; Config</span><code class="inline">7 archivos</code></button>
+              <button class="selector-item" data-fkey="f4"><span>🧠 models/ecoclasifica-resnet50/</span><code class="inline">4 archivos</code></button>
+              <button class="selector-item" data-fkey="f5"><span>📈 training/ &amp; preparar_datos.py</span><code class="inline">4 archivos</code></button>
+              <button class="selector-item" data-fkey="f6"><span>🧪 tests/ &amp; htmlcov/</span><code class="inline">6 suites TDD</code></button>
+              <button class="selector-item" data-fkey="f7"><span>⚙️ .github/, docs/ &amp; Scripts .bat</span><code class="inline">CI + 5 scripts</code></button>
+            </div>
+            <div class="col-8" id="folderInspector" style="background:var(--bg-deep); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem;">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 3: VERSIONES Y CI/CD -->
+        <div class="subtab-panel" id="tab-versions">
+          <div class="grid-3">
+            <div style="background:var(--bg-deep); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem;">
+              <div class="card-title" style="color:var(--accent-purple); margin-bottom:0.4rem;">🧠 IA &amp; Backend (requirements.txt)</div>
+              <p class="card-text">
+                • <code class="inline">Python 3.10 / 3.11</code> (<code class="inline">python:3.11-slim</code>)<br/>
+                • <code class="inline">torch &gt;=2.0.0</code> · <code class="inline">torchvision &gt;=0.15.0</code><br/>
+                • <code class="inline">transformers &gt;=4.35.0</code> (<code class="inline">microsoft/resnet-50</code>)<br/>
+                • <code class="inline">Pillow &gt;=10.0.0</code> · <code class="inline">safetensors</code><br/>
+                • <code class="inline">fastapi &gt;=0.100.0</code> · <code class="inline">uvicorn &gt;=0.22.0</code><br/>
+                • <code class="inline">python-multipart &gt;=0.0.6</code> · <code class="inline">httpx &gt;=0.24.0</code><br/>
+                • <code class="inline">scikit-learn &gt;=1.3.0</code> · <code class="inline">datasets &gt;=2.14.0</code><br/>
+                • <code class="inline">evaluate &gt;=0.4.0</code> · <code class="inline">accelerate &gt;=0.24.0</code><br/>
+                • <code class="inline">coverage &gt;=7.0</code> · <code class="inline">flake8 &gt;=6.0</code>
+              </p>
+            </div>
+            <div style="background:var(--bg-deep); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem;">
+              <div class="card-title" style="color:var(--accent-sky); margin-bottom:0.4rem;">🎨 Frontend (frontend/package.json)</div>
+              <p class="card-text">
+                • <code class="inline">react ^19.3.1</code> · <code class="inline">react-dom ^19.3.1</code><br/>
+                • <code class="inline">typescript ~6.0.3</code><br/>
+                • <code class="inline">vite ^8.3.6</code> · <code class="inline">@vitejs/plugin-react ^6.1.2</code><br/>
+                • <code class="inline">tailwindcss ^4.3.5</code> · <code class="inline">@tailwindcss/vite ^4.3.5</code><br/>
+                • <code class="inline">@tanstack/react-query ^5.107.1</code><br/>
+                • <code class="inline">axios ^1.21.1</code> (<code class="inline">timeout: 15000</code>)<br/>
+                • <code class="inline">lucide-react ^1.72.0</code><br/>
+                • <code class="inline">clsx ^2.1.1</code> · <code class="inline">tailwind-merge ^3.7.0</code><br/>
+                • <code class="inline">eslint ^10.14.0</code> · <code class="inline">typescript-eslint ^8.72.1</code>
+              </p>
+            </div>
+            <div style="background:var(--bg-deep); border:1px solid var(--border); border-radius:var(--radius-md); padding:0.85rem;">
+              <div class="card-title" style="color:var(--accent-green); margin-bottom:0.4rem;">🚀 CI/CD (.github/workflows/ci.yml)</div>
+              <p class="card-text">
+                • <strong>Runner:</strong> <code class="inline">ubuntu-latest</code><br/>
+                • <strong>Actions:</strong> <code class="inline">actions/checkout@v4</code> y <code class="inline">actions/setup-python@v5</code><br/>
+                • <strong>Matriz:</strong> Python <code class="inline">["3.10", "3.11"]</code><br/>
+                • <strong>Quality Gate 1 (TDD):</strong> <code class="inline">coverage report --rcfile=.coveragerc --fail-under=60</code> (100% logrado en módulos core)<br/>
+                • <strong>Quality Gate 2 (PEP8):</strong> <code class="inline">flake8 src/ --max-line-length=120</code> (0 errores)<br/>
+                • <strong>Docker Engine:</strong> <code class="inline">v29.9.3</code> + Compose v2
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Sustentación (Bryan Cahuana — Repositorio GitHub, Ramas y Carpetas):</strong>
+        "El repositorio de GitHub contiene todos los entregables exigidos en el punto 5 de la consigna: código fuente modular en <code>src/</code> y <code>frontend/</code>, <code>README.md</code>, <code>Dockerfile</code>, <code>docker-compose.yml</code>, <code>requirements.txt</code> y pipeline CI/CD en GitHub Actions. En este panel interactivo podemos inspeccionar qué aporta cada una de las 8 ramas de Git y para qué sirve cada carpeta y archivo del proyecto."
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- DIAPOSITIVA 9: SUSTENTACIÓN TÉCNICA Y DEMO EN TIEMPO REAL (2 PTS) -->
+    <!-- ================================================================= -->
+    <section class="slide" data-index="9">
+      <div class="slide-header">
+        <div>
+          <span class="badge badge-green">9. Criterio de Rúbrica: Sustentación Técnica y Demostración en Tiempo Real (2 Puntos) · Todo el Equipo DEV</span>
+          <h2 class="slide-title">Protocolo de Demostración Práctica en Vivo y Banco de Preguntas Técnicas</h2>
+          <p class="slide-subtitle">Comandos listos para copiar y enlaces directos al contenedor activo en http://localhost:8000</p>
+        </div>
+        <span class="badge badge-amber">Evaluación Total: 20 / 20 Puntos</span>
       </div>
 
       <div class="grid-3">
-        <div class="card" style="border-top: 4px solid #3b82f6;">
-          <div class="card-title">📦 Cartón (`cardboard`)</div>
-          <div class="card-body">
-            <span class="pill pill-blue">Contenedor Azul</span>
-            <p style="margin-top: 0.5rem;">Cajas, empaques y corrugados. Recomendación: aplanar, retirar cintas y grapas, depositar seco y sin grasa.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #10b981;">
-          <div class="card-title">🫙 Vidrio (`glass`)</div>
-          <div class="card-body">
-            <span class="pill pill-green">Contenedor Verde</span>
-            <p style="margin-top: 0.5rem;">Botellas, frascos y tarros. Recomendación: retirar tapas metálicas o plásticas, enjuagar residuos orgánicos.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #f59e0b;">
-          <div class="card-title">🥫 Metal (`metal`)</div>
-          <div class="card-body">
-            <span class="pill pill-red" style="color: #fcd34d; border-color: #f59e0b;">Contenedor Amarillo</span>
-            <p style="margin-top: 0.5rem;">Latas de conserva, gaseosa, aluminio. Recomendación: escurrir, aplastar latas de bebidas para ahorrar volumen.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #93c5fd;">
-          <div class="card-title">📄 Papel (`paper`)</div>
-          <div class="card-body">
-            <span class="pill pill-blue">Contenedor Azul</span>
-            <p style="margin-top: 0.5rem;">Hojas, periódicos, revistas limpias. Recomendación: no arrugar innecesariamente, evitar papel con carbón o mojado.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #eab308;">
-          <div class="card-title">♻️ Plástico (`plastic`)</div>
-          <div class="card-body">
-            <span class="pill pill-red" style="color: #fde047; border-color: #eab308;">Contenedor Amarillo</span>
-            <p style="margin-top: 0.5rem;">Botellas PET, tapas, envases PEAD. Recomendación: compactar, colocar la tapa para facilitar el reciclaje.</p>
-          </div>
-        </div>
-
-        <div class="card" style="border-top: 4px solid #6b7280;">
-          <div class="card-title">🗑️ Basura General (`trash`)</div>
-          <div class="card-body">
-            <span class="pill" style="background: rgba(107, 114, 128, 0.2); color: #d1d5db;">Contenedor Gris / Negro</span>
-            <p style="margin-top: 0.5rem;">Residuos no reciclables o contaminados. Recomendación: envolver bien para relleno sanitario seguro.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-4">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El modelo fue entrenado con el dataset <strong>TrashBusters/combinedd</strong> con cerca de 30 mil imágenes divididas en proporción 80% train, 10% validación y 10% test. Mapeamos cada una de las 6 categorías con las normativas internacionales de contenedores de colores, de modo que cada predicción va acompañada de una acción ecológica inmediata para el usuario."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 5: ARQUITECTURA DE SOFTWARE -->
-    <section class="slide" data-slide="5">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Diseño de Software & Modularidad</span>
-          <h2 class="slide-title">Arquitectura Modular del Proyecto</h2>
-          <p class="slide-subtitle">Separación estricta de responsabilidades entre Visión, Lógica, UI y API REST</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
         <div class="card">
-          <div class="card-title">📁 src/preprocess.py</div>
-          <div class="card-body">
-            <p><strong>Carga y Validación</strong></p>
-            <p>Valida formatos admitidos (JPG, PNG), tipos de entrada (Path, PIL, NumPy), dimensiones mínimas y redimensiona a 224x224 RGB.</p>
+          <div class="card-header">
+            <div class="card-title">🖥️ 1. Interfaz Gráfica Web (/ui)</div>
+            <span class="badge badge-green">Puerto 8000</span>
           </div>
+          <p class="card-text">
+            Abrir en el navegador:<br/>
+            <a href="http://localhost:8000/ui" target="_blank" style="color:var(--accent-sky); font-family:var(--font-mono); font-weight:700;">http://localhost:8000/ui</a><br/>
+            Probar subida de imagen, Drag &amp; Drop, cámara web o pegado con <code class="inline">Ctrl + V</code> para mostrar categoría, porcentaje de las 6 clases y consejo ecológico.
+          </p>
         </div>
 
         <div class="card">
-          <div class="card-title">📁 src/model.py</div>
-          <div class="card-body">
-            <p><strong>Inferencia y Red Neuronal</strong></p>
-            <p>Carga el modelo ResNet-50 bajo patrón Singleton, ejecuta inferencia en CPU o CUDA y devuelve tuplas ordenadas de probabilidad.</p>
+          <div class="card-header">
+            <div class="card-title">📘 2. Swagger OpenAPI (/docs)</div>
+            <span class="badge badge-sky">Interactivo</span>
           </div>
+          <p class="card-text">
+            Abrir en el navegador:<br/>
+            <a href="http://localhost:8000/docs" target="_blank" style="color:var(--accent-sky); font-family:var(--font-mono); font-weight:700;">http://localhost:8000/docs</a><br/>
+            Ejecutar en vivo <code class="inline">GET /classes</code>, <code class="inline">POST /classify</code> con una foto válida (HTTP 200) y con un archivo <code class="inline">.txt</code> o vacío (HTTP 400).
+          </p>
         </div>
 
         <div class="card">
-          <div class="card-title">📁 src/ecoclasifica.py</div>
-          <div class="card-body">
-            <p><strong>Motor de Reglas Base</strong></p>
-            <p>Normaliza alias léxicos (vidrio, lata, cartón), calcula confianza base y degrada la confianza ante imágenes pequeñas (&lt;128px).</p>
+          <div class="card-header">
+            <div class="card-title">💓 3. Health Check (/health)</div>
+            <span class="badge badge-purple">Modelo Afinado</span>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/postprocess.py</div>
-          <div class="card-body">
-            <p><strong>Formateo y Consejos</strong></p>
-            <p>Convierte resultados numéricos en salidas legibles para humanos con barras de probabilidad ASCII y recomendaciones ecológicas.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/app.py</div>
-          <div class="card-body">
-            <p><strong>Frontend Web (Gradio)</strong></p>
-            <p>Interfaz interactiva multiplataforma con soporte para arrastrar archivos o captura directa desde la cámara web en el puerto 7860.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">📁 src/fastapi_app.py</div>
-          <div class="card-body">
-            <p><strong>Backend REST API</strong></p>
-            <p>Servidor de alto rendimiento con FastAPI, validación estricta de tipos MIME, Magic Bytes, documentación Swagger UI y ReDoc.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-5">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "La arquitectura de software de EcoClasifica sigue el principio de <strong>Responsabilidad Única</strong>: preprocesamiento valida imágenes, model ejecuta la red neuronal, ecoclasifica aplica reglas de negocio, postprocess formatea los resultados, y tenemos dos canales de consumo: una interfaz web en <strong>Gradio</strong> para usuarios finales y una API REST en <strong>FastAPI</strong> para integraciones externas."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 6: REFACTORIZACIÓN Y CODE SMELLS -->
-    <section class="slide" data-slide="6">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Clean Code & Calidad de Código</span>
-          <h2 class="slide-title">Refactorización: Eliminación de Code Smells</h2>
-          <p class="slide-subtitle">Solución al reporte de constantes no detectadas y magic numbers</p>
+          <p class="card-text">
+            Abrir en el navegador:<br/>
+            <a href="http://localhost:8000/health" target="_blank" style="color:var(--accent-sky); font-family:var(--font-mono); font-weight:700;">http://localhost:8000/health</a><br/>
+            Demostrar que dentro del contenedor devuelve <code class="inline">"status": "ok"</code> y <code class="inline">"modelo_afinado_disponible": true</code>.
+          </p>
         </div>
       </div>
 
       <div class="grid-2">
         <div class="card">
-          <div class="card-title">
-            <span class="pill pill-red">Code Smell 1: Magic Numbers</span>
-          </div>
-          <div class="card-body">
-            <p><strong>Problema:</strong> Valores como <code>128</code>, <code>0.8</code> y <code>2</code> estaban hardcodeados dentro del cuerpo de las funciones.</p>
-            <div class="code-box code-bad" style="margin-top: 0.5rem;">
-# ❌ ANTES (Magic Numbers)
-if max_dimension &lt; 128:
-    confidence *= 0.8
-return round(confidence, 2)
+          <div class="card-title">💻 Comandos para la Demostración en Vivo (PowerShell / CMD)</div>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span>Verificación completa del contenedor y prueba por consola</span>
+              <button class="copy-btn" data-copy="docker compose up -d
+docker compose ps
+Invoke-RestMethod http://localhost:8000/health
+Invoke-RestMethod http://localhost:8000/classes">Copiar Comandos</button>
             </div>
+            <pre># 1. Levantar o verificar el contenedor con Docker Compose
+docker compose up -d
+docker compose ps
+
+# 2. Consultar salud y catálogo de 6 clases desde PowerShell
+Invoke-RestMethod http://localhost:8000/health
+Invoke-RestMethod http://localhost:8000/classes</pre>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">
-            <span class="pill pill-green">Refactorización: Extract Constant</span>
-          </div>
-          <div class="card-body">
-            <p><strong>Solución:</strong> Constantes explícitas <code>UPPER_CASE</code> tipadas en la cabecera del módulo.</p>
-            <div class="code-box code-good" style="margin-top: 0.5rem;">
-# ✅ DESPUÉS (Constantes UPPER_CASE)
-LOW_RESOLUTION_THRESHOLD: int = 128
-CONFIDENCE_ADJUSTMENT: float = 0.8
-ROUND_DECIMALS: int = 2
-
-if max_dimension &lt; LOW_RESOLUTION_THRESHOLD:
-    confidence *= CONFIDENCE_ADJUSTMENT
-return round(confidence, ROUND_DECIMALS)
-            </div>
-          </div>
+          <div class="card-title">🎓 Respuestas Rápidas ante Preguntas del Docente (Equipo DEV)</div>
+          <p class="card-text">
+            • <strong>¿Cómo se conectan React y FastAPI en Docker?</strong> FastAPI monta <code class="inline">frontend/dist</code> en <code class="inline">GET /ui</code> y Axios usa <code class="inline">baseURL: ''</code> en el mismo puerto 8000.<br/>
+            • <strong>¿Por qué <code class="inline">models/</code> está en <code class="inline">.gitignore</code> pero sí funciona en Docker?</strong> Para no subir 94.3 MB a GitHub; los pesos viajan empaquetados dentro de la imagen <code class="inline">yury1289/ecoclasifica:latest</code> en Docker Hub.<br/>
+            • <strong>¿Cómo evitan recargar ResNet-50 en cada petición?</strong> Con el diccionario singleton <code class="inline">_MODEL_CACHE</code> en <code class="inline">src/model.py</code> y <code class="inline">@lru_cache</code> en <code class="inline">src/preprocess.py</code>.<br/>
+            • <strong>¿Por qué algunas fotos dan probabilidades repartidas?</strong> Por la compresión de logits en <code class="inline">classifier.1.weight</code> tras 5 épocas en CPU con <code class="inline">lr=5e-5</code>.
+          </p>
         </div>
       </div>
 
-      <div class="grid-2" style="margin-top: 0.5rem;">
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-red">Code Smell 2: Dead Code (Constantes Huérfanas)</span>
-          </div>
-          <div class="card-body">
-            <p>Anteriormente se habían pegado bloques de constantes al final de los archivos que <strong>nunca eran invocadas por las funciones</strong>. La IA del profesor las detectó como inexistentes en el flujo lógico.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            <span class="pill pill-green">Solución: Reubicación & Uso Activo</span>
-          </div>
-          <div class="card-body">
-            <p>Se eliminó el código muerto del pie de página y se reubicaron en la cabecera según el estándar PEP8, conectándolas con los argumentos reales (ej. <code>DEFAULT_SERVER_PORT = 7860</code>).</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-6">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Un punto crítico solicitado por el profesor fue corregir la falta de constantes definidas. Identificamos el code smell de <strong>Magic Numbers</strong> y <strong>Código Muerto</strong>: habían números sueltos dentro de las funciones y constantes huérfanas al final del archivo. Aplicamos la técnica de refactorización <strong>Extract Constant</strong>, definiendo identificadores UPPER_CASE tipados a nivel de módulo y eliminando cualquier valor literal sin nombre."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 7: PRUEBAS TDD Y COBERTURA 100% -->
-    <section class="slide" data-slide="7">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Quality Assurance & TDD</span>
-          <h2 class="slide-title">Pruebas Unitarias TDD y Cobertura 100%</h2>
-          <p class="slide-subtitle">Metodología Red-Green-Refactor superando el Quality Gate del 60%</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">📊 Reporte de Cobertura Oficial</div>
-          <div class="card-body">
-            <div class="code-box code-good">
-Name                  Stmts   Miss  Cover   Missing
----------------------------------------------------
-src\ecoclasifica.py      41      0   100%
-src\postprocess.py       32      0   100%
----------------------------------------------------
-TOTAL                    73      0   100%
-            </div>
-            <p style="margin-top: 0.75rem;">• <strong>Umbral exigido (.coveragerc):</strong> <code>fail_under = 60</code></p>
-            <p>• <strong>Resultado obtenido:</strong> <strong>100% de cobertura total</strong></p>
-            <p>• <strong>Reporte HTML:</strong> Generado e interactivo en <code>htmlcov/index.html</code></p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🧪 ¿Qué verifican los Tests Agregados?</div>
-          <div class="card-body">
-            <p>1. <strong>Valores y Tipos de Constantes:</strong> Aserta formalmente que las constantes globales existen con tipos estrictos (<code>str</code>, <code>float</code>, <code>int</code>).</p>
-            <p style="margin-top: 0.5rem;">2. <strong>Resiliencia ante Nulos:</strong> Prueba que <code>normalize_material_name(None)</code> retorna de forma segura <code>DEFAULT_CATEGORY</code>.</p>
-            <p style="margin-top: 0.5rem;">3. <strong>Pruebas de Frontera (Boundary Testing):</strong> Comprueba la degradación exacta de confianza en el límite de 128 píxeles.</p>
-            <p style="margin-top: 0.5rem;">4. <strong>Postprocesamiento Robusto:</strong> Prueba listas de probabilidades y descarte de elementos malformados.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-7">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "En cuanto a calidad de software, aplicamos <strong>Desarrollo Guiado por Pruebas (TDD)</strong> con unittest. El archivo de configuración .coveragerc requería un mínimo del 60%. Gracias a los nuevos tests que agregamos para casos borde y verificación de constantes, alcanzamos un impecable <strong>100% de cobertura</strong> en los módulos evaluados, con cero líneas omitidas."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 8: PIPELINE CI/CD -->
-    <section class="slide" data-slide="8">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">DevOps & Automatización</span>
-          <h2 class="slide-title">Pipeline CI/CD en GitHub Actions</h2>
-          <p class="slide-subtitle">Automatización continua multi-entorno con Quality Gates estrictos</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">⚡ Disparadores & Matriz de Entorno</div>
-          <div class="card-body">
-            <p>• <strong>Triggers:</strong> Se activa en cada <code>push</code> a ramas <code>main</code> y <code>develop</code>, y en cada <code>pull_request</code> hacia <code>main</code>.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Runner:</strong> Contenedores virtuales con <code>ubuntu-latest</code>.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Matrix Multi-versión:</strong> Trabajos concurrentes en <strong>Python 3.10</strong> y <strong>Python 3.11</strong> para asegurar compatibilidad.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🛡️ Quality Gates de Protección</div>
-          <div class="card-body">
-            <p>• <strong>Cobertura Obligatoria:</strong> <code>coverage report --fail-under=60</code> detiene el flujo si la cobertura cae por debajo del 60%.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Linter Estricto:</strong> <code>flake8 src/ --max-line-length=120</code> rechaza código con problemas de estilo PEP8 o errores sintácticos.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
-        <div class="pipeline-step">
-          <div class="pipeline-num">1</div>
-          <div><strong>Checkout:</strong> Clona el repositorio con <code>actions/checkout@v4</code>.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">2</div>
-          <div><strong>Setup Python:</strong> Configura la versión correspondiente con <code>actions/setup-python@v5</code>.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">3</div>
-          <div><strong>Install:</strong> Actualiza pip e instala dependencias de <code>requirements.txt</code>, coverage y flake8.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">4</div>
-          <div><strong>Tests & Coverage:</strong> Ejecuta batería de pruebas unitarias y genera reporte de cobertura.</div>
-        </div>
-        <div class="pipeline-step">
-          <div class="pipeline-num">5</div>
-          <div><strong>Linting:</strong> Audita el código con flake8 para garantizar calidad y legibilidad.</div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-8">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Como responsable de <strong>DevOps y CI/CD</strong>, configuré el pipeline en <strong>GitHub Actions</strong> ubicado en .github/workflows/ci.yml. En cada push o pull request se levantan entornos limpios en Ubuntu con Python 3.10 y 3.11. El pipeline ejecuta los tests, verifica que la cobertura supere el 60% y audita el estilo con flake8. Si cualquiera de estos pasos falla, el merge queda bloqueado."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 9: DEMOSTRACIÓN DEL SISTEMA -->
-    <section class="slide" data-slide="9">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Demostración & Producto</span>
-          <h2 class="slide-title">Interfaces del Sistema: Gradio Web & REST API</h2>
-          <p class="slide-subtitle">Dos formas de consumir la inteligencia artificial de EcoClasifica</p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">🖥️ Interfaz Web (Gradio) — Puerto 7860</div>
-          <div class="card-body">
-            <p>• <strong>Subida interactiva:</strong> Arrastrar/soltar fotos locales o captura directa desde la cámara web.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Gráficos en tiempo real:</strong> Componente <code>gr.Label</code> con las probabilidades ordenadas de las 6 clases.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Tarjeta ecológica:</strong> Emoji del residuo, porcentaje de confianza y guía textual de reciclaje.</p>
-            <div class="code-box" style="margin-top: 0.75rem;">
-# Ejecución local:
-python src/app.py
-# URL: http://localhost:7860
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🌐 API REST (FastAPI) — Puerto 8000</div>
-          <div class="card-body">
-            <p>• <code>GET /health</code>: Estado del microservicio y modelo.</p>
-            <p style="margin-top: 0.5rem;">• <code>GET /classes</code>: Catálogo de 6 categorías soportadas.</p>
-            <p style="margin-top: 0.5rem;">• <code>POST /classify</code>: Envío de archivo binario multipart.</p>
-            <p style="margin-top: 0.5rem;">• <code>POST /classify/base64</code>: Envío en payload JSON.</p>
-            <p style="margin-top: 0.5rem;">• <strong>Swagger UI interactivo:</strong> en <code>/docs</code>.</p>
-            <div class="code-box" style="margin-top: 0.75rem;">
-# Ejecución local:
-python -m uvicorn src.fastapi_app:app --port 8000
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-9">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "El sistema ofrece dos interfaces de acceso: para el usuario final tenemos una interfaz gráfica desarrollada en <strong>Gradio</strong> que corre en el puerto 7860 y permite capturar fotos desde la webcam; y para aplicaciones móviles o sistemas externos, disponemos de una API REST empresarial desarrollada con <strong>FastAPI</strong> con documentación interactiva Swagger en /docs."
-        </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 10: CONCLUSIONES & PREGUNTAS -->
-    <section class="slide" data-slide="10">
-      <div class="slide-header">
-        <div>
-          <span class="slide-tag">Cierre & Conclusiones</span>
-          <h2 class="slide-title">Conclusiones e Impacto del Proyecto</h2>
-          <p class="slide-subtitle">Logros técnicos alcanzados por el Equipo DEV</p>
-        </div>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">🎯 Precisión y Utilidad</div>
-          <div class="card-body">
-            <p>La combinación de <strong>ResNet-50</strong> preentrenado con fine-tuning sobre 29.8k imágenes permite una segregación automatizada certera, reduciendo la contaminación cruzada en puntos de reciclaje.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">💎 Calidad de Ingeniería</div>
-          <div class="card-body">
-            <p>Cumplimiento estricto de estándares de la industria: <strong>100% de cobertura en tests TDD</strong>, cero advertencias en <strong>flake8</strong> y eliminación total de <strong>code smells y números mágicos</strong>.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">🚀 Automatización Continua</div>
-          <div class="card-body">
-            <p>El pipeline de <strong>CI/CD en GitHub Actions</strong> valida cada cambio de forma desatendida sobre múltiples versiones de Python, asegurando estabilidad y despliegues sin regresiones.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top: 0.75rem; text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1)); border-color: var(--accent-green);">
-        <h3 style="font-size: 1.8rem; font-weight: 800; color: #fff;">¡Muchas Gracias!</h3>
-        <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 1.05rem;">
-          Estamos listos para la ronda de preguntas y sustentación técnica.
-        </p>
-      </div>
-
-      <div class="speaker-notes-box" id="notes-10">
-        <div class="speaker-notes-title">🗣️ Guion de Presentación — Qué decir en esta diapositiva:</div>
-        <div class="speaker-notes-content">
-          "Para concluir: EcoClasifica demuestra cómo la integración de visión artificial moderna con buenas prácticas de ingeniería de software —como TDD, CI/CD y código limpio libre de magic numbers— permite crear herramientas prácticas de alto impacto ecológico. Quedamos a su disposición para resolver cualquier duda o demostración técnica."
-        </div>
+      <div class="speaker-drawer visible">
+        <strong>🗣️ Guion de Cierre (Equipo DEV):</strong>
+        "Con esto completamos los 5 requisitos de la consigna y los 20 puntos de la rúbrica de la Semana 15. Procedemos ahora a mostrar el contenedor ejecutándose en tiempo real en <code>http://localhost:8000/ui</code> y <code>http://localhost:8000/docs</code>, y quedamos atentos a las preguntas técnicas para cualquiera de los 5 integrantes."
       </div>
     </section>
 
   </main>
 
-  <!-- BOTTOM FOOTER -->
-  <footer>
-    <div class="key-hints">
-      <span>Navegación: <span class="kbd">◀</span> <span class="kbd">▶</span> o <span class="kbd">Espacio</span></span>
-      <span>Notas del orador: <span class="kbd">N</span></span>
-      <span>Cronómetro: <span class="kbd">T</span></span>
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div>
+      Atajos: <span class="kbd">◀</span> <span class="kbd">▶</span> <span class="kbd">Espacio</span> Navegar ·
+      <span class="kbd">N</span> Guion Expositor · <span class="kbd">T</span> Cronómetro
     </div>
-
-    <div style="font-size: 0.82rem; color: var(--text-dim);">
-      EcoClasifica v1.0 · Universidad Continental · Construcción de Software
+    <div>
+      EcoClasifica · Universidad Continental · Construcción de Software (Consolidado 2 · Semana 15)
     </div>
   </footer>
 
+  <!-- ==================== JAVASCRIPT VANILLA ==================== -->
   <script>
-    // ESTADO DE LA PRESENTACIÓN
-    const totalSlides = 10;
+    // =========================================================================
+    // 1. NAVEGACIÓN DE DIAPOSITIVAS
+    // =========================================================================
+    const totalSlides = 9;
     let currentSlide = 1;
 
-    // ELEMENTOS DOM
     const slides = document.querySelectorAll('.slide');
+    const qtabs = document.querySelectorAll('.qtab');
+    const slideSelect = document.getElementById('slideSelect');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    const slideIndicator = document.getElementById('slideIndicator');
+    const slideCounter = document.getElementById('slideCounter');
     const progressBar = document.getElementById('progressBar');
-    const notesToggleBtn = document.getElementById('notesToggleBtn');
 
-    // NAVEGACIÓN DE DIAPOSITIVAS
-    function showSlide(index) {
+    function goToSlide(index) {
       if (index < 1) index = 1;
       if (index > totalSlides) index = totalSlides;
       currentSlide = index;
 
-      slides.forEach(slide => {
-        const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
-        if (slideNum === currentSlide) {
-          slide.classList.add('active');
-        } else {
-          slide.classList.remove('active');
-        }
+      slides.forEach(s => {
+        const idx = parseInt(s.getAttribute('data-index'), 10);
+        s.classList.toggle('active', idx === currentSlide);
       });
 
-      // Actualizar contador y progreso
-      slideIndicator.textContent = `${currentSlide} / ${totalSlides}`;
+      qtabs.forEach(t => {
+        const idx = parseInt(t.getAttribute('data-slide'), 10);
+        t.classList.toggle('active', idx === currentSlide);
+      });
+
+      slideSelect.value = String(currentSlide);
+      slideCounter.textContent = `${currentSlide} / ${totalSlides}`;
       progressBar.style.width = `${(currentSlide / totalSlides) * 100}%`;
 
-      // Habilitar / deshabilitar botones
       prevBtn.disabled = currentSlide === 1;
-      prevBtn.style.opacity = currentSlide === 1 ? '0.5' : '1';
-      nextBtn.textContent = currentSlide === totalSlides ? 'Fin ✔' : 'Siguiente ▶';
-
-      // Scroll arriba suave
+      nextBtn.textContent = currentSlide === totalSlides ? 'Inicio ↺' : 'Siguiente ▶';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
     nextBtn.addEventListener('click', () => {
-      if (currentSlide < totalSlides) {
-        showSlide(currentSlide + 1);
-      }
+      if (currentSlide === totalSlides) goToSlide(1);
+      else goToSlide(currentSlide + 1);
     });
 
-    // TECLAS DE ACCESO RÁPIDO
+    slideSelect.addEventListener('change', (e) => goToSlide(parseInt(e.target.value, 10)));
+    qtabs.forEach(t => t.addEventListener('click', () => goToSlide(parseInt(t.getAttribute('data-slide'), 10))));
+
     document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
       if (e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
-        if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+        if (currentSlide < totalSlides) goToSlide(currentSlide + 1);
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        if (currentSlide > 1) showSlide(currentSlide - 1);
+        if (currentSlide > 1) goToSlide(currentSlide - 1);
       } else if (e.key.toLowerCase() === 'n') {
-        toggleNotes();
+        toggleSpeakerNotes();
       } else if (e.key.toLowerCase() === 't') {
         toggleTimer();
       }
     });
 
-    // NOTAS DEL ORADOR
-    let notesVisible = false;
-    function toggleNotes() {
-      notesVisible = !notesVisible;
-      const allNotes = document.querySelectorAll('.speaker-notes-box');
-      allNotes.forEach(box => {
-        if (notesVisible) {
-          box.classList.add('open');
+    // =========================================================================
+    // 2. BOTÓN "COPIAR" EN BLOQUES DE TERMINAL
+    // =========================================================================
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text);
         } else {
-          box.classList.remove('open');
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
         }
+        const orig = btn.textContent;
+        btn.textContent = '¡Copiado! ✔';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.classList.remove('copied');
+        }, 1600);
       });
-      notesToggleBtn.style.background = notesVisible ? 'rgba(6, 182, 212, 0.2)' : 'var(--bg-card)';
-      notesToggleBtn.style.borderColor = notesVisible ? 'var(--accent-cyan)' : 'var(--border-color)';
-    }
-    notesToggleBtn.addEventListener('click', toggleNotes);
+    });
 
-    // CRONÓMETRO DE EXPOSICIÓN
-    let timerSeconds = 0;
-    let timerInterval = null;
-    let timerRunning = false;
-    const timerDisplay = document.getElementById('timerDisplay');
-    const timerToggle = document.getElementById('timerToggle');
-    const timerReset = document.getElementById('timerReset');
+    // =========================================================================
+    // 3. INSPECTOR INTERACTIVO DE LAS 6 CONDICIONES (DIAPOSITIVA 3)
+    // =========================================================================
+    const rulesInfo = {
+      r1: {
+        title: "Condición 1: Límites de Tamaño Binario (1 Byte a 10 MB)",
+        code: "TAMANO_MINIMO_BYTES: int = 1  |  TAMANO_MAXIMO_BYTES: int = 10 * 1024 * 1024 (10,485,760 bytes)",
+        desc: "Si len(contenido) < 1 devuelve HTTP 400 Bad Request ('El archivo enviado está vacío'). Si len(contenido) > 10,485,760 bytes devuelve HTTP 413 Payload Too Large ('El archivo supera el tamaño máximo permitido de 10 MB').",
+        test: "Pruebas unitarias: test_classify_rejects_empty_file y test_classify_rejects_oversized_file (tests/test_fastapi.py)"
+      },
+      r2: {
+        title: "Condición 2: Lista Blanca de Tipos MIME y Extensiones",
+        code: 'TIPOS_MIME_PERMITIDOS = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/bmp"}\nEXTENSIONES_PERMITIDAS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}',
+        desc: "Valida tanto la cabecera Content-Type como el sufijo Path(nombre_archivo).suffix.lower(). Bloquea archivos .txt, .pdf, .exe o scripts con HTTP 400 Bad Request.",
+        test: "Pruebas unitarias: test_classify_rejects_non_image_content_type y test_classify_rejects_invalid_extension"
+      },
+      r3: {
+        title: "Condición 3: Inspección de Magic Bytes e Integridad con Pillow",
+        code: "imagen_verificacion = Image.open(io.BytesIO(contenido))\nimagen_verificacion.verify()  # Verifica firma binaria real antes de .convert('RGB')",
+        desc: "Previene ataques de spoofing donde un archivo de texto o binario malicioso es renombrado como 'trampa.png' con MIME 'image/png'. Si los magic bytes no son de una imagen real, devuelve HTTP 400.",
+        test: "Prueba unitaria: test_classify_rejects_spoofed_file_content (tests/test_fastapi.py)"
+      },
+      r4: {
+        title: "Condición 4: Rango de Resolución (10×10 px hasta 8192×8192 px)",
+        code: "DIMENSION_MINIMA_PX: int = 10  |  DIMENSION_MAXIMA_PX: int = 8192",
+        desc: "Rechaza imágenes diminutas (<10x10 px) por falta de características visuales y bloquea imágenes gigantes (>8192x8192 px) para evitar bombas de descompresión en RAM.",
+        test: "Prueba unitaria: test_classify_rejects_sub_minimum_dimensions (tests/test_fastapi.py)"
+      },
+      r5: {
+        title: "Condición 5: Validación Estricta de Payloads Base64 (/classify/base64)",
+        code: "base64.b64decode(cadena_b64, validate=True)  |  Límite de cadena: 15 * 1024 * 1024 caracteres",
+        desc: "Admite prefijos Data URI ('data:image/png;base64,...'), rechaza cadenas vacías o con caracteres fuera del alfabeto Base64 (HTTP 400) y luego pasa los bytes decodificados por las mismas validaciones de Pillow.",
+        test: "Pruebas unitarias: test_classify_base64_empty_string, test_classify_base64_invalid_string, test_classify_base64_non_image_payload"
+      },
+      r6: {
+        title: "Condición 6: Normalización Bilingüe y Penalización por Baja Resolución (<128px)",
+        code: "normalize_category(category) en src/postprocess.py  |  LOW_RESOLUTION_THRESHOLD = 128 en src/ecoclasifica.py",
+        desc: "Traduce sin acentos ni mayúsculas las etiquetas del modelo (cardboard->Cartón, glass->Vidrio, metal->Metal, paper->Papel, plastic->Plástico, trash->Basura general). En ecoclasifica.py, si max_dimension < 128, multiplica la confianza base (0.85) por 0.8 = 0.68.",
+        test: "Pruebas unitarias: tests/test_postprocess.py y tests/test_ecoclasifica.py (100% cobertura)"
+      }
+    };
 
-    function updateTimerDisplay() {
-      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-      const secs = (timerSeconds % 60).toString().padStart(2, '0');
-      timerDisplay.textContent = `${mins}:${secs}`;
+    const ruleBtns = document.querySelectorAll('#ruleTabs .subtab-btn');
+    const ruleContent = document.getElementById('ruleContent');
+
+    function renderRule(key) {
+      const r = rulesInfo[key];
+      ruleBtns.forEach(b => b.classList.toggle('active', b.getAttribute('data-rule') === key));
+      ruleContent.innerHTML = `
+        <div style="font-weight:800; color:var(--accent-green); font-size:0.9rem; margin-bottom:0.4rem;">${r.title}</div>
+        <pre style="background:#050811; border:1px solid var(--border); padding:0.55rem; border-radius:6px; font-family:var(--font-mono); font-size:0.76rem; color:#7dd3fc; overflow-x:auto; margin-bottom:0.5rem;">${r.code}</pre>
+        <p style="margin-bottom:0.45rem;">${r.desc}</p>
+        <div style="font-size:0.76rem; color:#34d399; font-family:var(--font-mono);">✔ ${r.test}</div>
+      `;
     }
+
+    ruleBtns.forEach(b => b.addEventListener('click', () => renderRule(b.getAttribute('data-rule'))));
+
+    // =========================================================================
+    // 4. INSPECTOR DE LAS 8 RAMAS Y CARPETAS (DIAPOSITIVA 8)
+    // =========================================================================
+    const repoMainBtns = document.querySelectorAll('#repoMainTabs .subtab-btn');
+    const repoPanels = document.querySelectorAll('#tab-branches, #tab-folders, #tab-versions');
+
+    repoMainBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-repotab');
+        repoMainBtns.forEach(b => b.classList.toggle('active', b === btn));
+        repoPanels.forEach(p => p.classList.toggle('active', p.id === target));
+      });
+    });
+
+    const branchesInfo = {
+      b1: {
+        name: "feature/semana15-despliegue-docker (Commit f3a2078)",
+        author: "Yury Yohan Llanos Luna & Equipo DEV",
+        desc: "Rama de entrega de la Semana 15 (Consolidado 2). Integra el frontend React compilado (frontend/dist) servido por FastAPI en GET /ui, caché singleton del modelo (_MODEL_CACHE) y del procesador (@lru_cache), normalización inglés->español con emojis, Dockerfile, docker-compose.yml (con healthcheck e imagen yury1289/ecoclasifica:latest), .dockerignore y documentación completa."
+      },
+      b2: {
+        name: "main / origin/main (Commit 0c9d39d)",
+        author: "Equipo DEV (Rama Troncal de Producción)",
+        desc: "Rama principal estable donde convergen los Pull Requests aprobados tras pasar el pipeline de GitHub Actions (ci.yml). Contiene la fusión del backend FastAPI, el frontend React 19 y las pruebas TDD."
+      },
+      b3: {
+        name: "origin/feature/backend-fastapi (Commit 4f00703)",
+        author: "Yury Yohan Llanos Luna",
+        desc: "Implementación de la API REST con FastAPI en src/fastapi_app.py: endpoints /, /health, /classes, /classify, /predict y /classify/base64, esquemas Pydantic y las 17 pruebas de integración en tests/test_fastapi.py."
+      },
+      b4: {
+        name: "origin/feature/optimizacion-backend (Commit 7fe92d3)",
+        author: "Yury Yohan Llanos Luna",
+        desc: "Endurecimiento de validaciones de seguridad (inspección de magic bytes con Pillow, límite de 10 MB con HTTP 413, dimensiones 10x10 a 8192x8192) y cumplimiento estricto de PEP8 en flake8."
+      },
+      b5: {
+        name: "origin/feature/frontend-ui (Commit 8d36210)",
+        author: "Benjamin Salazar Arenas",
+        desc: "Desarrollo de la SPA en React 19 + TypeScript + Vite + Tailwind CSS v4 (carpeta frontend/), componentes Dropzone, ResultCard, TypewriterText, hook useClipboardPaste (Ctrl+V) y script iniciar.bat."
+      },
+      b6: {
+        name: "origin/feature/devops-ci-cd (Commit 823c7e9)",
+        author: "Bryan Alexander Cahuana Mendoza",
+        desc: "Configuración del pipeline CI/CD en .github/workflows/ci.yml (matriz Python 3.10 y 3.11), .coveragerc, cobertura TDD del 100% en módulos core y scripts run_app.bat, run_backend.bat, run_tests.bat y abrir_presentacion.bat."
+      },
+      b7: {
+        name: "origin/develop (Commit 823c7e9)",
+        author: "Bryan Cahuana & Jerson Baca",
+        desc: "Rama de integración previa a producción donde se validan las refactorizaciones Clean Code (eliminación de magic numbers en src/ecoclasifica.py) bajo GitHub Actions."
+      },
+      b8: {
+        name: "origin/master (Commit 5530697)",
+        author: "Marco Antonio Bonifacio Ruiz",
+        desc: "Rama fundacional del entrenamiento de IA: contiene preparar_datos.py, los scripts training/train.py, training/evaluate.py, training/config.json y la estructura inicial de inferencia con ResNet-50."
+      }
+    };
+
+    const branchBtns = document.querySelectorAll('#branchButtons .selector-item');
+    const branchInspector = document.getElementById('branchInspector');
+
+    function renderBranch(key) {
+      const b = branchesInfo[key];
+      branchBtns.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-bkey') === key));
+      branchInspector.innerHTML = `
+        <div style="font-family:var(--font-mono); font-size:0.95rem; font-weight:800; color:var(--accent-green); margin-bottom:0.35rem;">${b.name}</div>
+        <div style="font-size:0.78rem; color:var(--accent-sky); font-weight:700; margin-bottom:0.65rem;">Responsable: ${b.author}</div>
+        <p class="card-text">${b.desc}</p>
+      `;
+    }
+
+    branchBtns.forEach(btn => btn.addEventListener('click', () => renderBranch(btn.getAttribute('data-bkey'))));
+
+    const foldersInfo = {
+      f1: {
+        title: "📁 Carpeta src/ — Backend FastAPI, Inferencia IA y Lógica de Negocio",
+        items: [
+          "src/fastapi_app.py: Servidor principal FastAPI (:8000), 6 validaciones, endpoints REST y montaje de /ui.",
+          "src/model.py: Clase EcoClasificaModel, carga de models/ecoclasifica-resnet50, fallback base y caché _MODEL_CACHE.",
+          "src/preprocess.py: Conversión RGB y AutoImageProcessor cacheado (@lru_cache) que genera el tensor [1, 3, 224, 224].",
+          "src/postprocess.py: Normalización bilingüe (normalize_category), emojis y recomendaciones DISPOSAL_RECOMMENDATIONS.",
+          "src/routes.py: Controlador de health_check() y classify_image_api().",
+          "src/ecoclasifica.py: Motor de reglas base sin magic numbers (100% cobertura TDD).",
+          "src/api.py y src/app.py: Fachada de compatibilidad para tests y servidor ligero de desarrollo."
+        ]
+      },
+      f2: {
+        title: "📁 Carpeta frontend/ — SPA React 19 + Build de Producción (frontend/dist/)",
+        items: [
+          "frontend/dist/: Build estático (index.html, bg-eco.jpg, assets/*.js y *.css) copiado al contenedor y servido en /ui.",
+          "frontend/src/features/classification/components/: Dropzone.tsx (subida/cámara), ResultCard.tsx y TypewriterText.tsx.",
+          "frontend/src/features/classification/hooks/useClipboardPaste.ts: Captura de imágenes pegadas con Ctrl+V.",
+          "frontend/src/features/classification/api/classifyApi.ts: Envío multipart a POST /classify y normalizeClassification().",
+          "frontend/src/services/apiConfig.ts: Cliente Axios con baseURL relativo ('') y timeout de 15 segundos."
+        ]
+      },
+      f3: {
+        title: "🐳 Archivos de Contenedorización y Configuración en la Raíz",
+        items: [
+          "Dockerfile: Receta sobre python:3.11-slim que integra requirements.txt, src/, frontend/dist/ y models/ecoclasifica-resnet50/.",
+          "docker-compose.yml: Orquestación en puerto 8000:8000 con imagen yury1289/ecoclasifica:latest y healthcheck.",
+          ".dockerignore y .gitignore: Exclusión de archivos temporales, venv/, node_modules/, *.zip y pesos sueltos.",
+          "requirements.txt, .coveragerc y README.md: Dependencias Python, umbral de cobertura (60%) y guía técnica Semana 15."
+        ]
+      },
+      f4: {
+        title: "🧠 Carpeta models/ecoclasifica-resnet50/ — Checkpoint Afinado",
+        items: [
+          "model.safetensors (94.3 MB): Pesos entrenados de ResNet-50 (incluidos dentro de yury1289/ecoclasifica:latest).",
+          "config.json: Arquitectura ResNetForImageClassification con 6 clases (id2label / label2id).",
+          "preprocessor_config.json: Configuración exacta de normalización ImageNet y recorte 224×224.",
+          "label_mapping.json: Mapeo de las 6 categorías (cardboard, glass, metal, paper, plastic, trash)."
+        ]
+      },
+      f5: {
+        title: "📈 Carpeta training/ y preparar_datos.py — Pipeline de Entrenamiento ML",
+        items: [
+          "preparar_datos.py: Descarga y estructura el dataset en carpetas de entrenamiento y validación.",
+          "training/train.py: Ejecuta el fine-tuning de microsoft/resnet-50 con Hugging Face Trainer.",
+          "training/evaluate.py: Calcula Accuracy (58.42%), F1 macro (0.4709) y matriz de confusión.",
+          "training/config.json: Hiperparámetros (5 épocas, batch_size 16, lr 5e-5, image_size 224, seed 42)."
+        ]
+      },
+      f6: {
+        title: "🧪 Carpetas tests/ y htmlcov/ — Suite de Pruebas Unitarias TDD",
+        items: [
+          "tests/test_fastapi.py: 17 pruebas integrales de endpoints y rechazos HTTP 400/413 con TestClient.",
+          "tests/test_ecoclasifica.py y test_postprocess.py: Pruebas con 100% de cobertura sobre reglas y post-proceso.",
+          "tests/test_preprocess.py, test_model.py y test_api.py: Pruebas de tensores, modelo y fachada de API.",
+          "htmlcov/index.html: Reporte interactivo de cobertura generado por coverage html."
+        ]
+      },
+      f7: {
+        title: "⚙️ Carpetas .github/, docs/ y Scripts Automatizados (.bat)",
+        items: [
+          ".github/workflows/ci.yml: Pipeline CI en GitHub Actions (Python 3.10 y 3.11, coverage >=60% y flake8).",
+          "presentacion_ecoclasifica.html y docs/presentacion.html: Presentación interactiva para la sustentación.",
+          "run_backend.bat, iniciar.bat, run_app.bat, run_tests.bat y abrir_presentacion.bat: Scripts de automatización en Windows."
+        ]
+      }
+    };
+
+    const folderBtns = document.querySelectorAll('#folderButtons .selector-item');
+    const folderInspector = document.getElementById('folderInspector');
+
+    function renderFolder(key) {
+      const f = foldersInfo[key];
+      folderBtns.forEach(btn => btn.classList.toggle('active', btn.getAttribute('data-fkey') === key));
+      const list = f.items.map(i => `<li style="margin-bottom:0.35rem;"><span style="color:var(--accent-green); font-weight:700;">▸</span> ${i}</li>`).join('');
+      folderInspector.innerHTML = `
+        <div style="font-size:0.92rem; font-weight:800; color:var(--accent-sky); margin-bottom:0.55rem;">${f.title}</div>
+        <ul class="card-text" style="list-style:none; padding-left:0;">${list}</ul>
+      `;
+    }
+
+    folderBtns.forEach(btn => btn.addEventListener('click', () => renderFolder(btn.getAttribute('data-fkey'))));
+
+    // =========================================================================
+    // 5. GUION DEL EXPOSITOR Y CRONÓMETRO
+    // =========================================================================
+    let notesVisible = true;
+    const notesToggleBtn = document.getElementById('notesToggleBtn');
+
+    function toggleSpeakerNotes() {
+      notesVisible = !notesVisible;
+      document.querySelectorAll('.speaker-drawer').forEach(d => d.classList.toggle('visible', notesVisible));
+      notesToggleBtn.classList.toggle('btn-active', notesVisible);
+    }
+
+    notesToggleBtn.addEventListener('click', toggleSpeakerNotes);
+
+    let timerSec = 0;
+    let timerHandle = null;
+    const timerText = document.getElementById('timerText');
+    const timerPlayBtn = document.getElementById('timerPlayBtn');
+    const timerResetBtn = document.getElementById('timerResetBtn');
 
     function toggleTimer() {
-      if (timerRunning) {
-        clearInterval(timerInterval);
-        timerRunning = false;
-        timerToggle.textContent = '▶';
+      if (timerHandle) {
+        clearInterval(timerHandle);
+        timerHandle = null;
+        timerPlayBtn.textContent = '▶';
       } else {
-        timerInterval = setInterval(() => {
-          timerSeconds++;
-          updateTimerDisplay();
+        timerHandle = setInterval(() => {
+          timerSec++;
+          const m = String(Math.floor(timerSec / 60)).padStart(2, '0');
+          const s = String(timerSec % 60).padStart(2, '0');
+          timerText.textContent = `${m}:${s}`;
         }, 1000);
-        timerRunning = true;
-        timerToggle.textContent = '⏸';
+        timerPlayBtn.textContent = '⏸';
       }
     }
 
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerRunning = false;
-      timerSeconds = 0;
-      updateTimerDisplay();
-      timerToggle.textContent = '▶';
-    }
+    timerPlayBtn.addEventListener('click', toggleTimer);
+    timerResetBtn.addEventListener('click', () => {
+      if (timerHandle) clearInterval(timerHandle);
+      timerHandle = null;
+      timerSec = 0;
+      timerText.textContent = '00:00';
+      timerPlayBtn.textContent = '▶';
+    });
 
-    timerToggle.addEventListener('click', toggleTimer);
-    timerReset.addEventListener('click', resetTimer);
-
-    // INICIALIZACIÓN
-    showSlide(1);
+    // Inicializar componentes interactivos
+    renderRule('r1');
+    renderBranch('b1');
+    renderFolder('f1');
+    goToSlide(1);
   </script>
 </body>
 </html>
