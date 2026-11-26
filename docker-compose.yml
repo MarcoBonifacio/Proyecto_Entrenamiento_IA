@@ -1,0 +1,9 @@
+services:
+  ecoclasifica:
+    build: .
+    image: ${DOCKER_IMAGE:-ecoclasifica:latest}
+    container_name: ecoclasifica
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+

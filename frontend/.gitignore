@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist se versiona para que el Dockerfile y FastAPI (/ui) funcionen directamente al clonar el repositorio
 dist-ssr
 *.local
 

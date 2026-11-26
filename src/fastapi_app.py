@@ -9,11 +9,14 @@ from __future__ import annotations
 import base64
 import io
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from PIL import Image
 
@@ -497,3 +500,25 @@ def classify_base64_image(payload: Base64ClassificationRequest) -> Dict[str, Any
 DEFAULT_IMAGE_SIZE = 224
 CONFIDENCE_THRESHOLD = 0.60
 MAX_BATCH_SIZE = 32
+
+
+# ==============================================================================
+# Interfaz web (build de React/Vite) servida por la misma API
+# ==============================================================================
+# Ruta configurable por variable de entorno; por defecto relativa a la raíz del proyecto.
+FRONTEND_DIST_DIR: Path = Path(
+    os.environ.get(
+        "ECOCLASIFICA_FRONTEND_DIST",
+        str(Path(__file__).resolve().parent.parent / "frontend" / "dist"),
+    )
+)
+
+if (FRONTEND_DIST_DIR / "index.html").is_file():
+
+    @app.get("/ui", include_in_schema=False)
+    def serve_ui() -> FileResponse:
+        """Devuelve la interfaz web de EcoClasifica (SPA)."""
+        return FileResponse(FRONTEND_DIST_DIR / "index.html")
+
+    # Se monta al final: solo atiende rutas no definidas arriba (/assets/*, /favicon.svg, ...).
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST_DIR)), name="frontend")

@@ -7,6 +7,7 @@ web como FastAPI o Flask para exponer la clasificación como servicio.
 from __future__ import annotations
 
 import logging
+import os
 import time
 from pathlib import Path
 from typing import Optional, Any
@@ -16,7 +17,10 @@ from .postprocess import create_results_summary
 logger = logging.getLogger(__name__)
 
 # Constantes de configuración de servicio y rutas (sin magic numbers)
-FINETUNED_MODEL_PATH: str = "./models/ecoclasifica-resnet50"
+FINETUNED_MODEL_PATH: str = os.environ.get(
+    "ECOCLASIFICA_MODEL_PATH",
+    str(Path(__file__).resolve().parent.parent / "models" / "ecoclasifica-resnet50"),
+)
 SERVICE_NAME: str = "EcoClasifica API"
 API_VERSION: str = "1.0.0"
 STATUS_OK: str = "ok"
@@ -90,13 +94,21 @@ def classify_image_api(
         prediction = api.classify_waste(image_input, model_path=_model_path)
         summary = create_results_summary(prediction)
 
+        # El modelo devuelve una lista ordenada de tuplas (clase, prob); la API
+        # expone un dict[str, float] (el orden de inserción se conserva).
+        todas = prediction["todas_las_predicciones"]
+        if not isinstance(todas, dict):
+            todas = {str(k): float(v) for k, v in todas}
+        else:
+            todas = {str(k): float(v) for k, v in todas.items()}
+
         return {
             "error": False,
             "categoria": summary["categoria"],
             "confianza": summary["confianza"],
             "emoji": summary["emoji"],
             "recomendacion": summary["recomendacion"],
-            "todas_las_predicciones": prediction["todas_las_predicciones"],
+            "todas_las_predicciones": todas,
             "modelo_afinado": Path(_model_path).exists(),
         }
 

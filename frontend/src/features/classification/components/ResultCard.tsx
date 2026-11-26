@@ -26,7 +26,7 @@ export const ResultCard: React.FC<ResultCardProps> = ({
           <span>Sin conexión con el servidor de inferencia</span>
         </div>
         <p className="text-sm text-red-900/80">
-          Verifica que FastAPI esté activo en <code className="font-mono">http://localhost:8000</code>.
+          Verifica que FastAPI esté activo en <code className="font-mono"></code>.
         </p>
       </div>
     );
@@ -74,11 +74,26 @@ export const ResultCard: React.FC<ResultCardProps> = ({
               Material Detectado
             </span>
             <h3 className="text-3xl font-extrabold text-[#0A3323] capitalize mt-0.5">
-              {result.prediction}
+              {result.emoji} {result.prediction}
             </h3>
             <p className="text-sm font-medium text-[#0A3323]/80 mt-1">
               Índice de confianza: <span className="font-bold">{(result.confidence * 100).toFixed(2)}%</span>
             </p>
+            {result.breakdown.length > 0 && (
+              <ul className="mt-3 space-y-1.5">
+                {result.breakdown.map((item) => (
+                  <li key={item.label} className="text-xs text-[#0A3323]/85">
+                    <div className="flex justify-between font-medium">
+                      <span>{item.label}</span>
+                      <span>{item.percent.toFixed(1)}%</span>
+                    </div>
+                    <div className="w-full bg-[#0A3323]/10 h-1.5 rounded-full overflow-hidden">
+                      <div className="bg-[#839958] h-full rounded-full" style={{ width: `${item.percent}%` }} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ) : (
           <div className="py-2">

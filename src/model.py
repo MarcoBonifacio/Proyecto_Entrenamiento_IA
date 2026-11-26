@@ -7,6 +7,7 @@ y la generación de predicciones con probabilidades por categoría.
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -24,7 +25,13 @@ logger = logging.getLogger(__name__)
 
 # Constantes del modelo de clasificación (sin magic numbers)
 BASE_MODEL_NAME: str = "microsoft/resnet-50"
-DEFAULT_FINETUNED_PATH: str = "./models/ecoclasifica-resnet50"
+# Ruta del modelo afinado: variable de entorno ECOCLASIFICA_MODEL_PATH o, por defecto,
+# ``<raíz del proyecto>/models/ecoclasifica-resnet50`` (relativa a este archivo, no al CWD).
+_PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
+DEFAULT_FINETUNED_PATH: str = os.environ.get(
+    "ECOCLASIFICA_MODEL_PATH",
+    str(_PROJECT_ROOT / "models" / "ecoclasifica-resnet50"),
+)
 NUM_CLASSES: int = 6
 ROUND_DECIMALS: int = 4
 DEFAULT_IMAGE_SIZE: int = 224
@@ -220,6 +227,10 @@ class EcoClasificaModel:
 # ----------------------------------------------------------------------
 
 
+# Caché de modelos ya cargados: evita recargar ResNet-50 en cada petición.
+_MODEL_CACHE: dict[str, "EcoClasificaModel"] = {}
+
+
 def classify_waste(
     image_input: ImageInput,
     model_path: Optional[str] = None,
@@ -241,5 +252,9 @@ def classify_waste(
     dict
         Resultado de la predicción (ver :meth:`EcoClasificaModel.predict`).
     """
-    model = EcoClasificaModel(model_path=model_path)
+    key = str(model_path)
+    model = _MODEL_CACHE.get(key)
+    if model is None:
+        model = EcoClasificaModel(model_path=model_path)
+        _MODEL_CACHE[key] = model
     return model.predict(image_input)
