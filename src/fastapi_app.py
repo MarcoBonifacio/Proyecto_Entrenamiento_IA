@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -62,6 +63,16 @@ DIMENSION_MAXIMA: Tuple[int, int] = (8192, 8192)     # Protección contra bombas
 # ==============================================================================
 # Metadatos de la Aplicación FastAPI
 # ==============================================================================
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Precarga los pesos del modelo ResNet-50 y ejecuta un warm-up antes de abrir el puerto."""
+    logger.info("Precargando pesos de EcoClasifica (ResNet-50) en memoria...")
+    dummy_img = Image.new("RGB", (224, 224), color=(255, 255, 255))
+    classify_image_api(dummy_img)
+    logger.info("Modelo precargado y caliente. Servidor listo para recibir peticiones.")
+    yield
+
+
 app = FastAPI(
     title="EcoClasifica API",
     description=(
@@ -72,6 +83,7 @@ app = FastAPI(
     version="1.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # Habilitar CORS para permitir consumo desde el Frontend (React, Vue, Gradio, etc.)

@@ -1,7 +1,7 @@
 """Módulo del modelo de clasificación de residuos EcoClasifica.
 
 Encapsula la carga del modelo ResNet-50 (base o afinado), la inferencia
-y la generación de predicciones con probabilidades por categoría.
+con Test-Time Augmentation (TTA) y la generación de predicciones por categoría.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ from typing import Optional
 
 import numpy as np
 import torch
+from PIL import Image, ImageEnhance, ImageOps
 from transformers import (
     AutoImageProcessor,
     AutoModelForImageClassification,
@@ -25,8 +26,6 @@ logger = logging.getLogger(__name__)
 
 # Constantes del modelo de clasificación (sin magic numbers)
 BASE_MODEL_NAME: str = "microsoft/resnet-50"
-# Ruta del modelo afinado: variable de entorno ECOCLASIFICA_MODEL_PATH o, por defecto,
-# ``<raíz del proyecto>/models/ecoclasifica-resnet50`` (relativa a este archivo, no al CWD).
 _PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent
 DEFAULT_FINETUNED_PATH: str = os.environ.get(
     "ECOCLASIFICA_MODEL_PATH",
@@ -40,21 +39,7 @@ MAX_BATCH_SIZE: int = 32
 
 
 class EcoClasificaModel:
-    """Modelo de clasificación de residuos basado en ResNet-50.
-
-    Attributes
-    ----------
-    LABELS : dict[int, str]
-        Mapeo de índices a nombres de categoría en español.
-    model : AutoModelForImageClassification
-        Modelo de HuggingFace cargado y listo para inferencia.
-    processor : AutoImageProcessor
-        Procesador de imágenes asociado al modelo.
-    device : torch.device
-        Dispositivo de ejecución (CPU o CUDA).
-    is_finetuned : bool
-        Indica si el modelo cargado es el afinado o el base.
-    """
+    """Modelo de clasificación de residuos basado en ResNet-50."""
 
     LABELS: dict[int, str] = {
         0: "Cartón",
@@ -66,22 +51,15 @@ class EcoClasificaModel:
     }
 
     def __init__(self, model_path: Optional[str] = None) -> None:
-        """Inicializa el modelo de clasificación.
-
-        Parameters
-        ----------
-        model_path : str | None
-            Ruta al checkpoint del modelo afinado. Si es ``None`` o la
-            ruta no existe, se carga el modelo base ResNet-50 y se
-            reconfigura la cabeza de clasificación para 6 clases.
-        """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.is_finetuned: bool = False
         self.model: AutoModelForImageClassification
         self.processor: AutoImageProcessor
 
-        if model_path is not None and Path(model_path).exists():
-            self._load_finetuned(model_path)
+        target_path = model_path if model_path is not None else DEFAULT_FINETUNED_PATH
+
+        if target_path is not None and Path(target_path).exists():
+            self._load_finetuned(target_path)
         else:
             if model_path is not None:
                 logger.warning(
@@ -121,13 +99,7 @@ class EcoClasificaModel:
             ) from exc
 
     def _load_finetuned(self, model_path: str) -> None:
-        """Carga un modelo afinado desde disco.
-
-        Parameters
-        ----------
-        model_path : str
-            Ruta al directorio del checkpoint afinado.
-        """
+        """Carga un modelo afinado desde disco."""
         logger.info("Cargando modelo afinado desde '%s'…", model_path)
         try:
             self.processor = AutoImageProcessor.from_pretrained(model_path)
@@ -150,14 +122,23 @@ class EcoClasificaModel:
             self._load_base_model()
 
     def load_model(self, model_path: str) -> None:
-        """Carga (o recarga) un checkpoint afinado.
-
-        Parameters
-        ----------
-        model_path : str
-            Ruta al directorio del checkpoint.
-        """
+        """Carga (o recarga) un checkpoint afinado."""
         self._load_finetuned(model_path)
+
+    # ------------------------------------------------------------------
+    # Generación de vistas para Test-Time Augmentation (TTA)
+    # ------------------------------------------------------------------
+
+    def _build_tta_images(self, pil_img: Image.Image) -> list[Image.Image]:
+        """Genera 3 vistas complementarias para estabilizar la predicción de cámara."""
+        img_rgb = pil_img.convert("RGB")
+        img_flipped = ImageOps.mirror(img_rgb)
+
+        # Vista 3: realce suave de nitidez y contraste para bordes de plástico transparente/blanco
+        img_enhanced = ImageEnhance.Sharpness(img_rgb).enhance(1.25)
+        img_enhanced = ImageEnhance.Contrast(img_enhanced).enhance(1.10)
+
+        return [img_rgb, img_flipped, img_enhanced]
 
     # ------------------------------------------------------------------
     # Inferencia
@@ -165,36 +146,25 @@ class EcoClasificaModel:
 
     @torch.no_grad()
     def predict(self, image_input: ImageInput) -> dict:
-        """Clasifica una imagen de residuo.
-
-        Parameters
-        ----------
-        image_input : ImageInput
-            Ruta, ``PIL.Image.Image`` o ``numpy.ndarray``.
-
-        Returns
-        -------
-        dict
-            Diccionario con las claves:
-
-            * ``"categoria"`` — nombre en español de la clase predicha.
-            * ``"confianza"`` — probabilidad de la clase predicha (0–1).
-            * ``"todas_las_predicciones"`` — lista ordenada de
-              tuplas ``(categoría, probabilidad)`` de mayor a menor.
-        """
+        """Clasifica una imagen de residuo usando Test-Time Augmentation (TTA)."""
         try:
-            # Preprocesar la imagen
-            inputs = load_and_preprocess_image(image_input)
-            # Mover tensores al dispositivo del modelo
-            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            # Si recibimos un PIL.Image directamente (ej. desde FastAPI), aplicamos TTA
+            if isinstance(image_input, Image.Image):
+                vistas = self._build_tta_images(image_input)
+                inputs = self.processor(images=vistas, return_tensors="pt")
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
 
-            # Inferencia
-            outputs = self.model(**inputs)
-            logits = outputs.logits  # (1, num_classes)
-
-            # Aplicar softmax para obtener probabilidades
-            probabilities = torch.nn.functional.softmax(logits, dim=-1)
-            probs_np: np.ndarray = probabilities.cpu().numpy()[0]
+                outputs = self.model(**inputs)
+                # Promediar probabilidades de las 3 vistas (batch_size=3 -> 1)
+                probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1).mean(dim=0)
+                probs_np: np.ndarray = probabilities.cpu().numpy()
+            else:
+                # Respaldo estándar para rutas o arreglos numpy
+                inputs = load_and_preprocess_image(image_input)
+                inputs = {k: v.to(self.device) for k, v in inputs.items()}
+                outputs = self.model(**inputs)
+                probabilities = torch.nn.functional.softmax(outputs.logits, dim=-1)
+                probs_np = probabilities.cpu().numpy()[0]
 
             # Construir lista de predicciones ordenadas
             all_predictions: list[tuple[str, float]] = []
@@ -213,7 +183,6 @@ class EcoClasificaModel:
             }
 
         except (TypeError, FileNotFoundError, ValueError):
-            # Re-lanzar errores de validación tal cual
             raise
         except Exception as exc:
             logger.error("Error durante la predicción: %s", exc)
@@ -226,8 +195,6 @@ class EcoClasificaModel:
 # Función de conveniencia
 # ----------------------------------------------------------------------
 
-
-# Caché de modelos ya cargados: evita recargar ResNet-50 en cada petición.
 _MODEL_CACHE: dict[str, "EcoClasificaModel"] = {}
 
 
@@ -235,26 +202,11 @@ def classify_waste(
     image_input: ImageInput,
     model_path: Optional[str] = None,
 ) -> dict:
-    """Clasifica una imagen de residuo de forma directa.
-
-    Función de conveniencia que instancia ``EcoClasificaModel`` y ejecuta
-    la predicción en un solo paso.
-
-    Parameters
-    ----------
-    image_input : ImageInput
-        Ruta, ``PIL.Image.Image`` o ``numpy.ndarray``.
-    model_path : str | None
-        Ruta al checkpoint afinado (opcional).
-
-    Returns
-    -------
-    dict
-        Resultado de la predicción (ver :meth:`EcoClasificaModel.predict`).
-    """
-    key = str(model_path)
+    """Clasifica una imagen de residuo de forma directa."""
+    resolved_path = model_path if model_path is not None else DEFAULT_FINETUNED_PATH
+    key = str(resolved_path)
     model = _MODEL_CACHE.get(key)
     if model is None:
-        model = EcoClasificaModel(model_path=model_path)
+        model = EcoClasificaModel(model_path=resolved_path)
         _MODEL_CACHE[key] = model
     return model.predict(image_input)
